@@ -42,6 +42,7 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
 
     implementation("megalodonte:props:1.0.0")
+    implementation("megalodonte:megalodonte-styles:1.0.0")
     implementation("megalodonte:reactivity:1.0.0")
 
     // Dependências JavaFX removidas (agora gerenciadas pelo bloco 'javafx { ... }')
