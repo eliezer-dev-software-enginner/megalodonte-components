@@ -15,6 +15,11 @@ public class Row extends Component {
         this.nodeInternal = (HBox) this.node;
     }
 
+    public Row(RowProps props, RowStyler styler){
+        super(new HBox(), props, styler);
+        this.nodeInternal = (HBox) this.node;
+    }
+
     public Row child(Component component){
         this.nodeInternal.getChildren().add(component.getNode());
         return this;
