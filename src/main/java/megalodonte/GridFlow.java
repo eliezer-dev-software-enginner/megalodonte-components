@@ -2,30 +2,30 @@ package megalodonte;
 
 import javafx.scene.layout.TilePane;
 
-public class FlexView extends Component {
+public class GridFlow extends Component {
     private final TilePane tilePane;
 
-    public FlexView(){
+    public GridFlow(){
         super(new TilePane());
         this.tilePane = (TilePane) this.node;
     }
 
-    public FlexView(FlexViewProps props){
+    public GridFlow(GridFlowProps props){
         super(new TilePane(), props);
         this.tilePane = (TilePane) this.node;
     }
 
-    public FlexView(FlexViewProps props, FlexViewStyler styler){
+    public GridFlow(GridFlowProps props, GridFlowStyler styler){
         super(new TilePane(), props, styler);
         this.tilePane = (TilePane) this.node;
     }
 
-    public FlexView child(Component component){
+    public GridFlow child(Component component){
         this.tilePane.getChildren().add(component.getNode());
         return this;
     }
 
-    public <T> FlexView items(
+    public <T> GridFlow items(
             Iterable<T> items,
             Renderer<T> renderer
     ) {
