@@ -1,6 +1,7 @@
 package megalodonte.components;
 
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import megalodonte.RowProps;
 import megalodonte.RowStyler;
 
@@ -24,6 +25,11 @@ public class Row extends Component {
 
     public Row child(Component component){
         this.nodeInternal.getChildren().add(component.getNode());
+
+        if (component instanceof SpacerHorizontal c) {
+            HBox.setHgrow(c.getNode(), Priority.ALWAYS);
+        }
+
         return this;
     }
 }
