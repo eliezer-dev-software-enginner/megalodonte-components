@@ -8,6 +8,9 @@ import megalodonte.components.Component;
 import megalodonte.InputProps;
 import megalodonte.State;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 public abstract class InputBase extends Component {
 
     protected final TextInputControl field;
@@ -15,6 +18,9 @@ public abstract class InputBase extends Component {
 
     protected Node left;
     protected Node right;
+
+    protected String rawValue = "";
+    protected boolean internalChange = false;
 
     protected InputBase(TextInputControl field, InputProps props) {
         super(new StackPane());
@@ -28,9 +34,54 @@ public abstract class InputBase extends Component {
         }
     }
 
+    protected Function<String, String> onChange;
+
+    // (rawValue, currentValue
+    public InputBase onChange(Function<String, String> handler) {
+        this.onChange = handler;
+        setupListener();
+        return this;
+    }
+
+
+    private void setupListener() {
+        field.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (internalChange) return;
+
+            rawValue = newValue;
+
+            if (onChange != null) {
+                String formatted = onChange.apply(newValue);
+
+                if (formatted != null && !formatted.equals(newValue)) {
+                    setTextInternal(formatted);
+                }
+            }
+        });
+    }
+
+
     protected void bind(State<String> state) {
-        state.subscribe(field::setText);
-        field.textProperty().addListener((o, old, v) -> state.set(v));
+        state.subscribe(v -> {
+            internalChange = true;
+            field.setText(v);
+            internalChange = false;
+        });
+
+        //bind(state) não pode ouvir o texto quando existe onChange
+        //field.textProperty().addListener((o, old, v) -> state.set(v));
+    }
+
+    protected void setTextInternal(String value) {
+        if (value.equals(field.getText())) return;
+
+        internalChange = true;
+        field.setText(value);
+        internalChange = false;
+    }
+
+    public String getRawValue() {
+        return rawValue;
     }
 
     public InputBase left(Node node) {

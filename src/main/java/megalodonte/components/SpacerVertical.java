@@ -7,23 +7,33 @@ import megalodonte.ReadableState;
 import java.util.Objects;
 
 public class SpacerVertical extends Component {
+    private final Region region;
+    public SpacerVertical(){
+        super(new Region());
+        this.region = (Region) this.node;
+    }
 
     public SpacerVertical(int spacingUnits){
         super(new Region());
-        Region region = (Region) this.node;
-        applySpacing(region, spacingUnits);
+        this.region = (Region) this.node;
+        applyHeight(spacingUnits);
     }
 
     public SpacerVertical(ReadableState<Integer> spacingUnitsState){
         super(new Region());
-        Region region = (Region) this.node;
+        this.region = (Region) this.node;
 
         Objects.requireNonNull(spacingUnitsState);
 
-        spacingUnitsState.subscribe(v-> applySpacing(region, spacingUnitsState.get()));
+        spacingUnitsState.subscribe(this::applyHeight);
     }
 
-    private void applySpacing(Region region, int v) {
+    public SpacerVertical fill() {
+        region.setMaxHeight(Double.MAX_VALUE);
+        return this;
+    }
+
+    private void applyHeight(int v) {
         region.setMinHeight(v);
         region.setPrefHeight(v);
         region.setMaxHeight(v);

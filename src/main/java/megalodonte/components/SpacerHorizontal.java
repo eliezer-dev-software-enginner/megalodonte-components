@@ -9,6 +9,11 @@ public class SpacerHorizontal extends Component {
 
     private final Region region;
 
+    public SpacerHorizontal(){
+        super(new Region());
+        this.region = (Region) this.node;
+    }
+
     public SpacerHorizontal(int widthUnits){
         super(new Region());
         this.region = (Region) this.node;

@@ -1,5 +1,7 @@
 package megalodonte.components;
 
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.ColumnProps;
 import megalodonte.ColumnStyler;
@@ -24,6 +26,10 @@ public class Column extends Component {
 
     public Column child(Component component){
         this.vBox.getChildren().add(component.getNode());
+
+        if (component instanceof SpacerVertical c) {
+            VBox.setVgrow(c.getNode(), Priority.ALWAYS);
+        }
         return this;
     }
 }

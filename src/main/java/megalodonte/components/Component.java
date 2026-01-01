@@ -41,4 +41,8 @@ public abstract class Component {
         }
     }
 
+    public static Component FromJavaFxNode(Node node){
+        //classe anonima
+        return new Component(node){};
+    }
 }
