@@ -1,6 +1,6 @@
-package megalodonte;
+package megalodonte.components;
 
-import javafx.scene.control.TextField;
+import megalodonte.State;
 
 public class ProgressBar extends Component {
 

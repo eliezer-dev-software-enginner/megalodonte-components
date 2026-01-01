@@ -1,6 +1,8 @@
-package megalodonte;
+package megalodonte.components;
 
 import javafx.scene.layout.HBox;
+import megalodonte.RowProps;
+import megalodonte.RowStyler;
 
 public class Row extends Component {
     private final HBox nodeInternal;

@@ -1,5 +1,8 @@
-package megalodonte;
+package megalodonte.components;
 
+
+import megalodonte.ImageProps;
+import megalodonte.ReadableState;
 
 public class Image extends Component {
     private final javafx.scene.image.ImageView imgview;

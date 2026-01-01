@@ -1,5 +1,8 @@
-package megalodonte;
+package megalodonte.components;
 
+
+import megalodonte.ReadableState;
+import megalodonte.TextProps;
 
 public class Text extends Component {
     private final javafx.scene.text.Text text;

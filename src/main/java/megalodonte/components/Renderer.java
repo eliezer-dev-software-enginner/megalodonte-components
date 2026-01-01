@@ -1,4 +1,4 @@
-package megalodonte;
+package megalodonte.components;
 
 @FunctionalInterface
 public interface Renderer<T> {

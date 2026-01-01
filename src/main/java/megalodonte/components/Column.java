@@ -1,6 +1,8 @@
-package megalodonte;
+package megalodonte.components;
 
 import javafx.scene.layout.VBox;
+import megalodonte.ColumnProps;
+import megalodonte.ColumnStyler;
 
 public class Column extends Component {
     private final VBox vBox;

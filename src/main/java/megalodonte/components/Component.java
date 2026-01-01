@@ -1,7 +1,8 @@
-package megalodonte;
+package megalodonte.components;
 
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
+import megalodonte.Estilizador;
+import megalodonte.Props;
 
 public abstract class Component {
     protected final Node node;
