@@ -24,7 +24,7 @@ public class Column extends Component {
         this.vBox = (VBox) this.node;
     }
 
-    public Column child(Component component){
+    public Column c_child(Component component){
         this.vBox.getChildren().add(component.getNode());
 
         if (component instanceof SpacerVertical c) {

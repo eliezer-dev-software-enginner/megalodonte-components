@@ -23,7 +23,7 @@ public class Row extends Component {
         this.nodeInternal = (HBox) this.node;
     }
 
-    public Row child(Component component){
+    public Row r_child(Component component){
         this.nodeInternal.getChildren().add(component.getNode());
 
         if (component instanceof SpacerHorizontal c) {
