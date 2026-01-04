@@ -2,7 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.Node;
 import megalodonte.Estilizador;
-import megalodonte.Props;
+import megalodonte.props.Props;
 
 public abstract class Component {
     protected final Node node;
@@ -30,7 +30,7 @@ public abstract class Component {
 
         if(styler != null){
             this.styler = styler;
-            this.styler.apply(node);
+            this.styler.apply(node, props);
         }
     }
 
