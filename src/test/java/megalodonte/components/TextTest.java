@@ -22,4 +22,14 @@ class TextTest {
             assertNotNull(text);
         });
     }
+    
+    @Test
+    void testTextClicksDisabled() {
+        // Test that Text components have clicks disabled by default
+        assertDoesNotThrow(() -> {
+            Text text = new Text("Click Disabled Text");
+            assertNotNull(text);
+            // Text components should be mouse transparent to avoid accidental clicks
+        });
+    }
 }

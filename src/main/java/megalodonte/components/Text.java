@@ -11,16 +11,19 @@ public class Text extends Component {
     public Text(String textContent){
         super(new javafx.scene.text.Text(textContent));
         this.text = (javafx.scene.text.Text) this.node;
+        disableClicks();
     }
 
     public Text(String textContent, TextProps props){
         super(new javafx.scene.text.Text(textContent), props, new TextStyler());
         this.text = (javafx.scene.text.Text) this.node;
+        disableClicks();
     }
 
     public Text(String textContent, TextProps props, TextStyler styler){
         super(new javafx.scene.text.Text(textContent), props, styler);
         this.text = (javafx.scene.text.Text) this.node;
+        disableClicks();
     }
 
     public Text(ReadableState<String> state) {
@@ -28,6 +31,7 @@ public class Text extends Component {
         this.text = (javafx.scene.text.Text) this.node;
 
         state.subscribe(text::setText);
+        disableClicks();
     }
 
     public Text(ReadableState<String> state, TextProps props) {
@@ -35,5 +39,14 @@ public class Text extends Component {
         this.text = (javafx.scene.text.Text) this.node;
 
         state.subscribe(text::setText);
+        disableClicks();
+    }
+
+    /**
+     * Desativa cliques no componente Text para evitar interações indesejadas.
+     * Text components should not be interactive by default.
+     */
+    private void disableClicks() {
+        text.setMouseTransparent(true);
     }
 }
