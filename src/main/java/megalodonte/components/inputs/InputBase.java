@@ -73,7 +73,11 @@ public abstract class InputBase extends Component {
         });
 
         //bind(state) não pode ouvir o texto quando existe onChange
-        //field.textProperty().addListener((o, old, v) -> state.set(v));
+        field.textProperty().addListener((o, old, v) -> {
+            if (!internalChange) {
+                state.set(v);
+            }
+        });
     }
 
     protected void setTextInternal(String value) {

@@ -40,6 +40,11 @@ dependencies {
     // Mockito
     testImplementation("org.mockito:mockito-core:5.10.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
+    
+    // TestFX for JavaFX testing
+    testImplementation("org.testfx:testfx-core:4.0.16-alpha")
+    testImplementation("org.testfx:testfx-junit5:4.0.16-alpha")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 
     implementation("megalodonte:props:1.0.0")
     implementation("megalodonte:megalodonte-styles:1.0.0")
