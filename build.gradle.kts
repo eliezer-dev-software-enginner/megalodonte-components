@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "megalodonte"
-version = "1.0.0"
+version = "1.0.0-beta"
 
 repositories {
     mavenCentral()
@@ -46,8 +46,8 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:4.0.16-alpha")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 
-    implementation("megalodonte:props:1.0.0")
-    implementation("megalodonte:megalodonte-styles:1.0.0")
+    implementation("megalodonte:megalodonte-props:1.0.0-beta")
+    implementation("megalodonte:megalodonte-styles:1.0.0-beta")
     implementation("megalodonte:reactivity:1.0.0")
 
     // Dependências JavaFX removidas (agora gerenciadas pelo bloco 'javafx { ... }')
@@ -58,7 +58,7 @@ tasks.test {
 }
 
 tasks.jar {
-    archiveBaseName.set("components")
+    archiveBaseName.set("megalodonte-components")
 
     manifest {
         attributes(
@@ -73,7 +73,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifactId = "components"
+            artifactId = "megalodonte-components"
         }
     }
 }

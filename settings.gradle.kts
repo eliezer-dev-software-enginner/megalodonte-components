@@ -1,1 +1,1 @@
-rootProject.name = "components"
+rootProject.name = "megalodonte-components"
