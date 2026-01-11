@@ -48,7 +48,8 @@ dependencies {
 
     implementation("megalodonte:megalodonte-props:1.0.0-beta")
     implementation("megalodonte:megalodonte-styles:1.0.0-beta")
-    implementation("megalodonte:reactivity:1.0.0")
+    implementation("megalodonte:megalodonte-reactivity:1.0.0-beta")
+    implementation("megalodonte:megalodonte-theme:1.0.0-beta")
 
     // Dependências JavaFX removidas (agora gerenciadas pelo bloco 'javafx { ... }')
 }
