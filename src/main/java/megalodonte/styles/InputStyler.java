@@ -2,7 +2,7 @@ package megalodonte.styles;
 
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import megalodonte.InputProps;
+import megalodonte.props.InputProps;
 import megalodonte.theme.Theme;
 import megalodonte.utils.Utils;
 

@@ -1,6 +1,7 @@
 package megalodonte.styles;
 
 import javafx.scene.Node;
+import megalodonte.props.InputProps;
 import megalodonte.styles.Estilizador;
 import megalodonte.props.Props;
 import megalodonte.theme.Theme;
@@ -110,7 +111,7 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
     /**
      * Gets the final text color for input components with custom color fallback.
      */
-    protected String getFinalInputTextColor(Theme theme, megalodonte.InputProps props) {
+    protected String getFinalInputTextColor(Theme theme, InputProps props) {
         if (textColor != null && !textColor.isBlank()) {
             return textColor;
         }
@@ -185,7 +186,7 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
     /**
      * Applies text styling for Input components.
      */
-    protected void applyInputTextStyling(Node inputNode, Theme theme, megalodonte.InputProps props) {
+    protected void applyInputTextStyling(Node inputNode, Theme theme, InputProps props) {
         String finalTextColor = getFinalInputTextColor(theme, props);
         Utils.updateTextColor_Input(inputNode, finalTextColor);
         

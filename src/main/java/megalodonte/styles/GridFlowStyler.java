@@ -2,7 +2,7 @@ package megalodonte.styles;
 
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
-import megalodonte.GridFlowProps;
+import megalodonte.props.GridFlowProps;
 import megalodonte.theme.Theme;
 
 public class GridFlowStyler extends BaseStyler<GridFlowProps, GridFlowStyler> {

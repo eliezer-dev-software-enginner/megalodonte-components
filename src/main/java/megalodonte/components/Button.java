@@ -1,8 +1,8 @@
 package megalodonte.components;
 
 
-import megalodonte.ButtonProps;
 import megalodonte.ReadableState;
+import megalodonte.props.ButtonProps;
 
 public class Button extends Component {
     private final javafx.scene.control.Button btn;

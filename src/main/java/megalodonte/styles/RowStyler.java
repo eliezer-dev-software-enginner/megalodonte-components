@@ -2,7 +2,7 @@ package megalodonte.styles;
 
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
-import megalodonte.RowProps;
+import megalodonte.props.RowProps;
 import megalodonte.theme.Theme;
 
 public class RowStyler extends BaseStyler<RowProps, RowStyler> {

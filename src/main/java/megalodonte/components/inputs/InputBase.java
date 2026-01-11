@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
 import megalodonte.components.Component;
-import megalodonte.InputProps;
+import megalodonte.props.InputProps;
 import megalodonte.State;
 import megalodonte.styles.InputStyler;
 

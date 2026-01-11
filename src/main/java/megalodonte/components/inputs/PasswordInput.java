@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
-import megalodonte.InputProps;
+import megalodonte.props.InputProps;
 import megalodonte.State;
 import megalodonte.styles.InputStyler;
 

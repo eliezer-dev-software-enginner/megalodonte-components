@@ -2,7 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import megalodonte.RowProps;
+import megalodonte.props.RowProps;
 import megalodonte.styles.RowStyler;
 
 public class Row extends Component {

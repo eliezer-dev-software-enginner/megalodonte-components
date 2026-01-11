@@ -1,6 +1,7 @@
 package megalodonte.components;
 
 import javafx.scene.layout.VBox;
+import megalodonte.props.ColumnProps;
 import megalodonte.props.ListProps;
 import megalodonte.ReadableState;
 import megalodonte.State;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+@Deprecated(forRemoval = true)
 public class MegalodonteList<T> extends Component {
     private final VBox container;
     private State<String> searchState;
@@ -112,7 +114,7 @@ public class MegalodonteList<T> extends Component {
     }
 
     private Component createEmptyState(String message, Theme theme) {
-        return new Column(new megalodonte.ColumnProps()
+        return new Column(new ColumnProps()
                 .centerHorizontally()
                 .paddingAll(32)
                 .spacingOf(16))

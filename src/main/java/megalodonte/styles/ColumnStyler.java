@@ -2,7 +2,7 @@ package megalodonte.styles;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import megalodonte.ColumnProps;
+import megalodonte.props.ColumnProps;
 import megalodonte.theme.Theme;
 
 public class ColumnStyler extends BaseStyler<ColumnProps, ColumnStyler> {

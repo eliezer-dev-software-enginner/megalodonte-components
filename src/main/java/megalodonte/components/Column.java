@@ -3,7 +3,7 @@ package megalodonte.components;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import megalodonte.ColumnProps;
+import megalodonte.props.ColumnProps;
 import megalodonte.ForEachState;
 import megalodonte.styles.ColumnStyler;
 

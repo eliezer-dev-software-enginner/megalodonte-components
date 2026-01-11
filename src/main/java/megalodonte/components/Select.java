@@ -1,7 +1,7 @@
 package megalodonte.components;
 
 import javafx.scene.control.ComboBox;
-import megalodonte.SelectProps;
+import megalodonte.props.SelectProps;
 import megalodonte.State;
 
 public class Select<T> extends Component {

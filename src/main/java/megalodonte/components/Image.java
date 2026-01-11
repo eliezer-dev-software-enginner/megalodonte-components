@@ -1,7 +1,7 @@
 package megalodonte.components;
 
 
-import megalodonte.ImageProps;
+import megalodonte.props.ImageProps;
 import megalodonte.ReadableState;
 
 public class Image extends Component {
