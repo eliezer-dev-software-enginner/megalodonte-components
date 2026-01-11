@@ -14,10 +14,20 @@ class ComponentTest {
     
     @Test
     void testComponentFactoryMethod() {
-        // Test that the FromJavaFxNode method exists (though we can't call it due to JavaFX issues)
+        // Test that the create method exists (though we can't call it due to JavaFX issues)
         assertDoesNotThrow(() -> {
             // Just verify the method signature exists via reflection
-            var method = Component.class.getMethod("FromJavaFxNode", javafx.scene.Node.class);
+            var method = Component.class.getMethod("CreateFromJavaFxNode", javafx.scene.Node.class);
+            assertNotNull(method);
+        });
+    }
+
+    @Test
+    void testComponentInstanceMethod() {
+        // Test that the fromJavaFxNode instance method exists
+        assertDoesNotThrow(() -> {
+            // Just verify the method signature exists via reflection
+            var method = Component.class.getMethod("fromJavaFxNode", javafx.scene.Node.class);
             assertNotNull(method);
         });
     }

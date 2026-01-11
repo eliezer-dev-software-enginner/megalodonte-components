@@ -2,7 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.layout.TilePane;
 import megalodonte.GridFlowProps;
-import megalodonte.GridFlowStyler;
+import megalodonte.styles.GridFlowStyler;
 
 public class GridFlow extends Component {
     private final TilePane tilePane;

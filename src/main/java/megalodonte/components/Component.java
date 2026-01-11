@@ -1,10 +1,11 @@
 package megalodonte.components;
 
 import javafx.scene.Node;
-import megalodonte.Estilizador;
+import megalodonte.base.ComponentInterface;
 import megalodonte.props.Props;
+import megalodonte.styles.Estilizador;
 
-public abstract class Component {
+public abstract class Component implements ComponentInterface<Component> {
     protected final Node node;
     protected Props props;
     protected Estilizador styler;
@@ -19,15 +20,13 @@ public abstract class Component {
 
     protected Component(Node node, Props props) {
         this.node = node;
-
         setProps(node, props);
     }
 
     protected Component(Node node, Props props, Estilizador styler) {
         this.node = node;
-
         setProps(node, props);
-
+        
         if(styler != null){
             this.styler = styler;
             this.styler.apply(node, props);
@@ -41,8 +40,36 @@ public abstract class Component {
         }
     }
 
-    public static Component FromJavaFxNode(Node node){
-        //classe anonima
-        return new Component(node){};
+    @Override
+    public Node getJavaFxNode() {
+        return node;
+    }
+
+    @Override
+    public Component fromJavaFxNode(Node newNode) {
+        return CreateFromJavaFxNode(newNode);
+    }
+
+    /**
+     * Factory method estático para criar um Component a partir de um Node JavaFX existente.
+     * Este método segue o padrão Factory e cria um component wrapper.
+     */
+    public static Component CreateFromJavaFxNode(Node node) {
+        if (node == null) {
+            throw new IllegalArgumentException("Node não pode ser nulo");
+        }
+        
+        // Wrapper component para um Node JavaFX existente
+        return new Component(node) {
+            @Override
+            public Node getJavaFxNode() {
+                return node; // Retorna o node original
+            }
+
+            @Override
+            public Component fromJavaFxNode(Node newNode) {
+                return CreateFromJavaFxNode(newNode); // Delega para o método estático
+            }
+        };
     }
 }

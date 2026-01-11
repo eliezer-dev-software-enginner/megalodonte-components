@@ -4,8 +4,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.ColumnProps;
-import megalodonte.ColumnStyler;
 import megalodonte.ForEachState;
+import megalodonte.styles.ColumnStyler;
 
 import java.util.List;
 
