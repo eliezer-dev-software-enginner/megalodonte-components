@@ -49,9 +49,6 @@ dependencies {
     implementation("megalodonte:megalodonte-base:1.0.0-beta")
     implementation("megalodonte:megalodonte-reactivity:1.0.0-beta")
     implementation("megalodonte:megalodonte-theme:1.0.0-beta")
-    implementation("megalodonte:megalodonte-utils:1.0.0-beta")
-
-    // Dependências JavaFX removidas (agora gerenciadas pelo bloco 'javafx { ... }')
 }
 
 tasks.test {
