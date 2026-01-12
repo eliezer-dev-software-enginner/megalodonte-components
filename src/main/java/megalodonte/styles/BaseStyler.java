@@ -196,5 +196,10 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
         
         int fontSize = theme.typography().resolve(props.getVariant());
         Utils.updateFontSize(inputNode, fontSize);
+        
+        // Explicitly set placeholder font size to match input font size
+        var currentStyle = inputNode.getStyle();
+        var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
+        inputNode.setStyle(updatedStyle);
     }
 }
