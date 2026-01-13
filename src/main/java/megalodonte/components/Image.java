@@ -22,12 +22,12 @@ public class Image extends Component {
         this.imgview = (javafx.scene.image.ImageView) this.node;
         
         String initialValue = imgSourceState.get();
-        if (initialValue != null && !initialValue.isEmpty()) {
+        if (initialValue != null && !initialValue.trim().isEmpty()) {
             imgview.setImage(new javafx.scene.image.Image(initialValue));
         }
 
         imgSourceState.subscribe(s -> {
-            if (s != null && !s.isEmpty()) {
+            if (s != null && !s.trim().isEmpty()) {
                 imgview.setImage(new javafx.scene.image.Image(s));
             } else {
                 imgview.setImage(null);
@@ -40,12 +40,12 @@ public class Image extends Component {
         this.imgview = (javafx.scene.image.ImageView) this.node;
         
         String initialValue = imgSourceState.get();
-        if (initialValue != null && !initialValue.isEmpty()) {
+        if (initialValue != null && !initialValue.trim().isEmpty()) {
             imgview.setImage(new javafx.scene.image.Image(initialValue));
         }
 
         imgSourceState.subscribe(s -> {
-            if (s != null && !s.isEmpty()) {
+            if (s != null && !s.trim().isEmpty()) {
                 imgview.setImage(new javafx.scene.image.Image(s));
             } else {
                 imgview.setImage(null);
