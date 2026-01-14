@@ -1,6 +1,6 @@
 package megalodonte.components;
 
-import megalodonte.ButtonProps;
+import megalodonte.props.ButtonProps;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -57,7 +57,6 @@ public class InputProps extends Props {
         return this;
     }
 
-    //falta seu state
     public InputProps color(String color){
         this.color = color;
         return this;

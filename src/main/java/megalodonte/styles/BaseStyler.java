@@ -164,10 +164,12 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
             Utils.updateBorderWidth(node, finalBorderWidth);
         }
         
-        int finalBorderRadius = getFinalBorderRadius(theme);
-        if (finalBorderRadius > 0) {
-            Utils.updateBorderRadius(node, finalBorderRadius);
-        }
+//        int finalBorderRadius = getFinalBorderRadius(theme);
+//        if (finalBorderRadius > 0) {
+//            Utils.updateBorderRadius(node, finalBorderRadius);
+//        }
+
+        Utils.updateBorderRadius(node, 0);
     }
     
     /**

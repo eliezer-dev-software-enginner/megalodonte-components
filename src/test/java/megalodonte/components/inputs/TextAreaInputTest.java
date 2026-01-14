@@ -1,6 +1,6 @@
 package megalodonte.components.inputs;
 
-import megalodonte.InputProps;
+import megalodonte.props.InputProps;
 import megalodonte.State;
 import org.junit.jupiter.api.Test;
 
