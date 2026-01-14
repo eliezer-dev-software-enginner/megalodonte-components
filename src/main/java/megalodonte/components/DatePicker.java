@@ -46,6 +46,7 @@ public class DatePicker extends Component {
         super(new javafx.scene.control.DatePicker(initialValue), props, styler);
     }
 
+    @Deprecated(forRemoval = true)
     // Brazilian Portuguese constructor
     public static DatePicker brazilian() {
         return new DatePicker(new DatePickerProps()
@@ -55,6 +56,7 @@ public class DatePicker extends Component {
             .placeHolder("dd/MM/yyyy"));
     }
 
+    @Deprecated(forRemoval = true)
     // Brazilian Portuguese constructor with state
     public static DatePicker brazilian(State<LocalDate> state) {
         return new DatePicker(state, new DatePickerProps()
