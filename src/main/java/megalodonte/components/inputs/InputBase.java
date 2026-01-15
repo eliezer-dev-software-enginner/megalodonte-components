@@ -23,6 +23,7 @@ public abstract class InputBase extends Component {
     protected String rawValue = "";
     protected boolean internalChange = false;
     protected String lastStateValue = null;
+    protected boolean lockCursorToEnd = false;
 
     protected InputBase(TextInputControl field, InputProps props, InputStyler styler) {
         super(new StackPane());
@@ -42,21 +43,22 @@ public abstract class InputBase extends Component {
     protected Function<String, OnChangeResult> onChange;
 
     // (rawValue, currentValue
-    public InputBase onChange(Function<String, OnChangeResult> handler) {
+public InputBase onChange(Function<String, OnChangeResult> handler) {
         this.onChange = handler;
-        setupListener();
         return this;
     }
-
 
     private void setupListener() {
         // Não usa mais este listener, a lógica foi movida para bind()
     }
 
-    protected void bind(State<String> state) {
+    public void bind(State<String> state) {
         state.subscribe(v -> {
             internalChange = true;
             field.setText(v);
+            if (lockCursorToEnd) {
+                field.positionCaret(field.getText().length());
+            }
             internalChange = false;
         });
 
@@ -85,6 +87,15 @@ public abstract class InputBase extends Component {
                 state.set(v);
             }
         });
+
+        // Listener para travar cursor no final (se ativado)
+        if (lockCursorToEnd) {
+            field.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
+                if (!internalChange && newPos.intValue() < field.getText().length()) {
+                    field.positionCaret(field.getText().length());
+                }
+            });
+}
     }
 
     protected void setTextInternal(String value) {
@@ -92,11 +103,15 @@ public abstract class InputBase extends Component {
 
         internalChange = true;
         field.setText(value);
+        if (lockCursorToEnd) {
+            field.positionCaret(field.getText().length());
+        }
         internalChange = false;
     }
 
-    public String getRawValue() {
-        return rawValue;
+    public InputBase lockCursorToEnd() {
+        this.lockCursorToEnd = true;
+        return this;
     }
 
     public InputBase left(Node node) {
