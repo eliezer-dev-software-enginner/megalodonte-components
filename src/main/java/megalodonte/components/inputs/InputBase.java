@@ -25,6 +25,10 @@ public abstract class InputBase extends Component {
     protected String lastStateValue = null;
     protected boolean lockCursorToEnd = false;
 
+    public boolean isCursorLockedToEnd() {
+        return lockCursorToEnd;
+    }
+
     protected InputBase(TextInputControl field, InputProps props, InputStyler styler) {
         super(new StackPane());
         this.container = (StackPane) node;
@@ -38,6 +42,13 @@ public abstract class InputBase extends Component {
        if(styler != null){
            styler.apply(node, props);
        }
+
+       // Adiciona listener para travar cursor no final (se ativado)
+       field.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
+           if (lockCursorToEnd && !internalChange && newPos.intValue() < field.getText().length()) {
+               field.positionCaret(field.getText().length());
+           }
+       });
     }
 
     protected Function<String, OnChangeResult> onChange;
@@ -86,16 +97,7 @@ public InputBase onChange(Function<String, OnChangeResult> handler) {
                 // Sem onChange - atualiza state diretamente
                 state.set(v);
             }
-        });
-
-        // Listener para travar cursor no final (se ativado)
-        if (lockCursorToEnd) {
-            field.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
-                if (!internalChange && newPos.intValue() < field.getText().length()) {
-                    field.positionCaret(field.getText().length());
-                }
-            });
-}
+});
     }
 
     protected void setTextInternal(String value) {

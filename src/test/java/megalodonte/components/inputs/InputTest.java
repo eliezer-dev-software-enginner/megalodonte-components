@@ -60,4 +60,18 @@ class InputTest {
         assertEquals("test", result.getDisplayValue());
         assertEquals("test", result.getStateValue());
     }
+
+    @Test
+    void lockCursorToEnd_shouldEnableCursorLock() {
+        Input input = new Input(testState);
+        
+        // Testa se o método chain funciona
+        InputBase lockedInput = input.lockCursorToEnd();
+        
+        // Verifica se é a mesma instância (chain pattern)
+        assertSame(input, lockedInput);
+        
+        // Verifica se a flag foi ativada
+        assertTrue(input.isCursorLockedToEnd());
+    }
 }
