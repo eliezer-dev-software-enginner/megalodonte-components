@@ -50,27 +50,8 @@ public abstract class InputBase extends Component {
 
 
     private void setupListener() {
-        field.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (internalChange) return;
-
-            rawValue = newValue;
-
-            if (onChange != null) {
-                OnChangeResult result = onChange.apply(newValue);
-
-                if (result != null) {
-                    // Atualiza o campo com o valor formatado para exibição
-                    if (result.getDisplayValue() != null && !result.getDisplayValue().equals(newValue)) {
-                        setTextInternal(result.getDisplayValue());
-                    }
-                    
-                    // O state será atualizado no bind() com o valor bruto
-                    lastStateValue = result.getStateValue();
-                }
-            }
-        });
+        // Não usa mais este listener, a lógica foi movida para bind()
     }
-
 
     protected void bind(State<String> state) {
         state.subscribe(v -> {
@@ -79,16 +60,29 @@ public abstract class InputBase extends Component {
             internalChange = false;
         });
 
-        // Quando existe onChange, usa o valor do state do onChange handler
-        // Quando não existe onChange, usa o valor direto do campo
+        // Listener único que maneja tanto formatação quanto atualização do state
         field.textProperty().addListener((o, old, v) -> {
-            if (!internalChange) {
-                if (onChange != null && lastStateValue != null) {
-                    state.set(lastStateValue);
-                    lastStateValue = null; // Limpa após usar
-                } else if (onChange == null) {
-                    state.set(v);
+            if (internalChange) return;
+
+            rawValue = v;
+
+            if (onChange != null) {
+                OnChangeResult result = onChange.apply(v);
+
+                if (result != null) {
+                    // Atualiza o state com o valor bruto
+                    if (!result.getStateValue().equals(state.get())) {
+                        state.set(result.getStateValue());
+                    }
+
+                    // Atualiza o campo com o valor formatado (se necessário)
+                    if (result.getDisplayValue() != null && !result.getDisplayValue().equals(v)) {
+                        setTextInternal(result.getDisplayValue());
+                    }
                 }
+            } else {
+                // Sem onChange - atualiza state diretamente
+                state.set(v);
             }
         });
     }
