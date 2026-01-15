@@ -2,11 +2,19 @@ package megalodonte.components.inputs;
 
 import megalodonte.State;
 import megalodonte.props.InputProps;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InputTest {
+    
+    private State<String> testState;
+
+    @BeforeEach
+    void setUp() {
+        testState = State.of("initial");
+    }
     
     @Test
     void testStateCreation() {
@@ -35,5 +43,21 @@ class InputTest {
     void testEmptyState() {
         State<String> emptyState = State.of("");
         assertEquals("", emptyState.get());
+    }
+
+    @Test
+    void onChangeResult_shouldCreateWithDisplayAndStateValues() {
+        OnChangeResult result = OnChangeResult.of("R$ 1,23", "123");
+        
+        assertEquals("R$ 1,23", result.getDisplayValue());
+        assertEquals("123", result.getStateValue());
+    }
+
+    @Test
+    void onChangeResult_shouldCreateSameValue() {
+        OnChangeResult result = OnChangeResult.same("test");
+        
+        assertEquals("test", result.getDisplayValue());
+        assertEquals("test", result.getStateValue());
     }
 }

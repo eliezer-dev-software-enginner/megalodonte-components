@@ -22,6 +22,7 @@ public abstract class InputBase extends Component {
 
     protected String rawValue = "";
     protected boolean internalChange = false;
+    protected String lastStateValue = null;
 
     protected InputBase(TextInputControl field, InputProps props, InputStyler styler) {
         super(new StackPane());
@@ -38,10 +39,10 @@ public abstract class InputBase extends Component {
        }
     }
 
-    protected Function<String, String> onChange;
+    protected Function<String, OnChangeResult> onChange;
 
     // (rawValue, currentValue
-    public InputBase onChange(Function<String, String> handler) {
+    public InputBase onChange(Function<String, OnChangeResult> handler) {
         this.onChange = handler;
         setupListener();
         return this;
@@ -55,10 +56,16 @@ public abstract class InputBase extends Component {
             rawValue = newValue;
 
             if (onChange != null) {
-                String formatted = onChange.apply(newValue);
+                OnChangeResult result = onChange.apply(newValue);
 
-                if (formatted != null && !formatted.equals(newValue)) {
-                    setTextInternal(formatted);
+                if (result != null) {
+                    // Atualiza o campo com o valor formatado para exibição
+                    if (result.getDisplayValue() != null && !result.getDisplayValue().equals(newValue)) {
+                        setTextInternal(result.getDisplayValue());
+                    }
+                    
+                    // O state será atualizado no bind() com o valor bruto
+                    lastStateValue = result.getStateValue();
                 }
             }
         });
@@ -72,11 +79,16 @@ public abstract class InputBase extends Component {
             internalChange = false;
         });
 
-        // Quando existe onChange, não atualiza o state automaticamente
-        // O onChange handler deve cuidar da atualização do state
+        // Quando existe onChange, usa o valor do state do onChange handler
+        // Quando não existe onChange, usa o valor direto do campo
         field.textProperty().addListener((o, old, v) -> {
-            if (!internalChange && onChange == null) {
-                state.set(v);
+            if (!internalChange) {
+                if (onChange != null && lastStateValue != null) {
+                    state.set(lastStateValue);
+                    lastStateValue = null; // Limpa após usar
+                } else if (onChange == null) {
+                    state.set(v);
+                }
             }
         });
     }
