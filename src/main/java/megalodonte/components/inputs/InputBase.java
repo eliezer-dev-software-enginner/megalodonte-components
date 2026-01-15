@@ -72,9 +72,10 @@ public abstract class InputBase extends Component {
             internalChange = false;
         });
 
-        //bind(state) não pode ouvir o texto quando existe onChange
+        // Quando existe onChange, não atualiza o state automaticamente
+        // O onChange handler deve cuidar da atualização do state
         field.textProperty().addListener((o, old, v) -> {
-            if (!internalChange) {
+            if (!internalChange && onChange == null) {
                 state.set(v);
             }
         });
