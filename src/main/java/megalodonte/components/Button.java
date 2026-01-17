@@ -107,4 +107,46 @@ public class Button extends Component {
             releaseAnimation.playFromStart();
         }
     }
+
+    /**
+     * Creates a new Button component with the specified text.
+     * 
+     * @param textContent the button text
+     * @return a new Button instance
+     */
+    public static Button of(String textContent) {
+        return new Button(textContent);
+    }
+
+    /**
+     * Creates a new Button component with the specified text and properties.
+     * 
+     * @param textContent the button text
+     * @param props the button properties
+     * @return a new Button instance
+     */
+    public static Button of(String textContent, ButtonProps props) {
+        return new Button(textContent, props);
+    }
+
+    /**
+     * Creates a new Button component bound to the specified state.
+     * 
+     * @param state the readable state containing button text
+     * @return a new Button instance
+     */
+    public static Button of(ReadableState<String> state) {
+        return new Button(state);
+    }
+
+    /**
+     * Creates a new Button component bound to the specified state with properties.
+     * 
+     * @param state the readable state containing button text
+     * @param props the button properties
+     * @return a new Button instance
+     */
+    public static Button of(ReadableState<String> state, ButtonProps props) {
+        return new Button(state, props);
+    }
 }

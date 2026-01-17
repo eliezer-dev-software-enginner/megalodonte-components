@@ -55,6 +55,10 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.named<Test>("test") {
+    dependsOn(tasks.named("jar"))
+}
+
 tasks.jar {
     archiveBaseName.set("megalodonte-components")
 

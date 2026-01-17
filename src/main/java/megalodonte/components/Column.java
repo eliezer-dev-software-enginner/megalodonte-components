@@ -74,4 +74,34 @@ public class Column extends Component {
         
         return this;
     }
+
+    /**
+     * Creates a new Column component with default settings.
+     * 
+     * @return a new Column instance
+     */
+    public static Column of() {
+        return new Column();
+    }
+
+    /**
+     * Creates a new Column component with the specified properties.
+     * 
+     * @param props the column properties
+     * @return a new Column instance
+     */
+    public static Column of(ColumnProps props) {
+        return new Column(props);
+    }
+
+    /**
+     * Creates a new Column component with the specified properties and styler.
+     * 
+     * @param props the column properties
+     * @param styler the column styler
+     * @return a new Column instance
+     */
+    public static Column of(ColumnProps props, ColumnStyler styler) {
+        return new Column(props, styler);
+    }
 }
