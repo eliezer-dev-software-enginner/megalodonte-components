@@ -10,6 +10,7 @@ import megalodonte.State;
 import megalodonte.styles.InputStyler;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class InputBase extends Component {
@@ -54,7 +55,7 @@ public abstract class InputBase extends Component {
     protected Function<String, OnChangeResult> onChange;
 
     // (rawValue, currentValue
-public InputBase onChange(Function<String, OnChangeResult> handler) {
+    public InputBase onChange(Function<String, OnChangeResult> handler) {
         this.onChange = handler;
         return this;
     }
@@ -142,4 +143,12 @@ public InputBase onChange(Function<String, OnChangeResult> handler) {
 
         field.setPadding(new Insets(0, rightPad, 0, leftPad));
     }
+
+    public InputBase onChangeFocus(Consumer<Boolean> eventHandler){
+        this.field.focusedProperty().addListener((obs, old,newState)-> {
+            eventHandler.accept(newState);
+        });
+        return this;
+    }
+
 }
