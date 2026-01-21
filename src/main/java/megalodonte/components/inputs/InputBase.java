@@ -53,16 +53,13 @@ public abstract class InputBase extends Component {
     }
 
     protected Function<String, OnChangeResult> onChange;
+    protected Function<String, OnChangeResult> onInitialize;
 
-    // (rawValue, currentValue
     public InputBase onChange(Function<String, OnChangeResult> handler) {
         this.onChange = handler;
         return this;
     }
 
-    private void setupListener() {
-        // Não usa mais este listener, a lógica foi movida para bind()
-    }
 
     public void bind(State<String> state) {
         state.subscribe(v -> {
@@ -150,5 +147,4 @@ public abstract class InputBase extends Component {
         });
         return this;
     }
-
 }
