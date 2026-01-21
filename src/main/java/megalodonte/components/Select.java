@@ -5,6 +5,7 @@ import javafx.scene.control.ListCell;
 import megalodonte.props.SelectProps;
 import megalodonte.State;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class Select<T> extends Component {
@@ -24,6 +25,23 @@ public class Select<T> extends Component {
     public Select<T> items(Iterable<T> items) {
         comboBox.getItems().clear();
         items.forEach(comboBox.getItems()::add);
+        return this;
+    }
+
+    /**
+     * Binds the Select items to a reactive State<List<T>>.
+     * When the state changes, the ComboBox items are automatically updated.
+     * 
+     * @param state the State<List<T>> containing the items
+     * @return this Select instance for method chaining
+     */
+    public Select<T> items(State<List<T>> state) {
+        state.subscribe(items -> {
+            comboBox.getItems().clear();
+            if (items != null) {
+                comboBox.getItems().addAll(items);
+            }
+        });
         return this;
     }
 
