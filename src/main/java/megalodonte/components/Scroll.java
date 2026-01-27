@@ -12,11 +12,15 @@ public class Scroll extends Component {
 
     private final ScrollPane scrollPane;
 
-    public Scroll(Component content) {
+    public Scroll(Component component) {
         //super(new ScrollPane(), new CardProps(), new CardStyler());
         super(new ScrollPane(), null, null);
         this.scrollPane = (ScrollPane) node;
-        defaultConfig();
+
+        this.scrollPane.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;");
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        this.scrollPane.setFitToWidth(true);
+        this.scrollPane.setContent(component.getJavaFxNode());
     }
 
 
@@ -36,11 +40,4 @@ public class Scroll extends Component {
 //        this.container.getChildren().add(content.getNode());
 //    }
 
-    private void defaultConfig(){
-        this.scrollPane.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;");
-        VBox.setVgrow(scrollPane, Priority.ALWAYS);
-        this.scrollPane.setFitToWidth(true);
-        this.scrollPane.setContent(getJavaFxNode());
-
-    }
 }

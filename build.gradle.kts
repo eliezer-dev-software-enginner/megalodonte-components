@@ -59,6 +59,13 @@ tasks.named<Test>("test") {
     dependsOn(tasks.named("jar"))
 }
 
+task<JavaExec>("runDemo") {
+    group = "application"
+    description = "Run the MenuDemo"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("megalodonte.components.MenuDemo")
+}
+
 tasks.jar {
     archiveBaseName.set("megalodonte-components")
 
