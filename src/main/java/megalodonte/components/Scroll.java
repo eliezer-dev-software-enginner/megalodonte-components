@@ -39,6 +39,8 @@ public class Scroll extends Component {
     private void defaultConfig(){
         this.scrollPane.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;");
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        this.scrollPane.setFitToWidth(true);
         this.scrollPane.setContent(getJavaFxNode());
+
     }
 }
