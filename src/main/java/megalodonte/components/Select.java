@@ -7,10 +7,13 @@ import megalodonte.State;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.BiPredicate;
+import java.lang.reflect.Field;
 
 public class Select<T> extends Component {
 
     private final ComboBox<T> comboBox;
+    private BiPredicate<T, T> itemComparator = (a, b) -> a == b;
 
     public Select() {
         super(new ComboBox<T>());
@@ -47,7 +50,71 @@ public class Select<T> extends Component {
 
     public Select<T> value(State<T> state) {
         comboBox.valueProperty().addListener((obs, o, n) -> state.set(n));
-        state.subscribe(comboBox::setValue);
+        state.subscribe(newValue -> {
+            if (newValue != null) {
+                T matchingItem = findMatchingItem(newValue);
+                comboBox.setValue(matchingItem);
+            } else {
+                comboBox.setValue(null);
+            }
+        });
+        return this;
+    }
+
+    /**
+     * Sets a custom comparator to determine if two items are equal.
+     * This is useful when working with objects that don't implement equals() properly
+     * or when you want to compare items based on a specific field (like ID).
+     * 
+     * @param comparator function that takes two items and returns true if they should be considered equal
+     * @return this Select instance for method chaining
+     */
+    public Select<T> itemComparator(BiPredicate<T, T> comparator) {
+        this.itemComparator = comparator;
+        return this;
+    }
+
+    /**
+     * Finds an item in the ComboBox items list that matches the target value
+     * using the custom comparator.
+     * 
+     * @param target the value to find
+     * @return the matching item from the list, or null if not found
+     */
+    private T findMatchingItem(T target) {
+        for (T item : comboBox.getItems()) {
+            if (itemComparator.test(item, target)) {
+                return item;
+            }
+        }
+        return target;
+    }
+
+    /**
+     * Configures the Select to compare items by their 'id' field using reflection.
+     * This is useful for model objects that have an 'id' field but don't implement equals().
+     * 
+     * @return this Select instance for method chaining
+     */
+    public Select<T> compareById() {
+        this.itemComparator = (a, b) -> {
+            if (a == b) return true;
+            if (a == null || b == null) return false;
+            
+            try {
+                Field idFieldA = a.getClass().getDeclaredField("id");
+                Field idFieldB = b.getClass().getDeclaredField("id");
+                idFieldA.setAccessible(true);
+                idFieldB.setAccessible(true);
+                
+                Object idA = idFieldA.get(a);
+                Object idB = idFieldB.get(b);
+                
+                return java.util.Objects.equals(idA, idB);
+            } catch (Exception e) {
+                return false;
+            }
+        };
         return this;
     }
     
