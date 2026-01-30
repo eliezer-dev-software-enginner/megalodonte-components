@@ -2,6 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import megalodonte.ReadableState;
 import megalodonte.props.SelectProps;
 import megalodonte.State;
 
@@ -47,6 +48,19 @@ public class Select<T> extends Component {
         });
         return this;
     }
+
+    public Select<T> items(ReadableState<List<T>> state) {
+        state.subscribe(items -> {
+            comboBox.getItems().clear();
+            if (items != null) {
+                comboBox.getItems().addAll(items);
+            }
+        });
+        return this;
+    }
+
+
+
 
     public Select<T> value(State<T> state) {
         comboBox.valueProperty().addListener((obs, o, n) -> state.set(n));

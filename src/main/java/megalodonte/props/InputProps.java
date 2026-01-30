@@ -15,7 +15,6 @@ public class InputProps extends Props {
     private int height;
     private int width;
 
-
     private TextTone tone = TextTone.PRIMARY;
 
     public InputProps tone(TextTone tone) {
@@ -42,6 +41,7 @@ public class InputProps extends Props {
         this.height = height;
         return this;
     }
+
     public InputProps width(int width){
         this.width = width;
         return this;
@@ -67,6 +67,12 @@ public class InputProps extends Props {
         return this;
     }
 
+    boolean disabled;
+    public InputProps disable(){
+        this.disabled = true;
+        return this;
+    }
+
     @Override
      public void apply(Node node) {
         //if (!(node instanceof TextInputControl t)) return;
@@ -85,6 +91,10 @@ public class InputProps extends Props {
 
         if (color != null) {
           Utils.updateTextColor_Input(input, color);
+        }
+
+        if(disabled){
+            input.setDisable(true);
         }
 
         if (placeholder != null) {
