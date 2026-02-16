@@ -42,7 +42,7 @@ public class Row extends Component {
         return this;
     }
     
-    public Row r_child(Component... components){
+    public Row r_childs(Component... components){
         for (Component c : components) {
             r_child(c);
         }
