@@ -7,20 +7,22 @@ import megalodonte.styles.RowStyler;
 
 public class Row extends Component {
     private final HBox nodeInternal;
+    private RowProps rowProps;
+    private RowStyler rowStyler;
 
     public Row(){
-        super(new HBox());
-        this.nodeInternal = (HBox) this.node;
+        this(new RowProps(), new RowStyler());
     }
 
     public Row(RowProps props){
-        super(new HBox(), props);
-        this.nodeInternal = (HBox) this.node;
+        this(props, new RowStyler());
     }
 
     public Row(RowProps props, RowStyler styler){
         super(new HBox(), props, styler);
         this.nodeInternal = (HBox) this.node;
+        this.rowProps = props;
+        this.rowStyler = styler;
     }
 
     public Row r_child(Component component){
@@ -30,7 +32,6 @@ public class Row extends Component {
             HBox.setHgrow(c.getNode(), Priority.ALWAYS);
         }
 
-        // Apply margin if component has ButtonProps with margins
         if (component.props instanceof megalodonte.props.ButtonProps buttonProps) {
             javafx.geometry.Insets margins = buttonProps.getMargins();
             if (margins != null) {
@@ -39,5 +40,20 @@ public class Row extends Component {
         }
 
         return this;
+    }
+    
+    public Row r_child(Component... components){
+        for (Component c : components) {
+            r_child(c);
+        }
+        return this;
+    }
+
+    public RowProps props() {
+        return rowProps;
+    }
+
+    public RowStyler style() {
+        return rowStyler;
     }
 }

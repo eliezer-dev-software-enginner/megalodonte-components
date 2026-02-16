@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import megalodonte.ComputedState;
 import megalodonte.ReadableState;
 import megalodonte.props.ButtonProps;
 import megalodonte.props.TextProps;
@@ -31,15 +32,15 @@ public class Button extends TextComponent<ButtonProps, ButtonStyler> {
     }
 
     public Button(ReadableState<String> state) {
-        super(new javafx.scene.control.Button(), new ButtonProps(), new ButtonStyler());
-        this.btn = (javafx.scene.control.Button) this.node;
-
-        state.subscribe(btn::setText);
-        setupButtonBehavior();
+       this(state, new ButtonProps());
     }
 
     public Button(ReadableState<String> state, ButtonProps props) {
-        super(new javafx.scene.control.Button(), props, new ButtonStyler());
+       this(state, props, new ButtonStyler());
+    }
+
+    public Button(ReadableState<String> state, ButtonProps props, ButtonStyler styler) {
+        super(new javafx.scene.control.Button(), props, styler);
         this.btn = (javafx.scene.control.Button) this.node;
 
         state.subscribe(btn::setText);
