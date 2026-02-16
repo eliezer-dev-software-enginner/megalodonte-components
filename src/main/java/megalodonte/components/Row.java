@@ -30,6 +30,14 @@ public class Row extends Component {
             HBox.setHgrow(c.getNode(), Priority.ALWAYS);
         }
 
+        // Apply margin if component has ButtonProps with margins
+        if (component.props instanceof megalodonte.props.ButtonProps buttonProps) {
+            javafx.geometry.Insets margins = buttonProps.getMargins();
+            if (margins != null) {
+                HBox.setMargin(component.getNode(), margins);
+            }
+        }
+
         return this;
     }
 }

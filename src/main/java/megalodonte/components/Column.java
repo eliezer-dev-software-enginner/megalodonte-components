@@ -1,8 +1,10 @@
 package megalodonte.components;
 
+import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import megalodonte.props.ButtonProps;
 import megalodonte.props.ColumnProps;
 import megalodonte.ForEachState;
 import megalodonte.styles.ColumnStyler;
@@ -34,6 +36,15 @@ public class Column extends Component {
         if (component instanceof SpacerVertical c) {
             VBox.setVgrow(c.getNode(), Priority.ALWAYS);
         }
+
+        // Apply margin if component has ButtonProps with margins
+        if (component.props instanceof ButtonProps buttonProps) {
+            Insets margins = buttonProps.getMargins();
+            if (margins != null) {
+                VBox.setMargin(component.getNode(), margins);
+            }
+        }
+
         return this;
     }
     

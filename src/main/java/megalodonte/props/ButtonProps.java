@@ -2,21 +2,17 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import megalodonte.ReadableState;
 import megalodonte.theme.ThemeManager;
 import megalodonte.utils.Utils;
 
-public class ButtonProps extends Props {
-    private Integer fontSize = 14;
-    private ReadableState<Integer> fontSizeState;
+public class ButtonProps extends TextComponentProps {
     private String bgColor;
     private String textColor = "black";
 
     private int height;
     private boolean fillWidth;
     
-    // Button variant
-    private String variant = "primary"; // primary, secondary, success, warning, danger, ghost, disabled
+    private String variant = "primary";
 
     private Runnable runnable_onClick;
 
@@ -30,16 +26,7 @@ public class ButtonProps extends Props {
         return this;
     }
 
-    public ButtonProps fontSize(int fontSize) {
-        this.fontSize = fontSize;
-        return this;
-    }
-
-    public ButtonProps fontSize(ReadableState<Integer> state) {
-        this.fontSizeState = state;
-        return this;
-    }
-
+    @Deprecated(forRemoval = true)
     public ButtonProps textColor(String color) {
         this.textColor = color;
         return this;
@@ -50,7 +37,7 @@ public class ButtonProps extends Props {
         return this;
     }
 
-    // Button variant methods
+    //TODO: criar enum ButtonVariant e usá-la
     public ButtonProps variant(String variant) {
         this.variant = variant;
         return this;
@@ -104,15 +91,14 @@ public class ButtonProps extends Props {
             t.setMaxWidth(Double.MAX_VALUE);
         }
 
-        if (fontSize != null) {
-            Utils.updateFontSize(t, fontSize);
+        if (getFontSize() != null) {
+            Utils.updateFontSize(t, getFontSize());
         }
 
-        if (fontSizeState != null) {
-            fontSizeState.subscribe(v -> Utils.updateFontSize(t, fontSize));
+        if (getFontSizeState() != null) {
+            getFontSizeState().subscribe(v -> Utils.updateFontSize(t, v));
         }
 
-        // Apply theme-based button colors
         String finalBgColor = getButtonColor();
         String finalTextColor = getButtonTextColor();
 

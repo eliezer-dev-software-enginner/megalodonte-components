@@ -7,26 +7,31 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import megalodonte.ReadableState;
 import megalodonte.props.ButtonProps;
+import megalodonte.props.TextProps;
+import megalodonte.styles.ButtonStyler;
+import megalodonte.styles.TextStyler;
 
-public class Button extends Component {
+public class Button extends TextComponent<ButtonProps, ButtonStyler> {
     private final javafx.scene.control.Button btn;
     private Timeline pressAnimation;
     private Timeline releaseAnimation;
 
     public Button(String textContent){
-        super(new javafx.scene.control.Button(textContent));
-        this.btn = (javafx.scene.control.Button) this.node;
-        setupButtonBehavior();
+        this(textContent, new ButtonProps(), new ButtonStyler());
     }
 
     public Button(String textContent, ButtonProps props){
-        super(new javafx.scene.control.Button(textContent), props);
+        this(textContent, props, new ButtonStyler());
+    }
+
+    public Button(String textContent, ButtonProps props, ButtonStyler styler) {
+        super(new javafx.scene.control.Button(textContent), props, styler);
         this.btn = (javafx.scene.control.Button) this.node;
         setupButtonBehavior();
     }
 
     public Button(ReadableState<String> state) {
-        super(new javafx.scene.control.Button());
+        super(new javafx.scene.control.Button(), new ButtonProps(), new ButtonStyler());
         this.btn = (javafx.scene.control.Button) this.node;
 
         state.subscribe(btn::setText);
@@ -34,7 +39,7 @@ public class Button extends Component {
     }
 
     public Button(ReadableState<String> state, ButtonProps props) {
-        super(new javafx.scene.control.Button(), props);
+        super(new javafx.scene.control.Button(), props, new ButtonStyler());
         this.btn = (javafx.scene.control.Button) this.node;
 
         state.subscribe(btn::setText);
@@ -42,15 +47,14 @@ public class Button extends Component {
     }
 
     private void setupButtonBehavior() {
-        // Configurar cursor hand
         btn.setStyle(btn.getStyle() + " -fx-cursor: hand;");
         
-        // Configurar animações
         this.pressAnimation = createPressAnimation();
         this.releaseAnimation = createReleaseAnimation();
         
-        // Configurar handlers de mouse
         setupMouseHandlers();
+        
+        btn.setOnMouseClicked(e -> {});
     }
 
     private Timeline createPressAnimation() {
@@ -108,45 +112,10 @@ public class Button extends Component {
         }
     }
 
-    /**
-     * Creates a new Button component with the specified text.
-     * 
-     * @param textContent the button text
-     * @return a new Button instance
-     */
-    public static Button of(String textContent) {
-        return new Button(textContent);
-    }
-
-    /**
-     * Creates a new Button component with the specified text and properties.
-     * 
-     * @param textContent the button text
-     * @param props the button properties
-     * @return a new Button instance
-     */
-    public static Button of(String textContent, ButtonProps props) {
-        return new Button(textContent, props);
-    }
-
-    /**
-     * Creates a new Button component bound to the specified state.
-     * 
-     * @param state the readable state containing button text
-     * @return a new Button instance
-     */
-    public static Button of(ReadableState<String> state) {
-        return new Button(state);
-    }
-
-    /**
-     * Creates a new Button component bound to the specified state with properties.
-     * 
-     * @param state the readable state containing button text
-     * @param props the button properties
-     * @return a new Button instance
-     */
-    public static Button of(ReadableState<String> state, ButtonProps props) {
-        return new Button(state, props);
+    public Button onClick(Runnable handler) {
+        if (handler != null) {
+            btn.setOnMouseClicked(e -> handler.run());
+        }
+        return this;
     }
 }

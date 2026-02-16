@@ -3,13 +3,10 @@ package megalodonte.props;
 import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
-import megalodonte.ReadableState;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
-public class InputProps extends Props {
-    private Integer fontSize = 14;
-    private ReadableState<Integer> fontSizeState;
+public class InputProps extends TextComponentProps {
     private String color;
     private String placeholder;
     private int height;
@@ -47,16 +44,6 @@ public class InputProps extends Props {
         return this;
     }
 
-    public InputProps fontSize(int fontSize){
-        this.fontSize = fontSize;
-        return this;
-    }
-
-    public InputProps fontSize(ReadableState<Integer> state) {
-        this.fontSizeState = state;
-        return this;
-    }
-
     public InputProps color(String color){
         this.color = color;
         return this;
@@ -75,18 +62,17 @@ public class InputProps extends Props {
 
     @Override
      public void apply(Node node) {
-        //if (!(node instanceof TextInputControl t)) return;
         if (!(node instanceof StackPane stackPane)) return;
 
         var input = (TextInputControl) stackPane.getChildren().get(0);
         if(input == null) return;
 
-        if (fontSize != null) {
-          Utils.updateFontSize(input, fontSize);
+        if (getFontSize() != null) {
+          Utils.updateFontSize(input, getFontSize());
         }
 
-        if (fontSizeState != null) {
-            fontSizeState.subscribe(v ->  Utils.updateFontSize(input, fontSize));
+        if (getFontSizeState() != null) {
+            getFontSizeState().subscribe(v ->  Utils.updateFontSize(input, v));
         }
 
         if (color != null) {

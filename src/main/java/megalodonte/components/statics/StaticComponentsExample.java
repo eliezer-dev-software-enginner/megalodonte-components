@@ -23,11 +23,6 @@ public class StaticComponentsExample {
             .c_child(SpacerVertical())
             .c_child(Text("Bottom text"));
 
-        // Example 2: Using Text.of() method
-        Component textOfExample = Column()
-            .c_child(Text.of("Using Text.of()"))
-            .c_child(Button.of("Using Button.of()"));
-
         // Example 3: With properties
         ColumnProps columnProps = new ColumnProps();
         TextProps titleProps = new TextProps();

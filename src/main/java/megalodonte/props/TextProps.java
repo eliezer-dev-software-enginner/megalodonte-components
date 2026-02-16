@@ -2,15 +2,10 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.text.Text;
-import megalodonte.ReadableState;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
-public class TextProps extends Props {
-    private Integer fontSize;
-    private ReadableState<Integer> fontSizeState;
-    private String espessura;
-
+public class TextProps extends TextComponentProps {
     private TextTone tone = TextTone.PRIMARY;
 
     public TextProps tone(TextTone tone) {
@@ -25,10 +20,6 @@ public class TextProps extends Props {
         return this;
     }
 
-    public Integer getFontSize() {
-        return fontSize;
-    }
-
     public TextVariant getVariant() {
         return variant;
     }
@@ -37,35 +28,20 @@ public class TextProps extends Props {
         return tone;
     }
 
-    public TextProps fontSize(int fontSize){
-        this.fontSize = fontSize;
-        return this;
-    }
-
-    public TextProps fontSize(ReadableState<Integer> state) {
-        this.fontSizeState = state;
-        return this;
-    }
-
-    public TextProps bold(){
-        this.espessura = "bold";
-        return this;
-    }
-
     @Override
      public void apply(Node node) {
         if (!(node instanceof Text t)) return;
 
-        if (fontSize != null) {
-            Utils.updateFontSize(t, fontSize);
+        if (getFontSize() != null) {
+            Utils.updateFontSize(t, getFontSize());
         }
 
-        if (fontSizeState != null) {
-            fontSizeState.subscribe(v -> Utils.updateFontSize(t, v));
+        if (getFontSizeState() != null) {
+            getFontSizeState().subscribe(v -> Utils.updateFontSize(t, v));
         }
 
-        if(espessura != null){
-            applyFontWeight(t,espessura);
+        if(getFontWeight() != null){
+            applyFontWeight(t, getFontWeight());
         }
     }
 
