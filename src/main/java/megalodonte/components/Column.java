@@ -1,7 +1,6 @@
 package megalodonte.components;
 
 import javafx.geometry.Insets;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.props.ButtonProps;
@@ -13,21 +12,23 @@ import java.util.List;
 
 public class Column extends Component {
     private final VBox vBox;
-    private VBox itemsVBox = null; // VBox separado para items dinâmicos
+    private VBox itemsVBox = null;
+    private ColumnProps columnProps;
+    private ColumnStyler columnStyler;
 
     public Column(){
-        super(new VBox());
-        this.vBox = (VBox) this.node;
+        this(new ColumnProps(), new ColumnStyler());
     }
 
     public Column(ColumnProps props){
-        super(new VBox(), props);
-        this.vBox = (VBox) this.node;
+        this(props, new ColumnStyler());
     }
 
     public Column(ColumnProps props, ColumnStyler styler){
         super(new VBox(), props, styler);
         this.vBox = (VBox) this.node;
+        this.columnProps = props;
+        this.columnStyler = styler;
     }
 
     public Column c_child(Component component){
@@ -37,7 +38,6 @@ public class Column extends Component {
             VBox.setVgrow(c.getNode(), Priority.ALWAYS);
         }
 
-        // Apply margin if component has ButtonProps with margins
         if (component.props instanceof ButtonProps buttonProps) {
             Insets margins = buttonProps.getMargins();
             if (margins != null) {
@@ -48,13 +48,13 @@ public class Column extends Component {
         return this;
     }
     
-    /**
-     * Adiciona componentes dinâmicos usando ForEachState
-     * Usa VBox separado para isolar completamente os itens dinâmicos
-     * 
-     * @param forEachState o ForEachState contendo os componentes a renderizar
-     * @return this para method chaining
-     */
+    public Column c_child(Component... components){
+        for (Component c : components) {
+            c_child(c);
+        }
+        return this;
+    }
+    
     public <T, C extends Component> Column items(ForEachState<T, C> forEachState) {
         // Só pode ser chamado uma vez por Column
         if (this.itemsVBox != null) {
@@ -84,6 +84,14 @@ public class Column extends Component {
         });
         
         return this;
+    }
+
+    public ColumnProps props() {
+        return columnProps;
+    }
+
+    public ColumnStyler style() {
+        return columnStyler;
     }
 
     /**
