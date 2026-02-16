@@ -6,8 +6,13 @@ import javafx.scene.layout.StackPane;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
+//TODO: criar placeholderSize
 public class InputProps extends TextComponentProps {
+    @Deprecated(forRemoval = true)
     private String color;
+
+    //TODO: mover para inputStyler
+    @Deprecated(forRemoval = true)
     private String placeholder;
     private int height;
     private int width;

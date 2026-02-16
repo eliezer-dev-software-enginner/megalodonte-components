@@ -8,19 +8,14 @@ import megalodonte.styles.CardStyler;
 public class Card extends Component {
 
     private final StackPane container;
+    private CardProps cardProps;
+    private CardStyler cardStyler;
 
     public Card(Component content) {
-        super(new StackPane(), new CardProps(), new CardStyler());
-
-        this.container = (StackPane) node;
-
-        impedirCrescimentoAutomaticoDoFilho();
-
-        this.container.getChildren().add(content.getNode());
+        this(content, new CardProps(), new CardStyler());
     }
 
     private void impedirCrescimentoAutomaticoDoFilho() {
-        //impedir o crescimento automático do Region.
         this.container.setMaxSize(
                 Region.USE_PREF_SIZE,
                 Region.USE_PREF_SIZE
@@ -28,18 +23,24 @@ public class Card extends Component {
     }
 
     public Card(Component content, CardProps props) {
-        super(new StackPane(), props, new CardStyler());
-        this.container = (StackPane) node;
-        impedirCrescimentoAutomaticoDoFilho();
-
-        this.container.getChildren().add(content.getNode());
+        this(content, props, new CardStyler());
     }
 
     public Card(Component content, CardProps props, CardStyler styler) {
         super(new StackPane(), props, styler);
         this.container = (StackPane) node;
+        this.cardProps = props;
+        this.cardStyler = styler;
         impedirCrescimentoAutomaticoDoFilho();
 
         this.container.getChildren().add(content.getNode());
+    }
+
+    public CardProps props() {
+        return cardProps;
+    }
+
+    public CardStyler style() {
+        return cardStyler;
     }
 }
