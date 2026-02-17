@@ -48,7 +48,7 @@ public class Column extends Component {
         return this;
     }
     
-    public Column c_child(Component... components){
+    public Column c_childs(Component... components){
         for (Component c : components) {
             c_child(c);
         }

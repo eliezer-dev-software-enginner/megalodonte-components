@@ -3,6 +3,7 @@ package megalodonte.styles;
 import javafx.scene.Node;
 import megalodonte.props.ClickableProps;
 import megalodonte.props.Props;
+import megalodonte.theme.Theme;
 
 public class ClickableStyler extends Estilizador<Props> {
 
@@ -44,4 +45,7 @@ public class ClickableStyler extends Estilizador<Props> {
             }
         });
     }
+
+    @Override
+    protected void applyTheme(Node node, Props props, Theme theme) {}
 }

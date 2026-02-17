@@ -6,14 +6,19 @@ import megalodonte.props.DatePickerProps;
 import megalodonte.theme.Theme;
 import megalodonte.utils.Utils;
 
+import static megalodonte.styles.util.StyleUtils.*;
+
 public class DatePickerStyler extends BaseStyler<DatePickerProps, DatePickerStyler> {
+
+    protected String textColor;
+    protected String placeholderColor;
 
     @Override
     protected void applyTheme(Node node, DatePickerProps props, Theme theme) {
         if (!(node instanceof DatePicker datePicker)) return;
 
         // Apply background styling
-        applyBackgroundStyling(datePicker, theme);
+        applyBackgroundStyling(datePicker, theme, bgColor);
 
         // Apply border styling
         applyBorderStyling(datePicker, theme);
@@ -44,5 +49,25 @@ public class DatePickerStyler extends BaseStyler<DatePickerProps, DatePickerStyl
         var currentStyle = datePicker.getEditor().getStyle();
         var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
         datePicker.getEditor().setStyle(updatedStyle);
+    }
+
+    /**
+     * Applies common border styling.
+     */
+    protected void applyBorderStyling(Node node, Theme theme) {
+        String finalBorderColor = getFinalBorderColor(theme, borderColor);
+        Utils.updateBorderColor(node, finalBorderColor);
+
+        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
+        if (finalBorderWidth > 0) {
+            Utils.updateBorderWidth(node, finalBorderWidth);
+        }
+
+//        int finalBorderRadius = getFinalBorderRadius(theme);
+//        if (finalBorderRadius > 0) {
+//            Utils.updateBorderRadius(node, finalBorderRadius);
+//        }
+
+        Utils.updateBorderRadius(node, 0);
     }
 }

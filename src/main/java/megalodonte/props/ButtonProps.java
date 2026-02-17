@@ -7,7 +7,6 @@ import megalodonte.utils.Utils;
 
 public class ButtonProps extends TextComponentProps {
     private String bgColor;
-    private String textColor = "black";
 
     private int height;
     private boolean fillWidth;
@@ -23,12 +22,6 @@ public class ButtonProps extends TextComponentProps {
 
     public ButtonProps height(int height) {
         this.height = height;
-        return this;
-    }
-
-    @Deprecated(forRemoval = true)
-    public ButtonProps textColor(String color) {
-        this.textColor = color;
         return this;
     }
 
@@ -83,6 +76,10 @@ public class ButtonProps extends TextComponentProps {
         return this;
     }
 
+    public String getVariant() {
+        return variant;
+    }
+
     @Override
     public void apply(Node node) {
         if (!(node instanceof Button t)) return;
@@ -99,21 +96,6 @@ public class ButtonProps extends TextComponentProps {
             getFontSizeState().subscribe(v -> Utils.updateFontSize(t, v));
         }
 
-        String finalBgColor = getButtonColor();
-        String finalTextColor = getButtonTextColor();
-
-        if (textColor != null) {
-            applyColor(t, textColor, Utils.FX_TEXT_FILL);
-        } else {
-            applyColor(t, finalTextColor, Utils.FX_TEXT_FILL);
-        }
-
-        if (bgColor != null) {
-            applyColor(t, bgColor, Utils.FX_BG_COLOR);
-        } else {
-            applyColor(t, finalBgColor, Utils.FX_BG_COLOR);
-        }
-
         if (height > 0) {
             t.setPrefHeight(height);
             t.setMinHeight(height);
@@ -123,25 +105,6 @@ public class ButtonProps extends TextComponentProps {
         if(runnable_onClick != null){
             t.setOnMouseClicked(e-> runnable_onClick.run());
         }
-    }
-
-    private String getButtonColor() {
-        return switch (variant) {
-            case "secondary" -> ThemeManager.buttonSecondary();
-            case "success" -> ThemeManager.buttonSuccess();
-            case "warning" -> ThemeManager.buttonWarning();
-            case "danger" -> ThemeManager.buttonDanger();
-            case "ghost" -> ThemeManager.buttonGhost();
-            case "disabled" -> ThemeManager.buttonDisabled();
-            default -> ThemeManager.buttonPrimary();
-        };
-    }
-
-    private String getButtonTextColor() {
-        return switch (variant) {
-            case "ghost", "disabled" -> ThemeManager.theme().colors().textSecondary();
-            default -> "white";
-        };
     }
 
     private void applyColor(Button t, String color, String fxField) {

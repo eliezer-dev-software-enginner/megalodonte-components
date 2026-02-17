@@ -56,7 +56,7 @@ public abstract class Component implements ComponentInterface<Component> {
      */
     public static Component CreateFromJavaFxNode(Node node) {
         if (node == null) {
-            throw new IllegalArgumentException("Node não pode ser nulo");
+            throw new IllegalArgumentException("Node can not be null");
         }
         
         // Wrapper component para um Node JavaFX existente

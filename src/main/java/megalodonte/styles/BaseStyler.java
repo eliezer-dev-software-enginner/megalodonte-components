@@ -19,8 +19,6 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
     protected String borderColor;
     protected int borderWidth;
     protected int borderRadius;
-    protected String textColor;
-    protected String placeholderColor;
     
     // Fluent API methods
     @SuppressWarnings("unchecked")
@@ -46,19 +44,7 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
         this.borderRadius = borderRadius;
         return (S) this;
     }
-    
-    @SuppressWarnings("unchecked")
-    public S textColor(String textColor) {
-        this.textColor = textColor;
-        return (S) this;
-    }
-    
-    @SuppressWarnings("unchecked")
-    public S placeholderColor(String placeholderColor) {
-        this.placeholderColor = placeholderColor;
-        return (S) this;
-    }
-    
+
     /**
      * Template method that handles theme subscription and calls applyTheme.
      * Subclasses should implement applyTheme for their specific styling logic.
@@ -79,129 +65,8 @@ public abstract class BaseStyler<T extends Props, S extends BaseStyler<T, S>> ex
     
     // Helper methods for consistent theme usage
     
-    /**
-     * Gets the final background color with theme fallback.
-     */
-    protected String getFinalBackgroundColor(Theme theme) {
-        return getFinalColor(bgColor, theme.colors().background());
-    }
-    
-    /**
-     * Gets the final border color with theme fallback.
-     */
-    protected String getFinalBorderColor(Theme theme) {
-        return getFinalColor(borderColor, theme.colors().border());
-    }
-    
-    /**
-     * Gets the final text color based on tone with custom color fallback.
-     */
-    protected String getFinalTextColor(Theme theme, megalodonte.props.TextProps props) {
-        if (textColor != null && !textColor.isBlank()) {
-            return textColor;
-        }
-        
-        return switch (props.getTone()) {
-            case PRIMARY -> theme.colors().textPrimary();
-            case SECONDARY, DISABLED -> theme.colors().textSecondary();
-            case INVERTED -> theme.colors().background();
-        };
-    }
-    
-    /**
-     * Gets the final text color for input components with custom color fallback.
-     */
-    protected String getFinalInputTextColor(Theme theme, InputProps props) {
-        if (textColor != null && !textColor.isBlank()) {
-            return textColor;
-        }
-        
-        return switch (props.getTone()) {
-            case PRIMARY -> theme.colors().textPrimary();
-            case SECONDARY, DISABLED -> theme.colors().textSecondary();
-            case INVERTED -> theme.colors().background();
-        };
-    }
-    
-    /**
-     * Gets the final border width with theme fallback.
-     */
-    protected int getFinalBorderWidth(Theme theme) {
-        return borderWidth > 0 ? borderWidth : theme.border().width();
-    }
-    
-    /**
-     * Gets the final border radius with theme fallback.
-     */
-    protected int getFinalBorderRadius(Theme theme) {
-        return borderRadius > 0 ? borderRadius : theme.radius().md();
-    }
-    
-    /**
-     * Generic method to get final color with fallback.
-     */
-    protected String getFinalColor(String colorField, String fallbackColor) {
-        return (colorField != null && !colorField.isBlank()) ? colorField : fallbackColor;
-    }
-    
-    /**
-     * Applies common background styling.
-     */
-    protected void applyBackgroundStyling(Node node, Theme theme) {
-        String finalBgColor = getFinalBackgroundColor(theme);
-        Utils.updateBackgroundColor(node, finalBgColor);
-    }
-    
-    /**
-     * Applies common border styling.
-     */
-    protected void applyBorderStyling(Node node, Theme theme) {
-        String finalBorderColor = getFinalBorderColor(theme);
-        Utils.updateBorderColor(node, finalBorderColor);
-        
-        int finalBorderWidth = getFinalBorderWidth(theme);
-        if (finalBorderWidth > 0) {
-            Utils.updateBorderWidth(node, finalBorderWidth);
-        }
-        
-//        int finalBorderRadius = getFinalBorderRadius(theme);
-//        if (finalBorderRadius > 0) {
-//            Utils.updateBorderRadius(node, finalBorderRadius);
-//        }
 
-        Utils.updateBorderRadius(node, 0);
-    }
+
     
-    /**
-     * Applies text styling for Text components.
-     */
-    protected void applyTextStyling(javafx.scene.text.Text textNode, Theme theme, megalodonte.props.TextProps props) {
-        String finalTextColor = getFinalTextColor(theme, props);
-        Utils.updateTextColor(textNode, finalTextColor);
-        
-        int fontSize = props.getFontSize() != null ? 
-            props.getFontSize() : 
-            theme.typography().resolve(props.getVariant());
-        Utils.updateFontSize(textNode, fontSize);
-    }
-    
-    /**
-     * Applies text styling for Input components.
-     */
-    protected void applyInputTextStyling(Node inputNode, Theme theme, InputProps props) {
-        String finalTextColor = getFinalInputTextColor(theme, props);
-        Utils.updateTextColor_Input(inputNode, finalTextColor);
-        
-        String finalPlaceholderColor = placeholderColor != null && !placeholderColor.isBlank() ? 
-            placeholderColor : getFinalInputTextColor(theme, props);
-        Utils.updatePlaceholderColor(inputNode, finalPlaceholderColor);
-        
-        int fontSize = theme.typography().resolve(props.getVariant());
-        Utils.updateFontSize(inputNode, fontSize);
-        
-        // Explicitly set placeholder font size to match input font size
-        var currentStyle = inputNode.getStyle();
-        var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
-        inputNode.setStyle(updatedStyle);
-    }
+
 }
