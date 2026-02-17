@@ -2,18 +2,42 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import megalodonte.theme.Theme;
 import megalodonte.theme.ThemeManager;
 import megalodonte.utils.Utils;
 
-public class ButtonProps extends TextComponentProps {
-    private String bgColor;
+import static megalodonte.styles.util.StyleUtils.*;
 
+public class ButtonProps extends TextComponentProps<ButtonProps> {
     private int height;
     private boolean fillWidth;
-    
-    private String variant = "primary";
+    protected String bgColor;
+    protected String borderColor;
+    protected int borderWidth;
+    protected int borderRadius;
 
-    private Runnable runnable_onClick;
+    // Fluent API methods
+    public ButtonProps bgColor(String bgColor) {
+        this.bgColor = bgColor;
+        return  this;
+    }
+
+    public ButtonProps borderColor(String borderColor) {
+        this.borderColor = borderColor;
+        return this;
+    }
+
+    public ButtonProps borderWidth(int borderWidth) {
+        this.borderWidth = borderWidth;
+        return this;
+    }
+
+    public ButtonProps borderRadius(int borderRadius) {
+        this.borderRadius = borderRadius;
+        return this;
+    }
+
+    private String variant = "primary";
 
     public ButtonProps fillWidth() {
         this.fillWidth = true;
@@ -22,11 +46,6 @@ public class ButtonProps extends TextComponentProps {
 
     public ButtonProps height(int height) {
         this.height = height;
-        return this;
-    }
-
-    public ButtonProps bgColor(String color) {
-        this.bgColor = color;
         return this;
     }
 
@@ -71,45 +90,81 @@ public class ButtonProps extends TextComponentProps {
         return this;
     }
 
-    public ButtonProps onClick(Runnable callback) {
-        this.runnable_onClick = callback;
-        return this;
-    }
-
     public String getVariant() {
         return variant;
     }
 
+    private String getButtonColorFromVariant(ButtonProps props) {
+        return switch (props.getVariant()) {
+            case "secondary" -> ThemeManager.buttonSecondary();
+            case "success" -> ThemeManager.buttonSuccess();
+            case "warning" -> ThemeManager.buttonWarning();
+            case "danger" -> ThemeManager.buttonDanger();
+            case "ghost" -> ThemeManager.buttonGhost();
+            case "disabled" -> ThemeManager.buttonDisabled();
+            default -> ThemeManager.buttonPrimary();
+        };
+    }
+
+    private String getButtonTextColor(ButtonProps props) {
+        return switch (props.getVariant()) {
+            case "ghost", "disabled" -> ThemeManager.theme().colors().textSecondary();
+            default -> "white";
+        };
+    }
+
+    /**
+     * Applies common border styling.
+     */
+    protected void applyBorderStyling(Node node, Theme theme) {
+        String finalBorderColor = getFinalBorderColor(theme, borderColor);
+        Utils.updateBorderColor(node, finalBorderColor);
+
+        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
+        if (finalBorderWidth > 0) {
+            Utils.updateBorderWidth(node, finalBorderWidth);
+        }
+
+//        int finalBorderRadius = getFinalBorderRadius(theme);
+//        if (finalBorderRadius > 0) {
+//            Utils.updateBorderRadius(node, finalBorderRadius);
+//        }
+
+        Utils.updateBorderRadius(node, 0);
+    }
+
     @Override
-    public void apply(Node node) {
-        if (!(node instanceof Button t)) return;
+    protected void applyTheme(Node node, Props props, Theme theme) {
+        if (!(node instanceof Button button)) return;
 
         if (fillWidth) {
-            t.setMaxWidth(Double.MAX_VALUE);
+            button.setMaxWidth(Double.MAX_VALUE);
         }
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(t, getFontSize());
-        }
-
-        if (getFontSizeState() != null) {
-            getFontSizeState().subscribe(v -> Utils.updateFontSize(t, v));
+            Utils.updateFontSize(button, getFontSize());
         }
 
         if (height > 0) {
-            t.setPrefHeight(height);
-            t.setMinHeight(height);
-            t.setMaxHeight(height);
+            button.setPrefHeight(height);
+            button.setMinHeight(height);
+            button.setMaxHeight(height);
         }
 
-        if(runnable_onClick != null){
-            t.setOnMouseClicked(e-> runnable_onClick.run());
-        }
-    }
+        String finalBgColor = getButtonColorFromVariant((ButtonProps) props);
+        String finalTextColor = getButtonTextColor((ButtonProps) props);
 
-    private void applyColor(Button t, String color, String fxField) {
-        var current = t.getStyle();
-        var updated = Utils.UpdateEspecificStyle(current, fxField, color);
-        t.setStyle(updated);
+        if (textColor != null) {
+            applyColor(node, textColor, Utils.FX_TEXT_FILL);
+        } else {
+            applyColor(node, finalTextColor, Utils.FX_TEXT_FILL);
+        }
+
+        if (bgColor != null) {
+            applyColor(node, bgColor, Utils.FX_BG_COLOR);
+        } else {
+            applyColor(node, finalBgColor, Utils.FX_BG_COLOR);
+        }
+        applyBorderStyling(button, theme);
     }
 }

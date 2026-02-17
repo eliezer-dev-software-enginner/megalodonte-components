@@ -5,28 +5,20 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
-import megalodonte.ComputedState;
 import megalodonte.ReadableState;
 import megalodonte.props.ButtonProps;
-import megalodonte.props.TextProps;
-import megalodonte.styles.ButtonStyler;
-import megalodonte.styles.TextStyler;
 
-public class Button extends TextComponent<ButtonProps, ButtonStyler> {
+public class Button extends Component {
     private final javafx.scene.control.Button btn;
     private Timeline pressAnimation;
     private Timeline releaseAnimation;
 
     public Button(String textContent){
-        this(textContent, new ButtonProps(), new ButtonStyler());
+        this(textContent, new ButtonProps());
     }
 
-    public Button(String textContent, ButtonProps props){
-        this(textContent, props, new ButtonStyler());
-    }
-
-    public Button(String textContent, ButtonProps props, ButtonStyler styler) {
-        super(new javafx.scene.control.Button(textContent), props, styler);
+    public Button(String textContent, ButtonProps props) {
+        super(new javafx.scene.control.Button(textContent), props);
         this.btn = (javafx.scene.control.Button) this.node;
         setupButtonBehavior();
     }
@@ -36,11 +28,7 @@ public class Button extends TextComponent<ButtonProps, ButtonStyler> {
     }
 
     public Button(ReadableState<String> state, ButtonProps props) {
-       this(state, props, new ButtonStyler());
-    }
-
-    public Button(ReadableState<String> state, ButtonProps props, ButtonStyler styler) {
-        super(new javafx.scene.control.Button(), props, styler);
+        super(new javafx.scene.control.Button(), props);
         this.btn = (javafx.scene.control.Button) this.node;
 
         state.subscribe(btn::setText);

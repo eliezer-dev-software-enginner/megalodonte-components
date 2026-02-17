@@ -1,10 +1,15 @@
 package megalodonte.props;
 
-import megalodonte.props.CommonProps;
+import javafx.scene.Node;
+import javafx.scene.layout.VBox;
 import megalodonte.ReadableState;
+import megalodonte.theme.Theme;
+import megalodonte.utils.Utils;
 
 import java.util.List;
 import java.util.function.Consumer;
+
+import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
 
 public class ListProps<T> extends CommonProps {
     private List<T> items;
@@ -58,6 +63,27 @@ public class ListProps<T> extends CommonProps {
         return this;
     }
 
+
+    private String borderColor;
+    private int borderWidth = 1;
+    private int borderRadius = 8;
+
+
+    public ListProps<T> borderColor(String borderColor) {
+        this.borderColor = borderColor;
+        return this;
+    }
+
+    public ListProps<T> borderWidth(int borderWidth) {
+        this.borderWidth = borderWidth;
+        return this;
+    }
+
+    public ListProps<T> borderRadius(int borderRadius) {
+        this.borderRadius = borderRadius;
+        return this;
+    }
+
     // Getters
     public List<T> getItems() { return items; }
     public ReadableState<String> getSearchTerm() { return searchTerm; }
@@ -67,4 +93,25 @@ public class ListProps<T> extends CommonProps {
     public boolean isShowHeader() { return showHeader; }
     public boolean isShowActions() { return showActions; }
     public String getEmptyMessage() { return emptyMessage; }
+
+
+    @Override
+    protected void applyTheme(Node node, Props props, Theme theme) {
+        super.applyTheme(node, props, theme);
+        if (!(node instanceof VBox vbox)) return;
+
+        // Apply container styling
+        applyContainerStyling(vbox, theme);
+    }
+
+    protected void applyContainerStyling(VBox vbox, Theme theme) {
+        String finalBgColor = getFinalBackgroundColor(theme, borderColor);
+        String finalBorderColor = borderColor != null ? borderColor : theme.colors().border();
+        int finalBorderRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+
+        Utils.updateBackgroundColor(vbox, finalBgColor);
+        Utils.updateBorderWidth(vbox, borderWidth > 0 ? borderWidth : theme.border().width());
+        Utils.updateBorderColor(vbox, finalBorderColor);
+        Utils.updateBorderRadius(vbox, finalBorderRadius);
+    }
 }

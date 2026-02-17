@@ -2,7 +2,6 @@ package megalodonte.components;
 
 import javafx.scene.layout.TilePane;
 import megalodonte.props.GridFlowProps;
-import megalodonte.styles.GridFlowStyler;
 
 public class GridFlow extends Component {
     private final TilePane tilePane;
@@ -14,11 +13,6 @@ public class GridFlow extends Component {
 
     public GridFlow(GridFlowProps props){
         super(new TilePane(), props);
-        this.tilePane = (TilePane) this.node;
-    }
-
-    public GridFlow(GridFlowProps props, GridFlowStyler styler){
-        super(new TilePane(), props, styler);
         this.tilePane = (TilePane) this.node;
     }
 

@@ -6,29 +6,22 @@ import javafx.scene.layout.VBox;
 import megalodonte.props.ButtonProps;
 import megalodonte.props.ColumnProps;
 import megalodonte.ForEachState;
-import megalodonte.styles.ColumnStyler;
 
 import java.util.List;
 
 public class Column extends Component {
     private final VBox vBox;
     private VBox itemsVBox = null;
-    private ColumnProps columnProps;
-    private ColumnStyler columnStyler;
+    private final ColumnProps columnProps;
 
     public Column(){
-        this(new ColumnProps(), new ColumnStyler());
+        this(new ColumnProps());
     }
 
     public Column(ColumnProps props){
-        this(props, new ColumnStyler());
-    }
-
-    public Column(ColumnProps props, ColumnStyler styler){
-        super(new VBox(), props, styler);
+        super(new VBox(), props);
         this.vBox = (VBox) this.node;
         this.columnProps = props;
-        this.columnStyler = styler;
     }
 
     public Column c_child(Component component){
@@ -88,39 +81,5 @@ public class Column extends Component {
 
     public ColumnProps props() {
         return columnProps;
-    }
-
-    public ColumnStyler style() {
-        return columnStyler;
-    }
-
-    /**
-     * Creates a new Column component with default settings.
-     * 
-     * @return a new Column instance
-     */
-    public static Column of() {
-        return new Column();
-    }
-
-    /**
-     * Creates a new Column component with the specified properties.
-     * 
-     * @param props the column properties
-     * @return a new Column instance
-     */
-    public static Column of(ColumnProps props) {
-        return new Column(props);
-    }
-
-    /**
-     * Creates a new Column component with the specified properties and styler.
-     * 
-     * @param props the column properties
-     * @param styler the column styler
-     * @return a new Column instance
-     */
-    public static Column of(ColumnProps props, ColumnStyler styler) {
-        return new Column(props, styler);
     }
 }

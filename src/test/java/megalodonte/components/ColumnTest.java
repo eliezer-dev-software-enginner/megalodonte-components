@@ -2,7 +2,6 @@ package megalodonte.components;
 
 
 import megalodonte.props.ColumnProps;
-import megalodonte.styles.ColumnStyler;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -6,7 +6,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import megalodonte.props.InputProps;
 import megalodonte.State;
-import megalodonte.styles.InputStyler;
 
 public class PasswordInput extends InputBase {
 
@@ -15,14 +14,7 @@ public class PasswordInput extends InputBase {
     private boolean visible = false;
 
     public PasswordInput(State<String> state, InputProps props) {
-        super(new PasswordField(), props, new InputStyler());
-
-        bind(state);
-        installToggle(state);
-    }
-
-    public PasswordInput(State<String> state, InputProps props, InputStyler styler) {
-        super(new PasswordField(), props, styler);
+        super(new PasswordField(), props);
 
         bind(state);
         installToggle(state);

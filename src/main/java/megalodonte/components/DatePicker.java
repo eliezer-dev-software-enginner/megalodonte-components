@@ -2,7 +2,6 @@ package megalodonte.components;
 
 import megalodonte.State;
 import megalodonte.props.DatePickerProps;
-import megalodonte.styles.DatePickerStyler;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -10,40 +9,29 @@ import java.util.Locale;
 public class DatePicker extends Component {
 
     public DatePicker() {
-        this(new DatePickerProps(), new DatePickerStyler());
+        this(new DatePickerProps());
     }
 
     public DatePicker(DatePickerProps props) {
-        this(props, new DatePickerStyler());
-    }
-
-    public DatePicker(DatePickerProps props, DatePickerStyler styler) {
-        super(new javafx.scene.control.DatePicker(LocalDate.now()), props, styler);
+        super(new javafx.scene.control.DatePicker(LocalDate.now()), props);
     }
 
     public DatePicker(State<LocalDate> state) {
-        this(state, new DatePickerProps(), new DatePickerStyler());
+        this(state, new DatePickerProps());
     }
 
     public DatePicker(State<LocalDate> state, DatePickerProps props) {
-        this(state, props, new DatePickerStyler());
-    }
-
-    public DatePicker(State<LocalDate> state, DatePickerProps props, DatePickerStyler styler) {
-        super(new javafx.scene.control.DatePicker(state.get() != null ? state.get() : LocalDate.now()), props, styler);
+        super(new javafx.scene.control.DatePicker(state.get() != null ? state.get() : LocalDate.now()), props);
         bind(state);
     }
 
     public DatePicker(LocalDate initialValue) {
-        this(initialValue, new DatePickerProps(), new DatePickerStyler());
+        this(initialValue, new DatePickerProps());
     }
+
 
     public DatePicker(LocalDate initialValue, DatePickerProps props) {
-        this(initialValue, props, new DatePickerStyler());
-    }
-
-    public DatePicker(LocalDate initialValue, DatePickerProps props, DatePickerStyler styler) {
-        super(new javafx.scene.control.DatePicker(initialValue), props, styler);
+        super(new javafx.scene.control.DatePicker(initialValue), props);
     }
 
     @Deprecated(forRemoval = true)
@@ -92,7 +80,7 @@ public class DatePicker extends Component {
     }
 
     private DatePicker(javafx.scene.control.DatePicker datePicker) {
-        super(datePicker, null, new DatePickerStyler());
+        super(datePicker, null);
     }
 
 }

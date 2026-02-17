@@ -3,6 +3,7 @@ package megalodonte.props;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
+import megalodonte.theme.Theme;
 
 public class ClickableProps extends Props {
 
@@ -70,7 +71,7 @@ public class ClickableProps extends Props {
     }
 
     @Override
-    public void apply(Node node) {
+    protected void applyTheme(Node node, Props props, Theme theme) {
         if (!(node instanceof Region r)) return;
 
         r.setPadding(new Insets(padding));
@@ -90,12 +91,48 @@ public class ClickableProps extends Props {
 
         // Aplicar estilo base
         String baseStyle = String.format(
-            "-fx-background-radius: %dpx; " +
-            "-fx-background-color: %s; " +
-            "-fx-cursor: hand;",
-            borderRadius, backgroundColor
+                "-fx-background-radius: %dpx; " +
+                        "-fx-background-color: %s; " +
+                        "-fx-cursor: hand;",
+                borderRadius, backgroundColor
         );
 
         r.setStyle(baseStyle);
+
+        if (!(node instanceof javafx.scene.layout.Region region) || !(props instanceof ClickableProps clickableProps)) {
+            return;
+        }
+
+        // Adicionar efeitos de hover
+        region.setOnMouseEntered(event -> {
+            if (!region.isDisabled()) {
+                String currentStyle = region.getStyle() != null ? region.getStyle() : "";
+                String hoverStyle = currentStyle +
+                        String.format("-fx-background-color: %s;", clickableProps.getHoverColor());
+                region.setStyle(hoverStyle);
+            }
+        });
+
+        region.setOnMouseExited(event -> {
+            String currentStyle = region.getStyle() != null ? region.getStyle() : "";
+            String normalStyle = currentStyle
+                    .replace(String.format("-fx-background-color: %s;", clickableProps.getHoverColor()), "")
+                    .replace(String.format("-fx-background-color: %s;", clickableProps.getActiveColor()), "");
+
+            // Restaurar cor de fundo original
+            String finalStyle = normalStyle +
+                    String.format("-fx-background-color: %s;", clickableProps.getBackgroundColor());
+            region.setStyle(finalStyle);
+        });
+
+        // Adicionar efeito de pressão contínua
+        region.setOnMousePressed(event -> {
+            if (!region.isDisabled()) {
+                String currentStyle = region.getStyle() != null ? region.getStyle() : "";
+                String activeStyle = currentStyle +
+                        String.format("-fx-background-color: %s;", clickableProps.getActiveColor());
+                region.setStyle(activeStyle);
+            }
+        });
     }
 }

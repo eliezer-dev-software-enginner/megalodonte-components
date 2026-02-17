@@ -3,6 +3,9 @@ package megalodonte.props;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
+import megalodonte.theme.Theme;
+
+import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 
 public class ColumnProps extends LayoutProps<ColumnProps> {
     private enum Alignment {CENTER_HORIZONTALLY, CENTER_VERTICALLY}
@@ -18,8 +21,40 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
         return this;
     }
 
+    // Common styling properties
+    protected String bgColor;
+    protected String borderColor;
+    protected int borderWidth;
+    protected int borderRadius;
+
+    // Fluent API methods
+    @SuppressWarnings("unchecked")
+    public ColumnProps bgColor(String bgColor) {
+        this.bgColor = bgColor;
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ColumnProps borderColor(String borderColor) {
+        this.borderColor = borderColor;
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ColumnProps borderWidth(int borderWidth) {
+        this.borderWidth = borderWidth;
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public ColumnProps borderRadius(int borderRadius) {
+        this.borderRadius = borderRadius;
+        return this;
+    }
+
+
     @Override
-    public void apply(Node node) {
+    protected void applyTheme(Node node, Props props, Theme theme) {
         if (node instanceof VBox vBox) {
             applyBaseLayout(node);
 
@@ -35,6 +70,9 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
                     vBox.setAlignment(Pos.CENTER);
                 }
             }
+
+            // Apply all common theme-aware styling
+            applyBackgroundStyling(node, theme, bgColor);
         }
     }
 }

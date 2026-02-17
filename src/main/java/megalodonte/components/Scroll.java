@@ -2,11 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import megalodonte.props.CardProps;
-import megalodonte.styles.CardStyler;
 
 public class Scroll extends Component {
 
@@ -14,7 +10,7 @@ public class Scroll extends Component {
 
     public Scroll(Component component) {
         //super(new ScrollPane(), new CardProps(), new CardStyler());
-        super(new ScrollPane(), null, null);
+        super(new ScrollPane(), null);
         this.scrollPane = (ScrollPane) node;
 
         this.scrollPane.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;");

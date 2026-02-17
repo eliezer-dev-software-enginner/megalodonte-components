@@ -1,13 +1,9 @@
 package megalodonte.components;
 
 import megalodonte.props.DatePickerProps;
-import megalodonte.props.Props;
-import megalodonte.props.TextProps;
-import megalodonte.styles.DatePickerStyler;
 import megalodonte.styles.Estilizador;
 
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 
 public class DatePickerTest {
 

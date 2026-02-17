@@ -2,11 +2,10 @@ package megalodonte.components;
 
 import javafx.scene.Node;
 import megalodonte.props.Props;
-import megalodonte.styles.Estilizador;
 
-public abstract class TextComponent<T extends Props, S extends Estilizador<T>> extends Component {
+
+public abstract class TextComponent<T extends Props> extends Component {
     protected T props;
-    protected S styler;
     protected Runnable onClickHandler;
 
     protected TextComponent(Node node) {
@@ -18,13 +17,7 @@ public abstract class TextComponent<T extends Props, S extends Estilizador<T>> e
         this.props = props;
     }
 
-    protected TextComponent(Node node, T props, S styler) {
-        super(node, props, styler);
-        this.props = props;
-        this.styler = styler;
-    }
-
-    public <C extends TextComponent<T, S>> C onClick(Runnable handler) {
+    public <C extends TextComponent<T>> C onClick(Runnable handler) {
         this.onClickHandler = handler;
         applyOnClick();
         return (C) this;

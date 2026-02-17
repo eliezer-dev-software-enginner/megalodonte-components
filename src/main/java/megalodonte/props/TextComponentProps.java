@@ -1,25 +1,27 @@
 package megalodonte.props;
 
+import javafx.scene.Node;
 import megalodonte.ReadableState;
+import megalodonte.utils.Utils;
 
-public abstract class TextComponentProps extends Props {
+public abstract class TextComponentProps<T extends TextComponentProps<T>> extends Props {
     protected Integer fontSize;
     protected ReadableState<Integer> fontSizeState;
     protected String fontWeight;
 
-    public TextComponentProps fontSize(int fontSize) {
+    public T fontSize(int fontSize) {
         this.fontSize = fontSize;
-        return this;
+        return (T) this;
     }
 
-    public TextComponentProps fontSize(ReadableState<Integer> state) {
+    public T fontSize(ReadableState<Integer> state) {
         this.fontSizeState = state;
-        return this;
+        return (T) this;
     }
 
-    public TextComponentProps bold() {
+    public T bold() {
         this.fontWeight = "bold";
-        return this;
+        return (T) this;
     }
 
     public TextComponentProps fontWeight(String weight) {
@@ -37,5 +39,23 @@ public abstract class TextComponentProps extends Props {
 
     public String getFontWeight() {
         return fontWeight;
+    }
+
+    protected String textColor;
+
+    public T color(String color) {
+        this.textColor = color;
+        return (T) this;
+    }
+
+    public T textColor(String color) {
+        this.textColor = color;
+        return (T) this;
+    }
+
+    protected void applyColor(Node node, String color, String fxField) {
+        var current = node.getStyle();
+        var updated = Utils.UpdateEspecificStyle(current, fxField, color);
+        node.setStyle(updated);
     }
 }

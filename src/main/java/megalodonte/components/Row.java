@@ -3,26 +3,19 @@ package megalodonte.components;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import megalodonte.props.RowProps;
-import megalodonte.styles.RowStyler;
 
 public class Row extends Component {
     private final HBox nodeInternal;
     private RowProps rowProps;
-    private RowStyler rowStyler;
 
     public Row(){
-        this(new RowProps(), new RowStyler());
+        this(new RowProps());
     }
 
     public Row(RowProps props){
-        this(props, new RowStyler());
-    }
-
-    public Row(RowProps props, RowStyler styler){
-        super(new HBox(), props, styler);
+        super(new HBox(), props);
         this.nodeInternal = (HBox) this.node;
         this.rowProps = props;
-        this.rowStyler = styler;
     }
 
     public Row r_child(Component component){
@@ -51,9 +44,5 @@ public class Row extends Component {
 
     public RowProps props() {
         return rowProps;
-    }
-
-    public RowStyler style() {
-        return rowStyler;
     }
 }

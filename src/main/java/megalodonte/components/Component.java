@@ -3,12 +3,10 @@ package megalodonte.components;
 import javafx.scene.Node;
 import megalodonte.base.ComponentInterface;
 import megalodonte.props.Props;
-import megalodonte.styles.Estilizador;
 
 public abstract class Component implements ComponentInterface<Component> {
     protected final Node node;
     protected Props props;
-    protected Estilizador styler;
 
     public Node getNode() {
         return node;
@@ -21,16 +19,6 @@ public abstract class Component implements ComponentInterface<Component> {
     protected Component(Node node, Props props) {
         this.node = node;
         setProps(node, props);
-    }
-
-    protected Component(Node node, Props props, Estilizador styler) {
-        this.node = node;
-        setProps(node, props);
-        
-        if(styler != null){
-            this.styler = styler;
-            this.styler.apply(node, props);
-        }
     }
 
     private void setProps(Node node, Props props) {

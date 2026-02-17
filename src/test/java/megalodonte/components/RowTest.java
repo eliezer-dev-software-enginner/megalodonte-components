@@ -1,7 +1,6 @@
 package megalodonte.components;
 
 import megalodonte.props.RowProps;
-import megalodonte.styles.RowStyler;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

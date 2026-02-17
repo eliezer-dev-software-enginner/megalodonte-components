@@ -8,7 +8,7 @@ public class MenuBar extends Component {
     private final List<Menu> menus;
 
     public MenuBar() {
-        super(new javafx.scene.control.MenuBar(), null, null);
+        super(new javafx.scene.control.MenuBar(), null);
         this.menuBar = (javafx.scene.control.MenuBar) this.node;
         this.menus = new ArrayList<>();
     }

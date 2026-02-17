@@ -7,7 +7,6 @@ import javafx.scene.layout.StackPane;
 import megalodonte.components.Component;
 import megalodonte.props.InputProps;
 import megalodonte.State;
-import megalodonte.styles.InputStyler;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -28,7 +27,7 @@ public abstract class InputBase extends Component {
     protected Function<String, OnChangeResult> onChange;
     protected Function<String, OnChangeResult> onInitialize;
 
-    protected InputBase(TextInputControl field, InputProps props, InputStyler styler) {
+    protected InputBase(TextInputControl field, InputProps props) {
         super(new StackPane());
         this.container = (StackPane) node;
         this.field = field;
@@ -36,8 +35,6 @@ public abstract class InputBase extends Component {
         container.getChildren().add(field);
 
         if (props != null) props.apply(node);
-        if (styler != null) styler.apply(node, props);
-
         field.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
             if (lockCursorToEnd && !internalChange && newPos.intValue() < field.getText().length()) {
                 field.positionCaret(field.getText().length());

@@ -8,7 +8,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import megalodonte.props.ClickableProps;
-import megalodonte.styles.ClickableStyler;
 
 public class Clickable extends Component {
 
@@ -16,22 +15,16 @@ public class Clickable extends Component {
     private final Timeline pressAnimation;
     private final Timeline releaseAnimation;
     private Runnable onClick;
-    private final ClickableProps props;
 
     public Clickable(Component content, Runnable onClick) {
-        this(content, onClick, new ClickableProps(), new ClickableStyler());
+        this(content, onClick, new ClickableProps());
     }
 
     public Clickable(Component content, Runnable onClick, ClickableProps props) {
-        this(content, onClick, props, new ClickableStyler());
-    }
-
-    public Clickable(Component content, Runnable onClick, ClickableProps props, ClickableStyler styler) {
-        super(new StackPane(), props, styler);
+        super(new StackPane(), props);
         
         this.container = (StackPane) node;
         this.onClick = onClick;
-        this.props = props;
         
         // Configurar comportamento do StackPane
         setupContainerBehavior();
