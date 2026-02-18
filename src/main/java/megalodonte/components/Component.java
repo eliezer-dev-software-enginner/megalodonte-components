@@ -24,7 +24,6 @@ public abstract class Component implements ComponentInterface<Component> {
     protected Component(Node node, Props props) {
         this.node = node;
         setProps(node, props);
-        animationHandler.apply(this);
     }
 
     private void setProps(Node node, Props props) {
@@ -70,6 +69,15 @@ public abstract class Component implements ComponentInterface<Component> {
     private Function<Component, Animation> animationHandler;
     public Component attachAnimation(Function<Component, Animation> animationHandler){
         this.animationHandler = animationHandler;
+
+        if (this.animationHandler != null) {
+            Animation animation = this.animationHandler.apply(this);
+            if (animation != null) {
+                animation.play();
+            }
+        }
+
         return this;
     }
+
 }
