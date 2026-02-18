@@ -65,6 +65,7 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
             if (alignment != null) {
                 if (alignment.equals(Alignment.CENTER_HORIZONTALLY)) {
                     vBox.setAlignment(Pos.TOP_CENTER);
+                    vBox.setFillWidth(false);
                 }
                 if (alignment.equals(Alignment.CENTER_VERTICALLY)) {
                     vBox.setAlignment(Pos.CENTER);

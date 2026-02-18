@@ -1,8 +1,13 @@
 package megalodonte.components;
 
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import megalodonte.base.ComponentInterface;
 import megalodonte.props.Props;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class Component implements ComponentInterface<Component> {
     protected final Node node;
@@ -19,6 +24,7 @@ public abstract class Component implements ComponentInterface<Component> {
     protected Component(Node node, Props props) {
         this.node = node;
         setProps(node, props);
+        animationHandler.apply(this);
     }
 
     private void setProps(Node node, Props props) {
@@ -59,5 +65,11 @@ public abstract class Component implements ComponentInterface<Component> {
                 return CreateFromJavaFxNode(newNode); // Delega para o método estático
             }
         };
+    }
+
+    private Function<Component, Animation> animationHandler;
+    public Component attachAnimation(Function<Component, Animation> animationHandler){
+        this.animationHandler = animationHandler;
+        return this;
     }
 }

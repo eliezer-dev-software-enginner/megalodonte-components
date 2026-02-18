@@ -12,11 +12,13 @@ public class Card extends Component {
         this(content, new CardProps());
     }
 
-    private void impedirCrescimentoAutomaticoDoFilho() {
-        this.container.setMaxSize(
-                Region.USE_PREF_SIZE,
-                Region.USE_PREF_SIZE
-        );
+    private void applySizeConstraints() {
+        this.container.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        this.container.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        
+        if (container.getChildren().size() > 0 && container.getChildren().get(0) instanceof Region child) {
+            child.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        }
     }
 
 
@@ -24,7 +26,7 @@ public class Card extends Component {
         super(new StackPane(), props);
         this.container = (StackPane) node;
         this.cardProps = props;
-        impedirCrescimentoAutomaticoDoFilho();
+        applySizeConstraints();
 
         this.container.getChildren().add(content.getNode());
     }

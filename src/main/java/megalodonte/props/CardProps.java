@@ -24,12 +24,22 @@ public class CardProps extends Props {
     protected int borderRadius;
 
     private int padding = 12;
-    private int radius = 8;
 
     private int height;
+    private int width;
 
     public CardProps height(int height){
         this.height = height;
+        return this;
+    }
+
+    public CardProps width(int width){
+        this.width = width;
+        return this;
+    }
+
+    public CardProps width(double width){
+        this.width = (int) width;
         return this;
     }
 
@@ -60,11 +70,6 @@ public class CardProps extends Props {
         return this;
     }
 
-    public CardProps radius(int value) {
-        this.radius = value;
-        return this;
-    }
-
     @Override
     protected void applyTheme(Node node, Props props, Theme theme) {
         if (!(node instanceof Region r)) return;
@@ -76,10 +81,13 @@ public class CardProps extends Props {
             r.setMinHeight(height);
             r.setMaxHeight(height);
         }
-        r.setStyle(
-                "-fx-background-radius: " + radius + ";" +
-                        "-fx-background-color: white;"
-        );
+        if(width > 0){
+            r.setPrefWidth(width);
+            r.setMinWidth(width);
+            r.setMaxWidth(width);
+        }
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        r.setStyle("-fx-background-radius: " + finalRadius + ";" + "-fx-background-color: white;");
 
         // Apply background and border styling
         applyBackgroundStyling(node, theme, bgColor);
@@ -95,6 +103,10 @@ public class CardProps extends Props {
      * Applies common border styling.
      */
     protected void applyBorderStyling(Node node, Theme theme) {
+        if (borderWidth == 0) {
+            return;
+        }
+
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         Utils.updateBorderColor(node, finalBorderColor);
 
@@ -102,11 +114,6 @@ public class CardProps extends Props {
         if (finalBorderWidth > 0) {
             Utils.updateBorderWidth(node, finalBorderWidth);
         }
-
-//        int finalBorderRadius = getFinalBorderRadius(theme);
-//        if (finalBorderRadius > 0) {
-//            Utils.updateBorderRadius(node, finalBorderRadius);
-//        }
 
         Utils.updateBorderRadius(node, 0);
     }

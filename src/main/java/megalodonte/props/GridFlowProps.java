@@ -35,6 +35,8 @@ public class GridFlowProps extends Props {
             if (maxHeight > 0) {
                 tilePane.setMaxHeight(maxHeight);
             }
+            
+            tilePane.setTileAlignment(Pos.TOP_LEFT);
 
             if(spacingVertical > 0){
                 tilePane.setVgap(spacingVertical);
