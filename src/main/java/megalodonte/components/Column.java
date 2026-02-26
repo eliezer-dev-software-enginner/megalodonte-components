@@ -9,7 +9,7 @@ import megalodonte.ForEachState;
 
 import java.util.List;
 
-public class Column extends Component {
+public class Column extends Component implements LayoutComponent {
     private final VBox vBox;
     private VBox itemsVBox = null;
     private final ColumnProps columnProps;
@@ -40,14 +40,7 @@ public class Column extends Component {
 
         return this;
     }
-    
-    public Column c_childs(Component... components){
-        for (Component c : components) {
-            c_child(c);
-        }
-        return this;
-    }
-    
+
     public <T, C extends Component> Column items(ForEachState<T, C> forEachState) {
         // Só pode ser chamado uma vez por Column
         if (this.itemsVBox != null) {
@@ -81,5 +74,13 @@ public class Column extends Component {
 
     public ColumnProps props() {
         return columnProps;
+    }
+
+    @Override
+    public Column children(Component... components) {
+        for (Component c : components) {
+            c_child(c);
+        }
+        return this;
     }
 }

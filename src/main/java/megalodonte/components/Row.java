@@ -2,9 +2,10 @@ package megalodonte.components;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import megalodonte.ForEachState;
 import megalodonte.props.RowProps;
 
-public class Row extends Component {
+public class Row extends Component implements LayoutComponent {
     private final HBox nodeInternal;
     private RowProps rowProps;
 
@@ -34,15 +35,21 @@ public class Row extends Component {
 
         return this;
     }
-    
-    public Row r_childs(Component... components){
+
+    public RowProps props() {
+        return rowProps;
+    }
+
+    @Override
+    public Row children(Component... components) {
         for (Component c : components) {
             r_child(c);
         }
         return this;
     }
 
-    public RowProps props() {
-        return rowProps;
+    @Override
+    public <T, C extends Component> LayoutComponent items(ForEachState<T, C> forEachState) {
+        throw new RuntimeException("Not implemented yet");
     }
 }
