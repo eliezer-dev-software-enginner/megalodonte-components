@@ -6,7 +6,7 @@ import megalodonte.theme.Theme;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
-public class TextProps extends TextComponentProps {
+public class TextProps extends TextComponentProps<TextProps> {
     private TextTone tone = TextTone.PRIMARY;
 
     public TextProps tone(TextTone tone) {

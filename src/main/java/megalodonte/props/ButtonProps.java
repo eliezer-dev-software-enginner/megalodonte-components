@@ -19,7 +19,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     // Fluent API methods
     public ButtonProps bgColor(String bgColor) {
         this.bgColor = bgColor;
-        return  this;
+        return this;
     }
 
     public ButtonProps borderColor(String borderColor) {
