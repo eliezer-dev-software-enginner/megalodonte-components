@@ -37,6 +37,11 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         return this;
     }
 
+    @Override
+    public ButtonProps textColor(String color) {
+        return super.textColor(color);
+    }
+
     private String variant = "primary";
 
     public ButtonProps fillWidth() {

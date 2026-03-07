@@ -67,7 +67,7 @@ public abstract class InputBase extends Component {
                 applyInitialFormat(v);
             } else {
                 internalChange = true;
-                field.setText(v);
+                field.setText(v == null? "":v);
                 internalChange = false;
             }
 

@@ -8,6 +8,7 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
     protected Integer fontSize;
     protected ReadableState<Integer> fontSizeState;
     protected String fontWeight;
+    protected String textColor;
 
     public T fontSize(int fontSize) {
         this.fontSize = fontSize;
@@ -24,9 +25,9 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
         return (T) this;
     }
 
-    public TextComponentProps fontWeight(String weight) {
+    public T fontWeight(String weight) {
         this.fontWeight = weight;
-        return this;
+        return (T) this;
     }
 
     public Integer getFontSize() {
@@ -41,7 +42,6 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
         return fontWeight;
     }
 
-    protected String textColor;
 
     public T color(String color) {
         this.textColor = color;
