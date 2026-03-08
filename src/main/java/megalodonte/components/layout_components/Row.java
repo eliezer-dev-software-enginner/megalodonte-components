@@ -1,8 +1,10 @@
-package megalodonte.components;
+package megalodonte.components.layout_components;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import megalodonte.ForEachState;
+import megalodonte.components.Component;
+import megalodonte.components.SpacerHorizontal;
 import megalodonte.props.RowProps;
 
 public class Row extends Component implements LayoutComponent {
@@ -26,12 +28,12 @@ public class Row extends Component implements LayoutComponent {
             HBox.setHgrow(c.getNode(), Priority.ALWAYS);
         }
 
-        if (component.props instanceof megalodonte.props.ButtonProps buttonProps) {
-            javafx.geometry.Insets margins = buttonProps.getMargins();
-            if (margins != null) {
-                HBox.setMargin(component.getNode(), margins);
-            }
-        }
+//        if (component.props instanceof megalodonte.props.ButtonProps buttonProps) {
+//            javafx.geometry.Insets margins = buttonProps.getMargins();
+//            if (margins != null) {
+//                HBox.setMargin(component.getNode(), margins);
+//            }
+//        }
 
         return this;
     }

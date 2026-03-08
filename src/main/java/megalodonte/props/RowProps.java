@@ -3,17 +3,25 @@ package megalodonte.props;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import megalodonte.theme.Theme;
 
 import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 
 public class RowProps extends LayoutProps<RowProps> {
     protected String bgColor;
+    protected boolean fillWidth;
 
     public RowProps bgColor(String bgColor) {
         this.bgColor = bgColor;
         return this;
     }
+
+    public RowProps fillWidth(){
+        fillWidth = true;
+        return this;
+    }
+
     @Override
     protected void applyTheme(Node node, Props props, Theme theme) {
         if (node instanceof HBox hBox) {
@@ -32,17 +40,29 @@ public class RowProps extends LayoutProps<RowProps> {
             if (alignment == Alignment.CENTER_VERTICALLY) {
                 hBox.setAlignment(Pos.CENTER_LEFT);
             }
+            if (alignment == Alignment.LEFT_HORIZONTALLY) {
+                hBox.setAlignment(Pos.TOP_LEFT);
+            }
+
+            if(fillWidth){
+                HBox.setHgrow(hBox, Priority.ALWAYS);
+            }
 
             // Apply all common theme-aware styling
-            applyBackgroundStyling(node, theme, bgColor);
+           // applyBackgroundStyling(node, theme, bgColor);
         }
     }
 
-    private enum Alignment {BOTTOM_VERTICALLY, CENTER_HORIZONTALLY, CENTER_VERTICALLY}
+    private enum Alignment {BOTTOM_VERTICALLY, CENTER_HORIZONTALLY, CENTER_VERTICALLY, LEFT_HORIZONTALLY}
     private Alignment alignment;
 
     public RowProps bottomVertically() {
         alignment = Alignment.BOTTOM_VERTICALLY;
+        return this;
+    }
+
+    public RowProps leftHorizontally() {
+        alignment = Alignment.LEFT_HORIZONTALLY;
         return this;
     }
 

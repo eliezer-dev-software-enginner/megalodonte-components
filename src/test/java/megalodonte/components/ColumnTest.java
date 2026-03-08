@@ -1,6 +1,7 @@
 package megalodonte.components;
 
 
+import megalodonte.components.layout_components.Column;
 import megalodonte.props.ColumnProps;
 import org.junit.jupiter.api.Test;
 

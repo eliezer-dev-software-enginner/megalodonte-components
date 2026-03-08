@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 public abstract class Component implements ComponentInterface<Component> {
     protected final Node node;
-    protected Props props;
+    public Props props;
 
     public Node getNode() {
         return node;

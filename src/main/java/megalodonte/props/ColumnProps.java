@@ -2,12 +2,17 @@ package megalodonte.props;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.theme.Theme;
+
+import java.util.Objects;
 
 import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 
 public class ColumnProps extends LayoutProps<ColumnProps> {
+    private boolean fillHeight;
+
     private enum Alignment {CENTER_HORIZONTALLY, CENTER_VERTICALLY}
     private Alignment alignment;
 
@@ -22,17 +27,9 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
     }
 
     // Common styling properties
-    protected String bgColor;
     protected String borderColor;
     protected int borderWidth;
     protected int borderRadius;
-
-    // Fluent API methods
-    @SuppressWarnings("unchecked")
-    public ColumnProps bgColor(String bgColor) {
-        this.bgColor = bgColor;
-        return this;
-    }
 
     @SuppressWarnings("unchecked")
     public ColumnProps borderColor(String borderColor) {
@@ -52,6 +49,10 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
         return this;
     }
 
+    public ColumnProps fillHeight(){
+        fillHeight = true;
+        return this;
+    }
 
     @Override
     protected void applyTheme(Node node, Props props, Theme theme) {
@@ -72,8 +73,13 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
                 }
             }
 
+            if(fillHeight){
+                VBox.setVgrow(node, Priority.ALWAYS);
+            }
+
+           //byte type = (byte) (bgImage != null? 1 : 0);
             // Apply all common theme-aware styling
-            applyBackgroundStyling(node, theme, bgColor);
+           // applyBackgroundStyling(node, theme,  bgImage != null? bgImage : bgColor, type);
         }
     }
 }

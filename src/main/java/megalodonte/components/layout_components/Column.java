@@ -1,8 +1,10 @@
-package megalodonte.components;
+package megalodonte.components.layout_components;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import megalodonte.components.Component;
+import megalodonte.components.SpacerVertical;
 import megalodonte.props.ButtonProps;
 import megalodonte.props.ColumnProps;
 import megalodonte.ForEachState;
@@ -31,12 +33,12 @@ public class Column extends Component implements LayoutComponent {
             VBox.setVgrow(c.getNode(), Priority.ALWAYS);
         }
 
-        if (component.props instanceof ButtonProps buttonProps) {
-            Insets margins = buttonProps.getMargins();
-            if (margins != null) {
-                VBox.setMargin(component.getNode(), margins);
-            }
-        }
+//        if (component.props instanceof ButtonProps buttonProps) {
+//            Insets margins = buttonProps.getMargins();
+//            if (margins != null) {
+//                VBox.setMargin(component.getNode(), margins);
+//            }
+//        }
 
         return this;
     }

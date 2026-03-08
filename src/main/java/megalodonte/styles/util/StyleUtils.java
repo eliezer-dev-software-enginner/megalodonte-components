@@ -2,7 +2,6 @@ package megalodonte.styles.util;
 
 import javafx.scene.Node;
 import megalodonte.theme.Theme;
-import megalodonte.utils.Utils;
 
 public class StyleUtils {
     /**
@@ -20,12 +19,6 @@ public class StyleUtils {
         return getFinalColor(borderColor, theme.colors().border());
     }
 
-    /**
-     * Gets the final background color with theme fallback.
-     */
-    public static String getFinalBackgroundColor(Theme theme, String bgColor) {
-        return getFinalColor(bgColor, theme.colors().background());
-    }
 
     /**
      * Gets the final border width with theme fallback.
@@ -41,6 +34,23 @@ public class StyleUtils {
         return borderRadius > 0 ? borderRadius : theme.radius().md();
     }
 
+
+    /**
+     *
+     * @param node
+     * @param theme
+     * @param bg
+     * @param type 0 for color, 1 for image url
+     */
+    public static void applyBackgroundStyling(Node node, Theme theme, String bg, byte type) {
+        if(type == 0){
+            String finalBgColor = getFinalBackgroundColor(theme, bg);
+            Utils.updateBackgroundColor(node, finalBgColor);
+        }else{
+            Utils.updateBgImage(node, bg);
+        }
+    }
+
     /**
      * Applies common background styling.
      */
@@ -48,6 +58,14 @@ public class StyleUtils {
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
         Utils.updateBackgroundColor(node, finalBgColor);
     }
+
+    /**
+     * Gets the final background color with theme fallback.
+     */
+    public static String getFinalBackgroundColor(Theme theme, String bgColor) {
+        return getFinalColor(bgColor, theme.colors().background());
+    }
+
 
     /**
      * Applies common border styling.
