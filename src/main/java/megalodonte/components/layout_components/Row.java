@@ -54,4 +54,9 @@ public class Row extends Component implements LayoutComponent {
     public <T, C extends Component> LayoutComponent items(ForEachState<T, C> forEachState) {
         throw new RuntimeException("Not implemented yet");
     }
+
+    @Override
+    public <T, C extends Component> LayoutComponent items(ForEachState<T, C> forEachState, boolean isScrollable) {
+        throw new RuntimeException("Not implemented yet");
+    }
 }

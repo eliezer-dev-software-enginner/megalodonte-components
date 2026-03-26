@@ -1,6 +1,7 @@
 package megalodonte.components.layout_components;
 
 import javafx.geometry.Insets;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.components.Component;
@@ -74,6 +75,44 @@ public class Column extends Component implements LayoutComponent {
         return this;
     }
 
+    @Override
+    public <T, C extends Component> Column items(ForEachState<T, C> forEachState, boolean isScrollable) {
+        if (this.itemsVBox != null) {
+            throw new IllegalStateException("items() só pode ser chamado uma vez por Column");
+        }
+
+        this.itemsVBox = new VBox();
+
+        if (isScrollable) {
+            ScrollPane scrollPane = new ScrollPane(this.itemsVBox);
+            scrollPane.setFitToWidth(true);    // itemsVBox ocupa a largura total do ScrollPane
+            scrollPane.setFitToHeight(false);  // altura livre para rolar verticalmente
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            VBox.setVgrow(scrollPane, Priority.ALWAYS); // ScrollPane expande dentro da Column pai
+            this.vBox.getChildren().add(scrollPane);
+        } else {
+            this.vBox.getChildren().add(this.itemsVBox);
+        }
+
+        // Adiciona os componentes iniciais
+        List<C> componentes = forEachState.getComponents();
+        for (C component : componentes) {
+            this.itemsVBox.getChildren().add(component.getNode());
+        }
+
+        // Atualiza automaticamente quando o estado mudar
+        forEachState.getState().subscribe(newItems -> {
+            this.itemsVBox.getChildren().clear();
+
+            List<C> novosComponentes = forEachState.getComponents();
+            for (C component : novosComponentes) {
+                this.itemsVBox.getChildren().add(component.getNode());
+            }
+        });
+
+        return this;
+    }
     public ColumnProps props() {
         return columnProps;
     }
