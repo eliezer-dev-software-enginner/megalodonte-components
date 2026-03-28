@@ -1,7 +1,7 @@
 package megalodonte.components;
 
 import megalodonte.State;
-
+import megalodonte.base.components.Component;
 public class ProgressBar extends Component  {
 
     private final javafx.scene.control.ProgressBar pb;

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.BiPredicate;
 import java.lang.reflect.Field;
+import megalodonte.base.components.Component;
 
 public class Select<T> extends Component  {
 

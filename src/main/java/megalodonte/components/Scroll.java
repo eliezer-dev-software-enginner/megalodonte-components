@@ -3,7 +3,7 @@ package megalodonte.components;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
+import megalodonte.base.components.Component;
 public class Scroll extends Component  {
 
     private final ScrollPane scrollPane;

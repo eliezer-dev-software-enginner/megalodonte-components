@@ -3,7 +3,7 @@ package megalodonte.components;
 
 import javafx.geometry.Orientation;
 import javafx.scene.control.Separator;
-
+import megalodonte.base.components.Component;
 public class LineHorizontal extends Component  {
     public LineHorizontal(){
         super(new Separator());

@@ -3,7 +3,7 @@ package megalodonte.components;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import megalodonte.props.CardProps;
-
+import megalodonte.base.components.Component;
 public class Card extends Component  {
     private final StackPane container;
     private CardProps cardProps;

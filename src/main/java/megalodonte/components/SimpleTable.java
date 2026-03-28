@@ -11,7 +11,7 @@ import megalodonte.ReadableState;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
+import megalodonte.base.components.Component;
 public class SimpleTable<T> extends Component  {
     
     private final TableView<T> tableView;

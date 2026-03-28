@@ -8,7 +8,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import megalodonte.props.ClickableProps;
-
+import megalodonte.base.components.Component;
 public class Clickable extends Component {
 
     private final StackPane container;

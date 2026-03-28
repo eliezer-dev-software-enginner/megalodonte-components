@@ -5,7 +5,7 @@ import megalodonte.props.DatePickerProps;
 
 import java.time.LocalDate;
 import java.util.Locale;
-
+import megalodonte.base.components.Component;
 public class DatePicker extends Component  {
 
     public DatePicker() {

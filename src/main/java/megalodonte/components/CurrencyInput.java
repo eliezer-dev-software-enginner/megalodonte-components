@@ -10,7 +10,7 @@ import megalodonte.State;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
-
+import megalodonte.base.components.Component;
 public class CurrencyInput extends Component  {
 
     protected final TextInputControl field;
