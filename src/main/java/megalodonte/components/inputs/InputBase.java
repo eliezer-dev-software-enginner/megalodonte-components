@@ -11,7 +11,7 @@ import megalodonte.State;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class InputBase extends Component {
+public abstract class InputBase extends megalodonte.base.Component  {
 
     protected final TextInputControl field;
     protected final StackPane container;

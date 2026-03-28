@@ -9,6 +9,7 @@ import megalodonte.props.Props;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Deprecated(forRemoval = true)
 public abstract class Component implements ComponentInterface<Component> {
     protected final Node node;
     public Props props;

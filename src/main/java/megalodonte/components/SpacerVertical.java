@@ -6,7 +6,7 @@ import megalodonte.ReadableState;
 
 import java.util.Objects;
 
-public class SpacerVertical extends Component {
+public class SpacerVertical extends megalodonte.base.Component  {
     private final Region region;
     public SpacerVertical(){
         super(new Region());

@@ -9,7 +9,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import megalodonte.props.ClickableProps;
 
-public class Clickable extends Component {
+public class Clickable extends megalodonte.base.Component {
 
     private final StackPane container;
     private final Timeline pressAnimation;

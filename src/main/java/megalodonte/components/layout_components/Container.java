@@ -1,15 +1,8 @@
 package megalodonte.components.layout_components;
 
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import megalodonte.ForEachState;
-import megalodonte.components.Component;
-import megalodonte.components.SpacerVertical;
+import megalodonte.base.Component;
 import megalodonte.props.ContainerProps;
-import megalodonte.props.ContainerProps;
-
-import java.util.List;
 
 public class Container extends Component {
     private final VBox container;

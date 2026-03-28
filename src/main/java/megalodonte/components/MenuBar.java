@@ -3,7 +3,7 @@ package megalodonte.components;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuBar extends Component {
+public class MenuBar extends megalodonte.base.Component  {
     private final javafx.scene.control.MenuBar menuBar;
     private final List<Menu> menus;
 
