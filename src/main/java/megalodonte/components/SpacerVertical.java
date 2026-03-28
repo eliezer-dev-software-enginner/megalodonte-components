@@ -5,8 +5,9 @@ import javafx.scene.layout.Region;
 import megalodonte.ReadableState;
 
 import java.util.Objects;
+import megalodonte.base.components.Component;
 
-public class SpacerVertical extends megalodonte.base.Component  {
+public class SpacerVertical extends Component  {
     private final Region region;
     public SpacerVertical(){
         super(new Region());

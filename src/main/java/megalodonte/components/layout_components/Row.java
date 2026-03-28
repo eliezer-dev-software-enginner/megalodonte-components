@@ -3,7 +3,7 @@ package megalodonte.components.layout_components;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import megalodonte.ForEachState;
-import megalodonte.base.Component;
+import megalodonte.base.components.Component;
 import megalodonte.components.SpacerHorizontal;
 import megalodonte.props.RowProps;
 
@@ -51,12 +51,12 @@ public class Row extends Component  implements LayoutComponent {
     }
 
     @Override
-    public <T, C extends megalodonte.base.Component > LayoutComponent items(ForEachState<T, C> forEachState) {
+    public <T, C extends Component > LayoutComponent items(ForEachState<T, C> forEachState) {
         throw new RuntimeException("Not implemented yet");
     }
 
     @Override
-    public <T, C extends megalodonte.base.Component > LayoutComponent items(ForEachState<T, C> forEachState, boolean isScrollable) {
+    public <T, C extends Component > LayoutComponent items(ForEachState<T, C> forEachState, boolean isScrollable) {
         throw new RuntimeException("Not implemented yet");
     }
 }

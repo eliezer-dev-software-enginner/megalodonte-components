@@ -3,8 +3,9 @@ package megalodonte.components;
 import javafx.scene.Node;
 import megalodonte.props.Props;
 
+import megalodonte.base.components.Component;
 
-public abstract class TextComponent<T extends Props> extends megalodonte.base.Component  {
+public abstract class TextComponent<T extends Props> extends Component {
     protected T props;
     protected Runnable onClickHandler;
 

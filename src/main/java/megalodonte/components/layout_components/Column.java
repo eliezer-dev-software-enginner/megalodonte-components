@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import megalodonte.base.Component;
+import megalodonte.base.components.Component;
 import megalodonte.components.SpacerVertical;
 import megalodonte.props.ButtonProps;
 import megalodonte.props.ColumnProps;
@@ -12,7 +12,7 @@ import megalodonte.ForEachState;
 
 import java.util.List;
 
-public class Column extends megalodonte.base.Component  implements LayoutComponent {
+public class Column extends Component implements LayoutComponent {
     private final VBox vBox;
     private VBox itemsVBox = null;
     private final ColumnProps columnProps;
@@ -44,7 +44,7 @@ public class Column extends megalodonte.base.Component  implements LayoutCompone
         return this;
     }
 
-    public <T, C extends megalodonte.base.Component > Column items(ForEachState<T, C> forEachState) {
+    public <T, C extends Component > Column items(ForEachState<T, C> forEachState) {
         // Só pode ser chamado uma vez por Column
         if (this.itemsVBox != null) {
             throw new IllegalStateException("items() só pode ser chamado uma vez por Column");
@@ -76,7 +76,7 @@ public class Column extends megalodonte.base.Component  implements LayoutCompone
     }
 
     @Override
-    public <T, C extends megalodonte.base.Component > Column items(ForEachState<T, C> forEachState, boolean isScrollable) {
+    public <T, C extends Component > Column items(ForEachState<T, C> forEachState, boolean isScrollable) {
         if (this.itemsVBox != null) {
             throw new IllegalStateException("items() só pode ser chamado uma vez por Column");
         }

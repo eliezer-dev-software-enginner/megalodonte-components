@@ -8,7 +8,7 @@ import javafx.util.Duration;
 import megalodonte.ReadableState;
 import megalodonte.props.ButtonProps;
 
-public class Button extends megalodonte.base.Component  {
+public class Button extends Component  {
     private final javafx.scene.control.Button btn;
     private Timeline pressAnimation;
     private Timeline releaseAnimation;

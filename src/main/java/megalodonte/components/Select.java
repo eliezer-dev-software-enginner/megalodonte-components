@@ -11,7 +11,7 @@ import java.util.function.Function;
 import java.util.function.BiPredicate;
 import java.lang.reflect.Field;
 
-public class Select<T> extends megalodonte.base.Component  {
+public class Select<T> extends Component  {
 
     private final ComboBox<T> comboBox;
     private BiPredicate<T, T> itemComparator = (a, b) -> a == b;

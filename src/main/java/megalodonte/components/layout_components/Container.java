@@ -1,7 +1,7 @@
 package megalodonte.components.layout_components;
 
 import javafx.scene.layout.VBox;
-import megalodonte.base.Component;
+import megalodonte.base.components.Component;
 import megalodonte.props.ContainerProps;
 
 public class Container extends Component {

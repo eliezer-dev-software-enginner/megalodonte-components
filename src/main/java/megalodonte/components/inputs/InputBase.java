@@ -4,14 +4,14 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
-import megalodonte.components.Component;
+import megalodonte.base.components.Component;
 import megalodonte.props.InputProps;
 import megalodonte.State;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class InputBase extends megalodonte.base.Component  {
+public abstract class InputBase extends Component {
 
     protected final TextInputControl field;
     protected final StackPane container;

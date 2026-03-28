@@ -3,7 +3,7 @@ package megalodonte.components;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.scene.Node;
-import megalodonte.base.ComponentInterface;
+import megalodonte.base.components.ComponentInterface;
 import megalodonte.props.Props;
 
 import java.util.function.Consumer;

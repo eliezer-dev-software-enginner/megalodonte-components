@@ -4,7 +4,7 @@ package megalodonte.components;
 import megalodonte.props.ImageProps;
 import megalodonte.ReadableState;
 
-public class Image extends megalodonte.base.Component  {
+public class Image extends Component  {
     private final javafx.scene.image.ImageView imgview;
 
     public Image(String imgSource){

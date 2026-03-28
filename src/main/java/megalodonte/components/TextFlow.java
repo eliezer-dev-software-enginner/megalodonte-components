@@ -1,9 +1,9 @@
 package megalodonte.components;
-
-public class TextFlow extends megalodonte.base.Component {
+import megalodonte.base.components.Component;
+public class TextFlow extends Component {
     private final javafx.scene.text.TextFlow container;
 
-    public TextFlow(megalodonte.base.Component content) {
+    public TextFlow(Component content) {
         super((new javafx.scene.text.TextFlow()), null);
         
         this.container = (javafx.scene.text.TextFlow) node;

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class SimpleTable<T> extends megalodonte.base.Component  {
+public class SimpleTable<T> extends Component  {
     
     private final TableView<T> tableView;
     private final ObservableList<T> items;

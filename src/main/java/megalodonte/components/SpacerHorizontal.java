@@ -4,8 +4,8 @@ import javafx.scene.layout.Region;
 import megalodonte.ReadableState;
 
 import java.util.Objects;
-
-public class SpacerHorizontal extends megalodonte.base.Component  {
+import megalodonte.base.components.Component;
+public class SpacerHorizontal extends Component  {
 
     private final Region region;
 

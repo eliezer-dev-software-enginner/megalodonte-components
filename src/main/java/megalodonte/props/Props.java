@@ -1,7 +1,7 @@
 package megalodonte.props;
 
 import javafx.scene.Node;
-import megalodonte.base.PropsInterface;
+import megalodonte.base.components.PropsInterface;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.theme.Theme;
 import megalodonte.theme.ThemeManager;

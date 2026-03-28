@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class CurrencyInput extends megalodonte.base.Component  {
+public class CurrencyInput extends Component  {
 
     protected final TextInputControl field;
     protected final StackPane container;
