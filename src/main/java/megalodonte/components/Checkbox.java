@@ -14,13 +14,17 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public class Checkbox<T> extends Component  {
+public class Checkbox extends Component  {
 
     private final CheckBox javaFxCheckbox;
 
-    public Checkbox(String label,ReadableState<Boolean> state) {
+    public Checkbox(String label,State<Boolean> state) {
         super(new CheckBox(label));
         this.javaFxCheckbox = (CheckBox) this.node;
+
+        javaFxCheckbox.selectedProperty().addListener((_,_,v)->{
+            state.set(v);
+        });
 
         state.subscribe((stateValue)-> javaFxCheckbox.setSelected(stateValue));
     }

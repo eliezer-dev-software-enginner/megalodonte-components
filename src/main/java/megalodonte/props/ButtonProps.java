@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import megalodonte.ReadableState;
 import megalodonte.theme.Theme;
 import megalodonte.theme.ThemeManager;
 import megalodonte.utils.Utils;
@@ -16,11 +17,21 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     protected int borderWidth;
     protected int borderRadius;
 
+    //----------------States
+    private ReadableState<String> bgColorState;
+
     // Fluent API methods
     public ButtonProps bgColor(String bgColor) {
         this.bgColor = bgColor;
         return this;
     }
+
+    public ButtonProps bgColor(ReadableState<String> bgColorState) {
+        this.bgColorState = bgColorState;
+
+        return this;
+    }
+
 
     public ButtonProps borderColor(String borderColor) {
         this.borderColor = borderColor;
@@ -156,7 +167,6 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             button.setMaxHeight(height);
         }
 
-        String finalBgColor = getButtonColorFromVariant((ButtonProps) props);
         String finalTextColor = getButtonTextColor((ButtonProps) props);
 
         if (textColor != null) {
@@ -165,11 +175,20 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             applyColor(node, finalTextColor, Utils.FX_TEXT_FILL);
         }
 
-        if (bgColor != null) {
-            applyColor(node, bgColor, Utils.FX_BG_COLOR);
-        } else {
+        // bgColor só aplica se não há state reativo controlando
+        if (bgColorState == null) {
+            String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props);
             applyColor(node, finalBgColor, Utils.FX_BG_COLOR);
         }
+
+
         applyBorderStyling(button, theme);
+    }
+
+    @Override
+    protected void bindStates(Node node) {
+        bind(node, bgColorState, color ->
+                applyColor(node, color, Utils.FX_BG_COLOR)
+        );
     }
 }

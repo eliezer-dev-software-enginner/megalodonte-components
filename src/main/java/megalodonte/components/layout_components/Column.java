@@ -1,12 +1,10 @@
 package megalodonte.components.layout_components;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
 import megalodonte.components.SpacerVertical;
-import megalodonte.props.ButtonProps;
 import megalodonte.props.ColumnProps;
 import megalodonte.ForEachState;
 
