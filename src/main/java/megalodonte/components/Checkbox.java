@@ -17,7 +17,6 @@ import java.util.function.Function;
 public class Checkbox<T> extends Component  {
 
     private final CheckBox javaFxCheckbox;
-    private BiPredicate<T, T> itemComparator = (a, b) -> a == b;
 
     public Checkbox(String label,ReadableState<Boolean> state) {
         super(new CheckBox(label));
