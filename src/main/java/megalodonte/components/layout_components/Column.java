@@ -42,14 +42,14 @@ public class Column extends Component implements LayoutComponent {
         return this;
     }
 
-    public <T, C extends Component > Column items(ForEachState<T, C> forEachState) {
+    public <T, C extends Component > Column items(ForEachState<T, C> forEachState, int spacing) {
         // Só pode ser chamado uma vez por Column
         if (this.itemsVBox != null) {
             throw new IllegalStateException("items() só pode ser chamado uma vez por Column");
         }
         
         // Cria VBox separado para os itens dinâmicos
-        this.itemsVBox = new VBox();
+        this.itemsVBox = new VBox(spacing);
         this.vBox.getChildren().add(this.itemsVBox);
         
         // Adiciona os componentes iniciais
@@ -71,6 +71,10 @@ public class Column extends Component implements LayoutComponent {
         });
         
         return this;
+    }
+
+    public <T, C extends Component > Column items(ForEachState<T, C> forEachState) {
+     return this.items(forEachState,0);
     }
 
     @Override
