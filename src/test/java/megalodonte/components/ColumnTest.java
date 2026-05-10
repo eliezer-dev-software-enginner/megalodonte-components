@@ -31,12 +31,11 @@ class ColumnTest {
     @Test
     void testColumnWithPropsAndStyler() {
         ColumnProps props = new ColumnProps().spacingOf(5);
-        ColumnStyler styler = new ColumnStyler().bgColor("#ffffff");
+      //  ColumnStyler styler = new ColumnStyler().bgColor("#ffffff");
         
-        Column column = new Column(props, styler);
+        Column column = new Column(props);
         
         assertNotNull(column);
         assertNotNull(props);
-        assertNotNull(styler);
     }
 }

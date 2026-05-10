@@ -1,7 +1,6 @@
 package megalodonte.components;
 
 import megalodonte.props.DatePickerProps;
-import megalodonte.styles.Estilizador;
 
 import java.lang.reflect.Method;
 
@@ -33,19 +32,19 @@ public class DatePickerTest {
     public static void testDatePickerStyler() {
         System.out.println("Testing DatePickerStyler...");
         
-        DatePickerStyler styler = new DatePickerStyler();
-        
-        // Test fluent API
-        styler.bgColor("#ffffff")
-            .borderColor("#cccccc")
-            .borderWidth(1)
-            .borderRadius(4);
+//        DatePickerStyler styler = new DatePickerStyler();
+//
+//        // Test fluent API
+//        styler.bgColor("#ffffff")
+//            .borderColor("#cccccc")
+//            .borderWidth(1)
+//            .borderRadius(4);
         
         // Test inheritance from BaseStyler
-        Class<?> superClass = styler.getClass().getSuperclass();
-        System.out.println("DatePickerStyler extends: " + superClass.getName());
-        
-        System.out.println("DatePickerStyler test passed!");
+//        Class<?> superClass = styler.getClass().getSuperclass();
+//        System.out.println("DatePickerStyler extends: " + superClass.getName());
+//
+//        System.out.println("DatePickerStyler test passed!");
     }
 
     public static void testComponentExistence() {

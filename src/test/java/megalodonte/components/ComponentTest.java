@@ -1,6 +1,7 @@
 package megalodonte.components;
 
 import org.junit.jupiter.api.Test;
+import megalodonte.base.components.Component;
 
 import static org.junit.jupiter.api.Assertions.*;
 

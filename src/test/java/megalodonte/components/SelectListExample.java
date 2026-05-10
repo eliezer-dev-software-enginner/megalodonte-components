@@ -22,8 +22,8 @@ public class SelectListExample {
         select.items(options); // Bind to reactive state
         
         // When the state changes, the Select component updates automatically
-        options.add("Option 4");
-        options.remove("Option 2");
+       // options.add("Option 4");
+       // options.remove("Option 2");
         
         // Example 2: With custom display text
         State<List<User>> users = State.of(Arrays.asList(
@@ -45,7 +45,7 @@ public class SelectListExample {
         
         // Simulate dynamic loading
         dynamicOptions.set(Arrays.asList("Loaded Option 1", "Loaded Option 2"));
-        dynamicOptions.add("Loaded Option 3");
+        //dynamicOptions.add("Loaded Option 3");
     }
     
     static class User {
