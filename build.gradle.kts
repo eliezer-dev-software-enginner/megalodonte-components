@@ -53,7 +53,7 @@ dependencies {
 
 tasks.test {
     enabled = false //ignorando testes
-    useJUnitPlatform()
+    //useJUnitPlatform()
 }
 
 tasks.named<Test>("test") {
