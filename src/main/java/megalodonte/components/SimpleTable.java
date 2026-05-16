@@ -98,6 +98,18 @@ public class SimpleTable<T> extends Component  {
         this.onItemDoubleClick = callback;
         return this;
     }
+
+    public SimpleTable<T> onClickOutside(Runnable callback) {
+        tableView.setOnMouseClicked(event -> {
+            var target = event.getTarget();
+            // Clicou na área vazia da tabela (não em uma célula ou linha)
+            if (target instanceof TableView || target instanceof javafx.scene.control.skin.VirtualFlow) {
+                tableView.getSelectionModel().clearSelection();
+                if (callback != null) callback.run();
+            }
+        });
+        return this;
+    }
     
     /**
      * Builder para configuração das colunas da tabela.
