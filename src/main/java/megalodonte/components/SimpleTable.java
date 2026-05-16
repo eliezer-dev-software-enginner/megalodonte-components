@@ -99,18 +99,38 @@ public class SimpleTable<T> extends Component  {
         return this;
     }
 
+//    public SimpleTable<T> onClickOutside(Runnable callback) {
+//        tableView.setOnMouseClicked(event -> {
+//            var target = event.getTarget();
+//            // Clicou na área vazia da tabela (não em uma célula ou linha)
+//            if (target instanceof TableView || target instanceof javafx.scene.control.skin.VirtualFlow) {
+//                tableView.getSelectionModel().clearSelection();
+//                if (callback != null) callback.run();
+//            }
+//        });
+//        return this;
+//    }
+//
+
     public SimpleTable<T> onClickOutside(Runnable callback) {
         tableView.setOnMouseClicked(event -> {
-            var target = event.getTarget();
-            // Clicou na área vazia da tabela (não em uma célula ou linha)
-            if (target instanceof TableView || target instanceof javafx.scene.control.skin.VirtualFlow) {
-                tableView.getSelectionModel().clearSelection();
-                if (callback != null) callback.run();
+            javafx.scene.Node target = (javafx.scene.Node) event.getTarget();
+            // Sobe na árvore de nós a partir do target
+            // Se encontrar um TableRow com item, é clique em linha — ignora
+            // Se chegar no TableView sem passar por TableRow, é área vazia
+            javafx.scene.Node current = target;
+            while (current != null && current != tableView) {
+                if (current instanceof javafx.scene.control.TableRow<?> row && !row.isEmpty()) {
+                    return; // clique em linha com dado — não faz nada
+                }
+                current = current.getParent();
             }
+            // chegou aqui = área vazia ou cabeçalho
+            tableView.getSelectionModel().clearSelection();
+            if (callback != null) callback.run();
         });
         return this;
     }
-    
     /**
      * Builder para configuração das colunas da tabela.
      */
