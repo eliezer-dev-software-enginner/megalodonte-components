@@ -9,6 +9,7 @@ import megalodonte.State;
 import megalodonte.ReadableState;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import megalodonte.base.components.Component;
@@ -25,6 +26,7 @@ public class SimpleTable<T> extends Component  {
         this.items = FXCollections.observableArrayList();
         this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.tableView.setItems(items);
+        this.tableView.setEditable(true);
         
         setupDefaultBehavior();
     }
@@ -202,6 +204,42 @@ public class SimpleTable<T> extends Component  {
                 col.setMaxWidth(maxWidth);
             }
             
+            tableView.getColumns().add(col);
+            return this;
+        }
+
+        /**
+         * Adiciona uma coluna editável.
+         * Quando o usuário confirmar a edição (Enter ou perda de foco),
+         * o onCommit é chamado com o item e o novo valor como String.
+         *
+         * @param title          título da coluna
+         * @param valueExtractor função para extrair o valor do objeto
+         * @param onCommit       chamado com (item, novoValor) ao confirmar edição
+         * @return ColumnsBuilder para method chaining
+         */
+        public ColumnsBuilder editableColumn(String title, Function<T, Object> valueExtractor, BiConsumer<T, String> onCommit) {
+            TableColumn<T, String> col = new TableColumn<>(title);
+
+            col.setCellValueFactory(data -> {
+                T item = data.getValue();
+                if (item == null) return new javafx.beans.property.SimpleStringProperty("");
+                try {
+                    Object value = valueExtractor.apply(item);
+                    return new javafx.beans.property.SimpleStringProperty(value != null ? value.toString() : "");
+                } catch (Exception e) {
+                    return new javafx.beans.property.SimpleStringProperty("");
+                }
+            });
+
+            if (onCommit != null) {
+                col.setCellFactory(javafx.scene.control.cell.TextFieldTableCell.forTableColumn());
+                col.setOnEditCommit(event -> {
+                    T item = event.getRowValue();
+                    onCommit.accept(item, event.getNewValue());
+                });
+            }
+
             tableView.getColumns().add(col);
             return this;
         }
