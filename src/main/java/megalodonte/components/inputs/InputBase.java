@@ -56,6 +56,15 @@ public abstract class InputBase extends Component {
         return this;
     }
 
+    public InputBase onEnter(Runnable handler) {
+        field.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
+                handler.run();
+            }
+        });
+        return this;
+    }
+
     public void bind(State<String> state) {
         this.state = state;
 
