@@ -51,9 +51,41 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
                 VBox.setVgrow(node, Priority.ALWAYS);
             }
 
-            byte type = (byte) (bgImage != null? 1 : 0);
-            // Apply all common theme-aware styling
-            applyBackgroundStyling(node, theme,  bgImage != null? bgImage : bgColor, type);
+            if (bgImage != null) {
+                var url = getClass().getResource(bgImage);
+                if (url != null) {
+                    var image = new javafx.scene.image.Image(url.toExternalForm());
+                    var bgImg = new javafx.scene.layout.BackgroundImage(
+                            image,
+                            javafx.scene.layout.BackgroundRepeat.NO_REPEAT,
+                            javafx.scene.layout.BackgroundRepeat.NO_REPEAT,
+                            javafx.scene.layout.BackgroundPosition.CENTER,
+                            new javafx.scene.layout.BackgroundSize(
+                                    1.0, 1.0,
+                                    true, true,
+                                    false, true  // cover
+                            )
+                    );
+                    node_.setBackground(new javafx.scene.layout.Background(bgImg));
+                }
+            } else if (bgColor != null) {
+                applyBackgroundStyling(node, theme, bgColor);
+            }
         }
     }
+
+//    @Override
+//    protected void applyTheme(Node node, Props props, Theme theme) {
+//        if (node instanceof Pane node_) {
+//            applyBaseLayout(node);
+//
+//            if (fillHeight) {
+//                VBox.setVgrow(node, Priority.ALWAYS);
+//            }
+//
+//            byte type = (byte) (bgImage != null? 1 : 0);
+//            // Apply all common theme-aware styling
+//            applyBackgroundStyling(node, theme,  bgImage != null? bgImage : bgColor, type);
+//        }
+//    }
 }
