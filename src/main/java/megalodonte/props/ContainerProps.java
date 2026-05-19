@@ -3,6 +3,7 @@ package megalodonte.props;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.theme.Theme;
 
@@ -14,6 +15,13 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
 
     protected String bgColor;
     protected String bgImage;
+
+    private boolean fillHeight = false;
+
+    public ContainerProps fillHeight() {
+        this.fillHeight = true;
+        return this;
+    }
 
     // Fluent API methods
     @SuppressWarnings("unchecked")
@@ -38,6 +46,10 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
     protected void applyTheme(Node node, Props props, Theme theme) {
         if (node instanceof Pane node_) {
             applyBaseLayout(node);
+
+            if (fillHeight) {
+                VBox.setVgrow(node, Priority.ALWAYS);
+            }
 
             byte type = (byte) (bgImage != null? 1 : 0);
             // Apply all common theme-aware styling

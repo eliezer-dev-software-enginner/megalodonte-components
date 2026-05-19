@@ -1,7 +1,9 @@
 package megalodonte.components.layout_components;
 
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
+import megalodonte.components.SpacerVertical;
 import megalodonte.props.ContainerProps;
 
 public class Container extends Component {
@@ -22,9 +24,9 @@ public class Container extends Component {
     public Container c_child(Component component){
         this.container.getChildren().add(component.getNode());
 
-//        if (component instanceof SpacerVertical c) {
-//            VBox.setVgrow(c.getNode(), Priority.ALWAYS);
-//        }
+        if (component instanceof SpacerVertical c) {
+            VBox.setVgrow(c.getNode(), Priority.ALWAYS);
+        }
 
 //        if (component.props instanceof ButtonProps buttonProps) {
 //            Insets margins = buttonProps.getMargins();
