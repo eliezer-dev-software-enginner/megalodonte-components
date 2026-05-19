@@ -7,7 +7,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import megalodonte.props.ClickableProps;
 import megalodonte.base.components.Component;
 public class Clickable extends Component {
 
@@ -17,11 +16,7 @@ public class Clickable extends Component {
     private Runnable onClick;
 
     public Clickable(Component content, Runnable onClick) {
-        this(content, onClick, new ClickableProps());
-    }
-
-    public Clickable(Component content, Runnable onClick, ClickableProps props) {
-        super(new StackPane(), props);
+        super(new StackPane(), null);
         
         this.container = (StackPane) node;
         this.onClick = onClick;

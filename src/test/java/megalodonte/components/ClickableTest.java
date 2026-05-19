@@ -1,6 +1,5 @@
 package megalodonte.components;
 
-import megalodonte.props.ClickableProps;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
