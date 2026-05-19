@@ -171,4 +171,9 @@ public class Utils {
         // getValuesFromVariablename("colors").forEach(IO::println);
     }
 
+    public static void UpdateCursor(Node node, String value) {
+        var current = node.getStyle();
+        var updated = Utils.UpdateEspecificStyle(current, "-fx-cursor", value);
+        node.setStyle(updated);
+    }
 }
