@@ -86,17 +86,27 @@ public class CardProps extends Props {
             r.setMinWidth(width);
             r.setMaxWidth(width);
         }
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
-        r.setStyle("-fx-background-radius: " + finalRadius + ";" + "-fx-background-color: white;");
 
-        // Apply background and border styling
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+
+        // Neutraliza qualquer borda padrão do JavaFX no estilo inline
+        r.setStyle(
+                "-fx-background-radius: " + finalRadius + ";" +
+                        "-fx-background-color: white;" +
+                        "-fx-border-color: transparent;" +  // ← isso elimina a borda do hover
+                        "-fx-border-width: 0;"
+        );
+
         applyBackgroundStyling(node, theme, bgColor);
         applyBorderStyling(node, theme);
 
-        // Apply card-specific effects
+        // Hover via hoverProperty
+        node.setOnMouseEntered(null);
+        node.setOnMouseExited(null);
+        r.hoverProperty().addListener((obs, wasHover, isHover) ->
+                node.setEffect(isHover ? hover : normal)
+        );
         node.setEffect(normal);
-        node.setOnMouseEntered(e -> node.setEffect(hover));
-        node.setOnMouseExited(e -> node.setEffect(normal));
     }
 
     /**
