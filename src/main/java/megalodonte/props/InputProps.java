@@ -141,21 +141,22 @@ public class InputProps extends TextComponentProps<InputProps> {
      * Apply border styling for inputs without custom radius, using only theme defaults.
      */
     private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
+        // Aplica no TextField (children[0]), não no StackPane
+        var input = (TextInputControl) stackPane.getChildren().get(0);
+
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        Utils.updateBorderColor(stackPane, finalBorderColor);
+        Utils.updateBorderColor(input, finalBorderColor);
 
         int finalBorderWidth = theme.border().width();
         if (finalBorderWidth > 0) {
-            Utils.updateBorderWidth(stackPane, finalBorderWidth);
+            Utils.updateBorderWidth(input, finalBorderWidth);
         }
 
-//        // Use only theme radius, ignore custom borderRadius setting
-//        int themeBorderRadius = theme.radius().md();
-//        if (themeBorderRadius > 0) {
-//            Utils.updateBorderRadius(stackPane, themeBorderRadius);
-//        }
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        Utils.updateBorderRadius(input, finalRadius);
 
-        Utils.updateBorderRadius(stackPane, 0);
+        // StackPane sem borda própria
+        Utils.updateBorderColor(stackPane, "transparent");
     }
 
 
