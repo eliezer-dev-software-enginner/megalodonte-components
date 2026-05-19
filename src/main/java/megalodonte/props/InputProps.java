@@ -1,6 +1,7 @@
 package megalodonte.props;
 
 import javafx.scene.Node;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
 import megalodonte.theme.Theme;
@@ -92,6 +93,12 @@ public class InputProps extends TextComponentProps<InputProps> {
 
     @Override
     protected void applyTheme(Node node, Props props, Theme theme) {
+
+        if (node instanceof TextArea textArea) {
+            applyTextAreaTheme(textArea, theme, (InputProps) props);
+            return;
+        }
+
         if (!(node instanceof StackPane stackPane)) return;
 
         var input = (TextInputControl) stackPane.getChildren().get(0);
@@ -137,11 +144,26 @@ public class InputProps extends TextComponentProps<InputProps> {
         applyInputTextStyling(input, theme, (InputProps) props);
     }
 
+    private void applyTextAreaTheme(TextArea textArea, Theme theme, InputProps props) {
+        String finalBgColor = getFinalBackgroundColor(theme, bgColor);
+        Utils.updateBackgroundColor(textArea, finalBgColor);
+
+        String finalBorderColor = getFinalBorderColor(theme, borderColor);
+        Utils.updateBorderColor(textArea, finalBorderColor);
+
+        int finalBorderWidth = borderWidth > 0 ? borderWidth : theme.border().width();
+        if (finalBorderWidth > 0) Utils.updateBorderWidth(textArea, finalBorderWidth);
+
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        Utils.updateBorderRadius(textArea, finalRadius);
+
+        applyInputTextStyling(textArea, theme, props);
+    }
+
     /**
      * Apply border styling for inputs without custom radius, using only theme defaults.
      */
     private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
-        // Aplica no TextField (children[0]), não no StackPane
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
@@ -155,9 +177,28 @@ public class InputProps extends TextComponentProps<InputProps> {
         int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
         Utils.updateBorderRadius(input, finalRadius);
 
-        // StackPane sem borda própria
+        // StackPane também precisa do mesmo radius para não clipar as bordas do filho
+        Utils.updateBorderRadius(stackPane, finalRadius);
         Utils.updateBorderColor(stackPane, "transparent");
     }
+//    private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
+//        // Aplica no TextField (children[0]), não no StackPane
+//        var input = (TextInputControl) stackPane.getChildren().get(0);
+//
+//        String finalBorderColor = getFinalBorderColor(theme, borderColor);
+//        Utils.updateBorderColor(input, finalBorderColor);
+//
+//        int finalBorderWidth = theme.border().width();
+//        if (finalBorderWidth > 0) {
+//            Utils.updateBorderWidth(input, finalBorderWidth);
+//        }
+//
+//        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+//        Utils.updateBorderRadius(input, finalRadius);
+//
+//        // StackPane sem borda própria
+//        Utils.updateBorderColor(stackPane, "transparent");
+//    }
 
 
     /**
