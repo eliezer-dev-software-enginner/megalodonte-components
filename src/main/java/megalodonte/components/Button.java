@@ -36,7 +36,7 @@ public class Button extends Component  {
     }
 
     private void setupButtonBehavior() {
-        btn.setStyle(btn.getStyle() + " -fx-cursor: hand;");
+        btn.setCursor(javafx.scene.Cursor.HAND); // ← API Java, não CSS inline
         
         this.pressAnimation = createPressAnimation();
         this.releaseAnimation = createReleaseAnimation();

@@ -133,20 +133,18 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
      * Applies common border styling.
      */
     protected void applyBorderStyling(Node node, Theme theme) {
-        String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        Utils.updateBorderColor(node, finalBorderColor);
-
-        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
-        if (finalBorderWidth > 0) {
-            Utils.updateBorderWidth(node, finalBorderWidth);
+        if (borderWidth > 0) {
+            String finalBorderColor = getFinalBorderColor(theme, borderColor);
+            Utils.updateBorderColor(node, finalBorderColor);
+            Utils.updateBorderWidth(node, borderWidth);
+        } else {
+            // Sem borda definida, só zera para não herdar do CSS padrão
+            Utils.updateBorderColor(node, "transparent");
+            Utils.updateBorderWidth(node, 0);
         }
 
-//        int finalBorderRadius = getFinalBorderRadius(theme);
-//        if (finalBorderRadius > 0) {
-//            Utils.updateBorderRadius(node, finalBorderRadius);
-//        }
-
-        Utils.updateBorderRadius(node, 0);
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        Utils.updateBorderRadius(node, finalRadius);
     }
 
     @Override
