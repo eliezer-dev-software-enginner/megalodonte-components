@@ -145,17 +145,22 @@ public class InputProps extends TextComponentProps<InputProps> {
     }
 
     private void applyTextAreaTheme(TextArea textArea, Theme theme, InputProps props) {
-        String finalBgColor = getFinalBackgroundColor(theme, bgColor);
-        Utils.updateBackgroundColor(textArea, finalBgColor);
-
-        String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        Utils.updateBorderColor(textArea, finalBorderColor);
-
-        int finalBorderWidth = borderWidth > 0 ? borderWidth : theme.border().width();
-        if (finalBorderWidth > 0) Utils.updateBorderWidth(textArea, finalBorderWidth);
-
         int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
-        Utils.updateBorderRadius(textArea, finalRadius);
+        int finalBorderWidth = borderWidth > 0 ? borderWidth : theme.border().width();
+        String finalBorderColor = getFinalBorderColor(theme, borderColor);
+        String finalBgColor = getFinalBackgroundColor(theme, bgColor);
+
+        // No SW pipeline, background-color precisa de um layer explícito
+        // e background-radius precisa corresponder a cada layer
+        textArea.setStyle(
+                "-fx-control-inner-background: " + finalBgColor + ";" +
+                        "-fx-background-color: -fx-control-inner-background;" +
+                        "-fx-background-radius: " + finalRadius + ";" +
+                        "-fx-border-color: " + finalBorderColor + ";" +
+                        "-fx-border-width: " + finalBorderWidth + ";" +
+                        "-fx-border-radius: " + finalRadius + ";" +
+                        "-fx-padding: 4px;"
+        );
 
         applyInputTextStyling(textArea, theme, props);
     }
@@ -164,6 +169,17 @@ public class InputProps extends TextComponentProps<InputProps> {
      * Apply border styling for inputs without custom radius, using only theme defaults.
      */
     private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
+
+        System.out.println("------THEME LOGS---------");
+        System.out.println("-- borderWidth: " + theme.border().width() + "px");
+        System.out.println("-- borderRadius: " + theme.radius());
+        System.out.println("-- borderColor: " + theme.colors().border());
+
+        System.out.println("------PROPS LOGS---------");
+        System.out.println("-- borderWidth: " + borderWidth + "px");
+        System.out.println("-- borderRadius: " + borderRadius + "px");
+        System.out.println("-- borderColor: " + borderColor);
+
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);

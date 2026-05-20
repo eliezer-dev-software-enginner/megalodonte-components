@@ -14,6 +14,11 @@ public class TextAreaInput extends Component {
         super(new TextArea(), props);
         this.textArea = (TextArea) node;
 
+        // Fix dos cantos arredondados via stylesheet
+        textArea.getStylesheets().add(
+                getClass().getResource("/text-area.css").toExternalForm()
+        );
+
         if (props != null) props.apply(textArea);
 
         // Bind bidirecional
