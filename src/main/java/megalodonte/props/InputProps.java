@@ -162,6 +162,30 @@ public class InputProps extends TextComponentProps<InputProps> {
                         "-fx-padding: 4px;"
         );
 
+        if (getFontSize() != null) {
+            Utils.updateFontSize(textArea, getFontSize());
+        }
+
+        if (height > 0) {
+            textArea.setPrefHeight(height);
+            textArea.setMinHeight(height);
+            textArea.setMaxHeight(height);
+        }
+
+        if(width > 0){
+            textArea.setPrefHeight(height);
+            textArea.setMinHeight(height);
+            textArea.setMaxHeight(height);
+        }
+
+        if(disabled){
+            textArea.setDisable(true);
+        }
+
+        if (placeholder != null) {
+            textArea.setPromptText(placeholder);
+        }
+
         applyInputTextStyling(textArea, theme, props);
     }
 
@@ -169,17 +193,6 @@ public class InputProps extends TextComponentProps<InputProps> {
      * Apply border styling for inputs without custom radius, using only theme defaults.
      */
     private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
-
-        System.out.println("------THEME LOGS---------");
-        System.out.println("-- borderWidth: " + theme.border().width() + "px");
-        System.out.println("-- borderRadius: " + theme.radius());
-        System.out.println("-- borderColor: " + theme.colors().border());
-
-        System.out.println("------PROPS LOGS---------");
-        System.out.println("-- borderWidth: " + borderWidth + "px");
-        System.out.println("-- borderRadius: " + borderRadius + "px");
-        System.out.println("-- borderColor: " + borderColor);
-
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
@@ -197,25 +210,6 @@ public class InputProps extends TextComponentProps<InputProps> {
         Utils.updateBorderRadius(stackPane, finalRadius);
         Utils.updateBorderColor(stackPane, "transparent");
     }
-//    private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
-//        // Aplica no TextField (children[0]), não no StackPane
-//        var input = (TextInputControl) stackPane.getChildren().get(0);
-//
-//        String finalBorderColor = getFinalBorderColor(theme, borderColor);
-//        Utils.updateBorderColor(input, finalBorderColor);
-//
-//        int finalBorderWidth = theme.border().width();
-//        if (finalBorderWidth > 0) {
-//            Utils.updateBorderWidth(input, finalBorderWidth);
-//        }
-//
-//        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
-//        Utils.updateBorderRadius(input, finalRadius);
-//
-//        // StackPane sem borda própria
-//        Utils.updateBorderColor(stackPane, "transparent");
-//    }
-
 
     /**
      * Applies text styling for Input components.
