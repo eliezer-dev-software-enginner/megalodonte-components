@@ -19,7 +19,7 @@ public class SimpleTable<T> extends Component  {
     private final ObservableList<T> items;
     private Consumer<T> onItemSelectChange;
     private Consumer<T> onItemDoubleClick;
-    private Runnable onChangeFocus;
+    private Consumer<Boolean> onChangeFocus;
     
     public SimpleTable() {
         super(new TableView<>());
@@ -43,7 +43,7 @@ public class SimpleTable<T> extends Component  {
         tableView.focusedProperty().addListener((obs, oldVal, newVal) -> {
            //IO.println("Table view focused: " + newVal);
             if(onChangeFocus != null) {
-                onChangeFocus.run();
+                onChangeFocus.accept(newVal);
             }
         });
         
@@ -87,7 +87,7 @@ public class SimpleTable<T> extends Component  {
         return new HeaderBuilder();
     }
 
-    public SimpleTable<T> onChangeFocus(Runnable callback) {
+    public SimpleTable<T> onChangeFocus(Consumer<Boolean> callback) {
         this.onChangeFocus = callback;
         return this;
     }
