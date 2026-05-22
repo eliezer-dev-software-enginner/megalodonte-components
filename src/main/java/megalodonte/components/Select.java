@@ -50,6 +50,19 @@ public class Select<T> extends Component  {
         return this;
     }
 
+//    public Select<T> items(ReadableState<List<T>> state) {
+//        state.subscribe(items -> {
+//            // Fecha o dropdown antes de trocar a lista
+//            comboBox.hide();
+//            comboBox.getSelectionModel().clearSelection();
+//            comboBox.getItems().clear();
+//            if (items != null) {
+//                comboBox.getItems().addAll(items);
+//            }
+//        });
+//        return this;
+//    }
+
     public Select<T> items(ReadableState<List<T>> state) {
         state.subscribe(items -> {
             comboBox.getItems().clear();
@@ -62,6 +75,17 @@ public class Select<T> extends Component  {
 
 
 
+
+    public Select<T> expandWhen(ReadableState<Boolean> condition) {
+        condition.subscribe(shouldExpand -> {
+            if (shouldExpand) {
+                comboBox.show();
+            } else {
+                comboBox.hide();
+            }
+        });
+        return this;
+    }
 
     public Select<T> value(State<T> state) {
         comboBox.valueProperty().addListener((obs, o, n) -> state.set(n));
