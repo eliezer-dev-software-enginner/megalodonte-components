@@ -31,7 +31,7 @@ public class StyleUtils {
      * Gets the final border radius with theme fallback.
      */
     public static int getFinalBorderRadius(Theme theme, int borderRadius) {
-        return borderRadius > 0 ? borderRadius : theme.radius().md();
+        return borderRadius > 0 ? borderRadius : theme.border().radiusMd();
     }
 
 

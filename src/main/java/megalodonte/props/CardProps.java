@@ -87,7 +87,7 @@ public class CardProps extends Props {
             r.setMaxWidth(width);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
 
         // Neutraliza qualquer borda padrão do JavaFX no estilo inline
         r.setStyle(

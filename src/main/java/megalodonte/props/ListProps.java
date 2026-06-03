@@ -107,7 +107,7 @@ public class ListProps<T> extends CommonProps {
     protected void applyContainerStyling(VBox vbox, Theme theme) {
         String finalBgColor = getFinalBackgroundColor(theme, borderColor);
         String finalBorderColor = borderColor != null ? borderColor : theme.colors().border();
-        int finalBorderRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalBorderRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
 
         Utils.updateBackgroundColor(vbox, finalBgColor);
         Utils.updateBorderWidth(vbox, borderWidth > 0 ? borderWidth : theme.border().width());

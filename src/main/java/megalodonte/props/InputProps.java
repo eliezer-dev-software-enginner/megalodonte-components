@@ -145,7 +145,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     }
 
     private void applyTextAreaTheme(TextArea textArea, Theme theme, InputProps props) {
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
         int finalBorderWidth = borderWidth > 0 ? borderWidth : theme.border().width();
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
@@ -203,7 +203,7 @@ public class InputProps extends TextComponentProps<InputProps> {
             Utils.updateBorderWidth(input, finalBorderWidth);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
         Utils.updateBorderRadius(input, finalRadius);
 
         // StackPane também precisa do mesmo radius para não clipar as bordas do filho
