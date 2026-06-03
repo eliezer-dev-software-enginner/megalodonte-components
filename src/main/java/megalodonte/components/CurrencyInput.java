@@ -5,7 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
-import megalodonte.State;
+import megalodonte.base.state.State;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;

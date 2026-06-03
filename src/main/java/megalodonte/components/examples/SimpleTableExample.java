@@ -1,7 +1,7 @@
 package megalodonte.components.examples;
 
 import megalodonte.components.SimpleTable;
-import megalodonte.State;
+import megalodonte.base.state.State;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

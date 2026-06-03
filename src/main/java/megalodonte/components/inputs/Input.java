@@ -2,7 +2,7 @@ package megalodonte.components.inputs;
 
 import javafx.scene.control.TextField;
 import megalodonte.props.InputProps;
-import megalodonte.State;
+import megalodonte.base.state.State;
 
 public class Input extends InputBase {
 

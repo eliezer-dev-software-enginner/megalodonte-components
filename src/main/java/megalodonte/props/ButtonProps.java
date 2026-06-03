@@ -2,7 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 

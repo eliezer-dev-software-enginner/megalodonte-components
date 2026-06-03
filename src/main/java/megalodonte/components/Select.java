@@ -2,9 +2,9 @@ package megalodonte.components;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 import megalodonte.props.SelectProps;
-import megalodonte.State;
+import megalodonte.base.state.State;
 
 import java.util.List;
 import java.util.function.Function;

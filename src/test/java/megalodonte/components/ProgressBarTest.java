@@ -1,6 +1,6 @@
 package megalodonte.components;
 
-import megalodonte.State;
+import megalodonte.base.state.State;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

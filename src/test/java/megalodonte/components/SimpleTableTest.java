@@ -1,6 +1,6 @@
 package megalodonte.components;
 
-import megalodonte.State;
+import megalodonte.base.state.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;

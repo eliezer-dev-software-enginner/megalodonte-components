@@ -2,8 +2,8 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
-import megalodonte.ReadableState;
-import megalodonte.State;
+import megalodonte.base.state.ReadableState;
+import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;

@@ -1,7 +1,7 @@
 package megalodonte.components;
 
 
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 import megalodonte.props.TextProps;
 
 public class Text extends TextComponent {

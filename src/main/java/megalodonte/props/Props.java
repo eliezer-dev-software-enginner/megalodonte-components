@@ -1,10 +1,10 @@
 package megalodonte.props;
 
 import javafx.scene.Node;
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 import megalodonte.base.components.PropsInterface;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.theme.ThemeManager;
+import megalodonte.base.theme.ThemeManager;
 
 import java.util.function.Consumer;
 

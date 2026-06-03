@@ -1,7 +1,7 @@
 package megalodonte.components.inputs;
 
 import megalodonte.props.InputProps;
-import megalodonte.State;
+import megalodonte.base.state.State;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
