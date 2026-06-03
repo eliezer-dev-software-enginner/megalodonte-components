@@ -2,7 +2,7 @@ package megalodonte.props;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 public class CommonProps extends Props {
 
@@ -32,7 +32,7 @@ public class CommonProps extends Props {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (padding != null && node instanceof javafx.scene.layout.Region r) {
             r.setPadding(padding);
         }

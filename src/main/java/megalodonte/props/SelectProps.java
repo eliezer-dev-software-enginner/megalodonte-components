@@ -3,7 +3,7 @@ package megalodonte.props;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 public class SelectProps extends Props {
     private double minWidth;
@@ -63,7 +63,7 @@ public class SelectProps extends Props {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof ComboBox<?> cBox) {
             if (minWidth > 0) {
                 cBox.setMinWidth(minWidth);

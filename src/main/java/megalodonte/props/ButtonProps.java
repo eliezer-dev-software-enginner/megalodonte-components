@@ -3,7 +3,7 @@ package megalodonte.props;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import megalodonte.ReadableState;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
@@ -130,7 +130,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         };
     }
 
-    private String getButtonTextColor(ButtonProps props, Theme theme) {
+    private String getButtonTextColor(ButtonProps props, ThemeInterface theme) {
         return switch (props.getVariant()) {
             case "ghost", "disabled" -> theme.colors().textSecondary();
             default -> "white";
@@ -140,7 +140,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     /**
      * Applies common border styling.
      */
-    protected void applyBorderStyling(Node node, Theme theme) {
+    protected void applyBorderStyling(Node node, ThemeInterface theme) {
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
             Utils.updateBorderColor(node, finalBorderColor);
@@ -156,7 +156,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Button button)) return;
 
         if (fillWidth) {

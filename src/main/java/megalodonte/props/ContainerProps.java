@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 import java.util.Objects;
 
@@ -43,7 +43,7 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof Pane node_) {
             applyBaseLayout(node);
 
@@ -75,7 +75,7 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
     }
 
 //    @Override
-//    protected void applyTheme(Node node, Props props, Theme theme) {
+//    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
 //        if (node instanceof Pane node_) {
 //            applyBaseLayout(node);
 //

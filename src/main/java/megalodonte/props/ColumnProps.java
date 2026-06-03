@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 import java.util.Objects;
 
@@ -55,7 +55,7 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof VBox vBox) {
             applyBaseLayout(node);
 
