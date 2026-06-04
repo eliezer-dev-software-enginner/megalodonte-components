@@ -47,7 +47,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 
     implementation("megalodonte:megalodonte-base:1.0.0-beta")
-    implementation("megalodonte:megalodonte-reactivity:1.0.0-beta")
 }
 
 tasks.test {
