@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 public class GridFlowProps extends Props {
     private double minWidth = -1;
@@ -18,7 +18,7 @@ public class GridFlowProps extends Props {
     private int paddingUnitsRight;
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof TilePane tilePane) {
             //tamanho de cada tile (quadrado)
             if (tileWidth > 0) {

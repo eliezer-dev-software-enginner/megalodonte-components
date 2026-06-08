@@ -5,8 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
-import megalodonte.State;
-import megalodonte.ReadableState;
+import megalodonte.base.state.State;
+import megalodonte.base.state.ReadableState;
 
 import java.util.List;
 import java.util.function.BiConsumer;

@@ -5,7 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 import megalodonte.props.ButtonProps;
 import megalodonte.base.components.Component;
 public class Button extends Component  {

@@ -2,9 +2,8 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import megalodonte.ReadableState;
-import megalodonte.theme.Theme;
-import megalodonte.theme.ThemeManager;
+import megalodonte.base.state.ReadableState;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
@@ -110,21 +109,30 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         return variant;
     }
 
+    private static final String
+            BTN_PRIMARY = "#2563eb",
+            BTN_SECONDARY = "#6b7280",
+            BTN_SUCCESS = "#10b981",
+            BTN_WARNING = "#f59e0b",
+            BTN_DANGER = "#ef4444",
+            BTN_GHOST = "transparent",
+            BTN_DISABLED = "#94a3b8";
+
     private String getButtonColorFromVariant(ButtonProps props) {
         return switch (props.getVariant()) {
-            case "secondary" -> ThemeManager.buttonSecondary();
-            case "success" -> ThemeManager.buttonSuccess();
-            case "warning" -> ThemeManager.buttonWarning();
-            case "danger" -> ThemeManager.buttonDanger();
-            case "ghost" -> ThemeManager.buttonGhost();
-            case "disabled" -> ThemeManager.buttonDisabled();
-            default -> ThemeManager.buttonPrimary();
+            case "secondary" -> BTN_SECONDARY;
+            case "success" -> BTN_SUCCESS;
+            case "warning" -> BTN_WARNING;
+            case "danger" -> BTN_DANGER;
+            case "ghost" -> BTN_GHOST;
+            case "disabled" -> BTN_DISABLED;
+            default -> BTN_PRIMARY;
         };
     }
 
-    private String getButtonTextColor(ButtonProps props) {
+    private String getButtonTextColor(ButtonProps props, ThemeInterface theme) {
         return switch (props.getVariant()) {
-            case "ghost", "disabled" -> ThemeManager.theme().colors().textSecondary();
+            case "ghost", "disabled" -> theme.colors().textSecondary();
             default -> "white";
         };
     }
@@ -132,7 +140,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     /**
      * Applies common border styling.
      */
-    protected void applyBorderStyling(Node node, Theme theme) {
+    protected void applyBorderStyling(Node node, ThemeInterface theme) {
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
             Utils.updateBorderColor(node, finalBorderColor);
@@ -143,12 +151,12 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             Utils.updateBorderWidth(node, 0);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
         Utils.updateBorderRadius(node, finalRadius);
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Button button)) return;
 
         if (fillWidth) {
@@ -165,7 +173,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             button.setMaxHeight(height);
         }
 
-        String finalTextColor = getButtonTextColor((ButtonProps) props);
+        String finalTextColor = getButtonTextColor((ButtonProps) props, theme);
 
         if (textColor != null) {
             applyColor(node, textColor, Utils.FX_TEXT_FILL);

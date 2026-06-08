@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
 import megalodonte.components.SpacerVertical;
 import megalodonte.props.ColumnProps;
-import megalodonte.ForEachState;
+import megalodonte.base.state.ForEachState;
 
 import java.util.List;
 
@@ -39,6 +39,14 @@ public class Column extends Component implements LayoutComponent {
 //            }
 //        }
 
+        return this;
+    }
+
+    @Override
+    public Column items(List<? extends Component> components) {
+        for (Component c : components) {
+            c_child(c);
+        }
         return this;
     }
 

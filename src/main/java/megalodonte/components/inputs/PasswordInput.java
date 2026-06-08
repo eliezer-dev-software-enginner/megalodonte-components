@@ -5,7 +5,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import megalodonte.props.InputProps;
-import megalodonte.State;
+import megalodonte.base.state.State;
 
 public class PasswordInput extends InputBase {
 

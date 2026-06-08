@@ -1,6 +1,6 @@
 package megalodonte.components;
 
-import megalodonte.State;
+import megalodonte.base.state.State;
 import megalodonte.base.components.Component;
 public class ProgressBar extends Component  {
 

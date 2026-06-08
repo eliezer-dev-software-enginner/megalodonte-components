@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
@@ -92,7 +92,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     protected String placeholderColor;
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
 
         if (node instanceof TextArea textArea) {
             applyTextAreaTheme(textArea, theme, (InputProps) props);
@@ -144,8 +144,8 @@ public class InputProps extends TextComponentProps<InputProps> {
         applyInputTextStyling(input, theme, (InputProps) props);
     }
 
-    private void applyTextAreaTheme(TextArea textArea, Theme theme, InputProps props) {
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+    private void applyTextAreaTheme(TextArea textArea, ThemeInterface theme, InputProps props) {
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
         int finalBorderWidth = borderWidth > 0 ? borderWidth : theme.border().width();
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
@@ -192,7 +192,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     /**
      * Apply border styling for inputs without custom radius, using only theme defaults.
      */
-    private void applyInputBorderStyling(StackPane stackPane, Theme theme) {
+    private void applyInputBorderStyling(StackPane stackPane, ThemeInterface theme) {
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
@@ -203,7 +203,7 @@ public class InputProps extends TextComponentProps<InputProps> {
             Utils.updateBorderWidth(input, finalBorderWidth);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
         Utils.updateBorderRadius(input, finalRadius);
 
         // StackPane também precisa do mesmo radius para não clipar as bordas do filho
@@ -214,7 +214,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     /**
      * Applies text styling for Input components.
      */
-    protected void applyInputTextStyling(Node inputNode, Theme theme, InputProps props) {
+    protected void applyInputTextStyling(Node inputNode, ThemeInterface theme, InputProps props) {
         String finalTextColor = getFinalInputTextColor(theme, props);
         Utils.updateTextColor_Input(inputNode, finalTextColor);
 
@@ -234,7 +234,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     /**
      * Gets the final text color for input components with custom color fallback.
      */
-    protected String getFinalInputTextColor(Theme theme, InputProps props) {
+    protected String getFinalInputTextColor(ThemeInterface theme, InputProps props) {
         if (textColor != null && !textColor.isBlank()) {
             return textColor;
         }

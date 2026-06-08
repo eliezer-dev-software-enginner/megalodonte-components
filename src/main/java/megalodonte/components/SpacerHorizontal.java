@@ -1,7 +1,7 @@
 package megalodonte.components;
 
 import javafx.scene.layout.Region;
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 
 import java.util.Objects;
 import megalodonte.base.components.Component;

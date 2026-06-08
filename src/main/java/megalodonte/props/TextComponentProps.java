@@ -1,7 +1,7 @@
 package megalodonte.props;
 
 import javafx.scene.Node;
-import megalodonte.ReadableState;
+import megalodonte.base.state.ReadableState;
 import megalodonte.utils.Utils;
 
 public abstract class TextComponentProps<T extends TextComponentProps<T>> extends Props {

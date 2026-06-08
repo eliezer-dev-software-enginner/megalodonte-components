@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 
@@ -23,7 +23,7 @@ public class RowProps extends LayoutProps<RowProps> {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof HBox hBox) {
             applyBaseLayout(node);
 

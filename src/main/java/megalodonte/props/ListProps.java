@@ -2,8 +2,8 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
-import megalodonte.ReadableState;
-import megalodonte.theme.Theme;
+import megalodonte.base.state.ReadableState;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 
 import java.util.List;
@@ -96,7 +96,7 @@ public class ListProps<T> extends CommonProps {
 
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         super.applyTheme(node, props, theme);
         if (!(node instanceof VBox vbox)) return;
 
@@ -104,10 +104,10 @@ public class ListProps<T> extends CommonProps {
         applyContainerStyling(vbox, theme);
     }
 
-    protected void applyContainerStyling(VBox vbox, Theme theme) {
+    protected void applyContainerStyling(VBox vbox, ThemeInterface theme) {
         String finalBgColor = getFinalBackgroundColor(theme, borderColor);
         String finalBorderColor = borderColor != null ? borderColor : theme.colors().border();
-        int finalBorderRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalBorderRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
 
         Utils.updateBackgroundColor(vbox, finalBgColor);
         Utils.updateBorderWidth(vbox, borderWidth > 0 ? borderWidth : theme.border().width());

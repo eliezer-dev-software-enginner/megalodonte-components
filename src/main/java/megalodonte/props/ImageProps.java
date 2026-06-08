@@ -2,7 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 
 public class ImageProps extends Props {
     private double width = 100;
@@ -24,7 +24,7 @@ public class ImageProps extends Props {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof ImageView image) {
             if (width >= 0) {
                 image.setFitWidth(width);

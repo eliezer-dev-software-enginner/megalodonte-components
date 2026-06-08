@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
@@ -71,7 +71,7 @@ public class CardProps extends Props {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Region r)) return;
 
         r.setPadding(new Insets(padding));
@@ -87,7 +87,7 @@ public class CardProps extends Props {
             r.setMaxWidth(width);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.radius().md();
+        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
 
         // Neutraliza qualquer borda padrão do JavaFX no estilo inline
         r.setStyle(
@@ -112,7 +112,7 @@ public class CardProps extends Props {
     /**
      * Applies common border styling.
      */
-    protected void applyBorderStyling(Node node, Theme theme) {
+    protected void applyBorderStyling(Node node, ThemeInterface theme) {
         if (borderWidth == 0) {
             return;
         }

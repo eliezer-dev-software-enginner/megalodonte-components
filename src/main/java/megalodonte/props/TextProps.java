@@ -2,7 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.text.Text;
-import megalodonte.theme.Theme;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
@@ -52,7 +52,7 @@ public class TextProps extends TextComponentProps<TextProps> {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Text t)) return;
 
         if (getFontSize() != null) {
@@ -69,7 +69,7 @@ public class TextProps extends TextComponentProps<TextProps> {
     /**
      * Applies text styling for Text components.
      */
-    protected void applyTextStyling(javafx.scene.text.Text textNode, Theme theme, megalodonte.props.TextProps props) {
+    protected void applyTextStyling(javafx.scene.text.Text textNode, ThemeInterface theme, megalodonte.props.TextProps props) {
         String finalTextColor = getFinalTextColor(theme, props);
         Utils.updateTextColor(textNode, finalTextColor);
 
@@ -82,7 +82,7 @@ public class TextProps extends TextComponentProps<TextProps> {
     /**
      * Gets the final text color based on tone with custom color fallback.
      */
-    protected String getFinalTextColor(Theme theme, TextProps props) {
+    protected String getFinalTextColor(ThemeInterface theme, TextProps props) {
         if (textColor != null && !textColor.isBlank()) {
             return textColor;
         }

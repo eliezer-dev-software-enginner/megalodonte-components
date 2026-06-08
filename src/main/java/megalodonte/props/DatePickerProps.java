@@ -2,9 +2,9 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
-import megalodonte.ReadableState;
-import megalodonte.State;
-import megalodonte.theme.Theme;
+import megalodonte.base.state.ReadableState;
+import megalodonte.base.state.State;
+import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
 
@@ -143,7 +143,7 @@ public class DatePickerProps extends Props {
     }
 
     @Override
-    protected void applyTheme(Node node, Props props, Theme theme) {
+    protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof DatePicker datePicker)) return;
 
         if (formatter != null) {
@@ -218,7 +218,7 @@ public class DatePickerProps extends Props {
     /**
      * Applies text styling specific to DatePicker input field.
      */
-    private void applyDateInputTextStyling(DatePicker datePicker, Theme theme) {
+    private void applyDateInputTextStyling(DatePicker datePicker, ThemeInterface theme) {
         String finalTextColor = textColor != null && !textColor.isBlank() ?
                 textColor : theme.colors().textPrimary();
 
@@ -242,7 +242,7 @@ public class DatePickerProps extends Props {
     /**
      * Applies common border styling.
      */
-    protected void applyBorderStyling(Node node, Theme theme) {
+    protected void applyBorderStyling(Node node, ThemeInterface theme) {
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         Utils.updateBorderColor(node, finalBorderColor);
 

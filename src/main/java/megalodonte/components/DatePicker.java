@@ -1,6 +1,6 @@
 package megalodonte.components;
 
-import megalodonte.State;
+import megalodonte.base.state.State;
 import megalodonte.props.DatePickerProps;
 
 import java.time.LocalDate;
