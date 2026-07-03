@@ -4,8 +4,15 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import megalodonte.base.theme.ThemeInterface;
+import megalodonte.utils.Utils;
+import megalodonte.utils.related.TextVariant;
 
-public class SelectProps extends Props {
+import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
+import static megalodonte.styles.util.StyleUtils.getFinalBorderColor;
+import static megalodonte.styles.util.StyleUtils.getFinalBorderRadius;
+import static megalodonte.styles.util.StyleUtils.getFinalBorderWidth;
+
+public class SelectProps extends TextComponentProps<SelectProps> {
     private double minWidth;
     private double maxWidth;
     private double maxHeight;
@@ -16,11 +23,64 @@ public class SelectProps extends Props {
 
     private int height;
 
+    private TextTone tone = TextTone.PRIMARY;
+
+    public SelectProps tone(TextTone tone) {
+        this.tone = tone;
+        return this;
+    }
+
+    public TextTone getTone() {
+        return tone;
+    }
+
+    private TextVariant variant = TextVariant.BODY;
+
+    public SelectProps variant(TextVariant variant) {
+        this.variant = variant;
+        return this;
+    }
+
+    public TextVariant getVariant() {
+        return variant;
+    }
+
+    boolean disabled;
+
+    public SelectProps disable() {
+        this.disabled = true;
+        return this;
+    }
+
+    protected String bgColor;
+    protected String borderColor;
+    protected int borderWidth;
+    protected int borderRadius;
+
+    public SelectProps bgColor(String bgColor) {
+        this.bgColor = bgColor;
+        return this;
+    }
+
+    public SelectProps borderColor(String borderColor) {
+        this.borderColor = borderColor;
+        return this;
+    }
+
+    public SelectProps borderWidth(int borderWidth) {
+        this.borderWidth = borderWidth;
+        return this;
+    }
+
+    public SelectProps borderRadius(int borderRadius) {
+        this.borderRadius = borderRadius;
+        return this;
+    }
+
     public SelectProps height(int height){
         this.height = height;
         return this;
     }
-
 
     public SelectProps maxWidth(double maxWidth){
         this.maxWidth = maxWidth;
@@ -32,13 +92,11 @@ public class SelectProps extends Props {
         return this;
     }
 
-
     public SelectProps paddingAll(int units){
        this.paddingUnitsTop = units;
        this.paddingUnitsRight = units;
        this.paddingUnitsDown = units;
        this.paddingUnitsLeft = units;
-
         return this;
     }
 
@@ -64,24 +122,60 @@ public class SelectProps extends Props {
 
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
-        if (node instanceof ComboBox<?> cBox) {
-            if (minWidth > 0) {
-                cBox.setMinWidth(minWidth);
-            }
-            if(maxWidth > 0){
-                cBox.setMaxWidth(maxWidth);
-            }
-            if (maxHeight > 0) {
-                cBox.setMaxHeight(maxHeight);
-            }
+        if (!(node instanceof ComboBox<?> cBox)) return;
 
-            if(height > 0){
-                cBox.setPrefHeight(height);
-                cBox.setMinHeight(height);
-                cBox.setMaxHeight(height);
-            }
-
-            cBox.setPadding(new Insets(paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
+        if (minWidth > 0) {
+            cBox.setMinWidth(minWidth);
         }
+        if (maxWidth > 0) {
+            cBox.setMaxWidth(maxWidth);
+        }
+        if (maxHeight > 0) {
+            cBox.setMaxHeight(maxHeight);
+        }
+
+        if (height > 0) {
+            cBox.setPrefHeight(height);
+            cBox.setMinHeight(height);
+            cBox.setMaxHeight(height);
+        }
+
+        cBox.setPadding(new Insets(paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
+
+        if (disabled) {
+            cBox.setDisable(true);
+        }
+
+        if (getFontSize() != null) {
+            Utils.updateFontSize(cBox, getFontSize());
+        }
+
+        // Background
+        String finalBgColor = getFinalBackgroundColor(theme, bgColor);
+        Utils.updateBackgroundColor(cBox, finalBgColor);
+
+        // Border
+        String finalBorderColor = getFinalBorderColor(theme, borderColor);
+        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
+        int finalBorderRadius = getFinalBorderRadius(theme, borderRadius);
+
+        Utils.updateBorderColor(cBox, finalBorderColor);
+        Utils.updateBorderWidth(cBox, finalBorderWidth);
+        Utils.updateBorderRadius(cBox, finalBorderRadius);
+
+        // Text color via theme tone or inline
+        String finalTextColor = getFinalSelectTextColor(theme);
+        if (textColor != null && !textColor.isBlank()) {
+            finalTextColor = textColor;
+        }
+        Utils.updateTextColor_Input(cBox, finalTextColor);
+    }
+
+    private String getFinalSelectTextColor(ThemeInterface theme) {
+        return switch (tone) {
+            case PRIMARY -> theme.colors().textPrimary();
+            case SECONDARY, DISABLED -> theme.colors().textSecondary();
+            case INVERTED -> theme.colors().background();
+        };
     }
 }
