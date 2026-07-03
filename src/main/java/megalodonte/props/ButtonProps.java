@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
@@ -144,14 +145,14 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
             Utils.updateBorderColor(node, finalBorderColor);
-            Utils.updateBorderWidth(node, borderWidth);
+            Utils.updateBorderWidth(node, ScaleProvider.scale(borderWidth));
         } else {
             // Sem borda definida, só zera para não herdar do CSS padrão
             Utils.updateBorderColor(node, "transparent");
             Utils.updateBorderWidth(node, 0);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
+        int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
         Utils.updateBorderRadius(node, finalRadius);
     }
 
@@ -164,13 +165,14 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         }
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(button, getFontSize());
+            Utils.updateFontSize(button, ScaleProvider.scale(getFontSize()));
         }
 
         if (height > 0) {
-            button.setPrefHeight(height);
-            button.setMinHeight(height);
-            button.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            button.setPrefHeight(scaled);
+            button.setMinHeight(scaled);
+            button.setMaxHeight(scaled);
         }
 
         String finalTextColor = getButtonTextColor((ButtonProps) props, theme);

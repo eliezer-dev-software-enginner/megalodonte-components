@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeInterface;
@@ -185,7 +186,7 @@ public class DatePickerProps extends Props {
         }
 
         if (fontSize != null) {
-            Utils.updateFontSize(datePicker, fontSize);
+            Utils.updateFontSize(datePicker, ScaleProvider.scale(fontSize));
         }
 
         if (color != null) {
@@ -194,15 +195,17 @@ public class DatePickerProps extends Props {
 
 
         if(height > 0){
-            datePicker.setPrefHeight(height);
-            datePicker.setMinHeight(height);
-            datePicker.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            datePicker.setPrefHeight(scaled);
+            datePicker.setMinHeight(scaled);
+            datePicker.setMaxHeight(scaled);
         }
 
         if(width > 0){
-            datePicker.setPrefWidth(width);
-            datePicker.setMinWidth(width);
-            datePicker.setMaxWidth(width);
+            double scaled = ScaleProvider.scale(width);
+            datePicker.setPrefWidth(scaled);
+            datePicker.setMinWidth(scaled);
+            datePicker.setMaxWidth(scaled);
         }
 
         // Apply background styling
@@ -246,7 +249,7 @@ public class DatePickerProps extends Props {
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         Utils.updateBorderColor(node, finalBorderColor);
 
-        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
+        int finalBorderWidth = getFinalBorderWidth(theme, ScaleProvider.scale(borderWidth));
         if (finalBorderWidth > 0) {
             Utils.updateBorderWidth(node, finalBorderWidth);
         }

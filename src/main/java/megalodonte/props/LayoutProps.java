@@ -3,6 +3,7 @@ package megalodonte.props;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
+import megalodonte.base.scale.ScaleProvider;
 
 public abstract class LayoutProps<T extends LayoutProps<T>> extends Props {
     protected double minWidth = -1;
@@ -96,24 +97,30 @@ public abstract class LayoutProps<T extends LayoutProps<T>> extends Props {
         if (!(node instanceof Region region)) return;
 
         if (minWidth > 0) {
-            region.setMinWidth(minWidth);
+            region.setMinWidth(ScaleProvider.scale(minWidth));
         }
         if (width > 0) {
-            region.setPrefWidth(width);
+            region.setPrefWidth(ScaleProvider.scale(width));
         }
         if (maxWidth > 0) {
-            region.setMaxWidth(maxWidth);
+            region.setMaxWidth(ScaleProvider.scale(maxWidth));
         }
         if (maxHeight > 0) {
-            region.setMaxHeight(maxHeight);
+            region.setMaxHeight(ScaleProvider.scale(maxHeight));
         }
         if (height > 0) {
-            region.setPrefHeight(height);
-            region.setMinHeight(height);
-            region.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            region.setPrefHeight(scaled);
+            region.setMinHeight(scaled);
+            region.setMaxHeight(scaled);
         }
 
-        region.setPadding(new Insets(paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
+        region.setPadding(new Insets(
+                ScaleProvider.scale(paddingUnitsTop),
+                ScaleProvider.scale(paddingUnitsRight),
+                ScaleProvider.scale(paddingUnitsDown),
+                ScaleProvider.scale(paddingUnitsLeft)
+        ));
 
         if (onClick != null) {
             region.setOnMouseClicked(ev -> onClick.run());

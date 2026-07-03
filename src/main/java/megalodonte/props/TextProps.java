@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.text.Text;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
@@ -56,7 +57,7 @@ public class TextProps extends TextComponentProps<TextProps> {
         if (!(node instanceof Text t)) return;
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(t, getFontSize());
+            Utils.updateFontSize(t, ScaleProvider.scale(getFontSize()));
         }
 
         if(getFontWeight() != null){
@@ -74,7 +75,7 @@ public class TextProps extends TextComponentProps<TextProps> {
         Utils.updateTextColor(textNode, finalTextColor);
 
         int fontSize = props.getFontSize() != null ?
-                props.getFontSize() :
+                ScaleProvider.scale(props.getFontSize()) :
                 theme.typography().resolve(props.getVariant());
         Utils.updateFontSize(textNode, fontSize);
     }

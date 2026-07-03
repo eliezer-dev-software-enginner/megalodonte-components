@@ -1,6 +1,7 @@
 package megalodonte.components;
 
 import javafx.scene.layout.Region;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 
 import java.util.Objects;
@@ -30,9 +31,10 @@ public class SpacerHorizontal extends Component  {
     }
 
     private void applyWidth(int v) {
-        region.setMinWidth(v);
-        region.setPrefWidth(v);
-        region.setMaxWidth(v);
+        double scaled = ScaleProvider.scale(v);
+        region.setMinWidth(scaled);
+        region.setPrefWidth(scaled);
+        region.setMaxWidth(scaled);
     }
 
     /** intenção: ocupar toda a largura disponível */

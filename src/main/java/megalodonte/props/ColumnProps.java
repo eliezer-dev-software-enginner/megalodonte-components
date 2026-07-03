@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 
 import java.util.Objects;
@@ -60,7 +61,7 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
             applyBaseLayout(node);
 
             if (spacingUnits > 0) {
-                vBox.setSpacing(spacingUnits);
+                vBox.setSpacing(ScaleProvider.scale(spacingUnits));
             }
 
             if (alignment != null) {

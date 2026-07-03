@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 
 import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
@@ -28,7 +29,7 @@ public class RowProps extends LayoutProps<RowProps> {
             applyBaseLayout(node);
 
             if (spacingUnits > 0) {
-                hBox.setSpacing(spacingUnits);
+                hBox.setSpacing(ScaleProvider.scale(spacingUnits));
             }
 
             if (alignment == Alignment.BOTTOM_VERTICALLY) {

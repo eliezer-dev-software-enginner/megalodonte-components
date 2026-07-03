@@ -3,6 +3,7 @@ package megalodonte.props;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
@@ -125,29 +126,35 @@ public class SelectProps extends TextComponentProps<SelectProps> {
         if (!(node instanceof ComboBox<?> cBox)) return;
 
         if (minWidth > 0) {
-            cBox.setMinWidth(minWidth);
+            cBox.setMinWidth(ScaleProvider.scale(minWidth));
         }
         if (maxWidth > 0) {
-            cBox.setMaxWidth(maxWidth);
+            cBox.setMaxWidth(ScaleProvider.scale(maxWidth));
         }
         if (maxHeight > 0) {
-            cBox.setMaxHeight(maxHeight);
+            cBox.setMaxHeight(ScaleProvider.scale(maxHeight));
         }
 
         if (height > 0) {
-            cBox.setPrefHeight(height);
-            cBox.setMinHeight(height);
-            cBox.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            cBox.setPrefHeight(scaled);
+            cBox.setMinHeight(scaled);
+            cBox.setMaxHeight(scaled);
         }
 
-        cBox.setPadding(new Insets(paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
+        cBox.setPadding(new Insets(
+                ScaleProvider.scale(paddingUnitsTop),
+                ScaleProvider.scale(paddingUnitsRight),
+                ScaleProvider.scale(paddingUnitsDown),
+                ScaleProvider.scale(paddingUnitsLeft)
+        ));
 
         if (disabled) {
             cBox.setDisable(true);
         }
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(cBox, getFontSize());
+            Utils.updateFontSize(cBox, ScaleProvider.scale(getFontSize()));
         }
 
         // Background
@@ -156,8 +163,8 @@ public class SelectProps extends TextComponentProps<SelectProps> {
 
         // Border
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
-        int finalBorderRadius = getFinalBorderRadius(theme, borderRadius);
+        int finalBorderWidth = getFinalBorderWidth(theme, ScaleProvider.scale(borderWidth));
+        int finalBorderRadius = getFinalBorderRadius(theme, ScaleProvider.scale(borderRadius));
 
         Utils.updateBorderColor(cBox, finalBorderColor);
         Utils.updateBorderWidth(cBox, finalBorderWidth);

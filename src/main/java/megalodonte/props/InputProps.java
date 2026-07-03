@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 import megalodonte.utils.related.TextVariant;
@@ -105,11 +106,11 @@ public class InputProps extends TextComponentProps<InputProps> {
         if(input == null) return;
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(input, getFontSize());
+            Utils.updateFontSize(input, ScaleProvider.scale(getFontSize()));
         }
 
         if (getFontSizeState() != null) {
-            getFontSizeState().subscribe(v ->  Utils.updateFontSize(input, v));
+            getFontSizeState().subscribe(v ->  Utils.updateFontSize(input, ScaleProvider.scale(v)));
         }
 
         if(disabled){
@@ -121,15 +122,17 @@ public class InputProps extends TextComponentProps<InputProps> {
         }
 
         if(height > 0){
-            input.setPrefHeight(height);
-            input.setMinHeight(height);
-            input.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            input.setPrefHeight(scaled);
+            input.setMinHeight(scaled);
+            input.setMaxHeight(scaled);
         }
 
         if(width > 0){
-            stackPane.setPrefWidth(width);
-            stackPane.setMinWidth(width);
-            stackPane.setMaxWidth(width);
+            double scaled = ScaleProvider.scale(width);
+            stackPane.setPrefWidth(scaled);
+            stackPane.setMinWidth(scaled);
+            stackPane.setMaxWidth(scaled);
         }
 
         // Apply background styling to both stackpane and input
@@ -145,8 +148,8 @@ public class InputProps extends TextComponentProps<InputProps> {
     }
 
     private void applyTextAreaTheme(TextArea textArea, ThemeInterface theme, InputProps props) {
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
-        int finalBorderWidth = borderWidth > 0 ? borderWidth : theme.border().width();
+        int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
+        int finalBorderWidth = borderWidth > 0 ? ScaleProvider.scale(borderWidth) : theme.border().width();
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
 
@@ -163,19 +166,21 @@ public class InputProps extends TextComponentProps<InputProps> {
         );
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(textArea, getFontSize());
+            Utils.updateFontSize(textArea, ScaleProvider.scale(getFontSize()));
         }
 
         if (height > 0) {
-            textArea.setPrefHeight(height);
-            textArea.setMinHeight(height);
-            textArea.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            textArea.setPrefHeight(scaled);
+            textArea.setMinHeight(scaled);
+            textArea.setMaxHeight(scaled);
         }
 
         if(width > 0){
-            textArea.setPrefHeight(height);
-            textArea.setMinHeight(height);
-            textArea.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            textArea.setPrefHeight(scaled);
+            textArea.setMinHeight(scaled);
+            textArea.setMaxHeight(scaled);
         }
 
         if(disabled){
@@ -203,7 +208,7 @@ public class InputProps extends TextComponentProps<InputProps> {
             Utils.updateBorderWidth(input, finalBorderWidth);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
+        int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
         Utils.updateBorderRadius(input, finalRadius);
 
         // StackPane também precisa do mesmo radius para não clipar as bordas do filho

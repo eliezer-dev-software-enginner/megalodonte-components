@@ -2,6 +2,7 @@ package megalodonte.components;
 
 
 import javafx.scene.layout.Region;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 
 import java.util.Objects;
@@ -35,8 +36,9 @@ public class SpacerVertical extends Component  {
     }
 
     private void applyHeight(int v) {
-        region.setMinHeight(v);
-        region.setPrefHeight(v);
-        region.setMaxHeight(v);
+        double scaled = ScaleProvider.scale(v);
+        region.setMinHeight(scaled);
+        region.setPrefHeight(scaled);
+        region.setMaxHeight(scaled);
     }
 }

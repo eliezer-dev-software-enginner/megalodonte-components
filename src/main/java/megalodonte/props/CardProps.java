@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
 
@@ -74,20 +75,22 @@ public class CardProps extends Props {
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Region r)) return;
 
-        r.setPadding(new Insets(padding));
+        r.setPadding(new Insets(ScaleProvider.scale(padding)));
 
         if(height > 0){
-            r.setPrefHeight(height);
-            r.setMinHeight(height);
-            r.setMaxHeight(height);
+            double scaled = ScaleProvider.scale(height);
+            r.setPrefHeight(scaled);
+            r.setMinHeight(scaled);
+            r.setMaxHeight(scaled);
         }
         if(width > 0){
-            r.setPrefWidth(width);
-            r.setMinWidth(width);
-            r.setMaxWidth(width);
+            double scaled = ScaleProvider.scale(width);
+            r.setPrefWidth(scaled);
+            r.setMinWidth(scaled);
+            r.setMaxWidth(scaled);
         }
 
-        int finalRadius = borderRadius > 0 ? borderRadius : theme.border().radiusMd();
+        int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
 
         // Neutraliza qualquer borda padrão do JavaFX no estilo inline
         r.setStyle(
@@ -120,7 +123,7 @@ public class CardProps extends Props {
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         Utils.updateBorderColor(node, finalBorderColor);
 
-        int finalBorderWidth = getFinalBorderWidth(theme, borderWidth);
+        int finalBorderWidth = getFinalBorderWidth(theme, ScaleProvider.scale(borderWidth));
         if (finalBorderWidth > 0) {
             Utils.updateBorderWidth(node, finalBorderWidth);
         }

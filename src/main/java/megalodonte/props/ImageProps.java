@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 
 public class ImageProps extends Props {
@@ -27,10 +28,10 @@ public class ImageProps extends Props {
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof ImageView image) {
             if (width >= 0) {
-                image.setFitWidth(width);
+                image.setFitWidth(ScaleProvider.scale(width));
             }
             if (height >= 0) {
-                image.setFitHeight(height);
+                image.setFitHeight(ScaleProvider.scale(height));
             }
 
             if(width >=0 && height>=0){

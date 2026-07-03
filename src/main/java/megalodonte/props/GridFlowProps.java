@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 
 public class GridFlowProps extends Props {
@@ -22,34 +23,39 @@ public class GridFlowProps extends Props {
         if (node instanceof TilePane tilePane) {
             //tamanho de cada tile (quadrado)
             if (tileWidth > 0) {
-                tilePane.setPrefTileWidth(tileWidth);
+                tilePane.setPrefTileWidth(ScaleProvider.scale(tileWidth));
             }
             if (tileHeight > 0) {
-                tilePane.setPrefTileHeight(tileHeight);
+                tilePane.setPrefTileHeight(ScaleProvider.scale(tileHeight));
             }
 
             //tamanho do container inteiro
             if (minWidth > 0) {
-                tilePane.setMinWidth(minWidth);
+                tilePane.setMinWidth(ScaleProvider.scale(minWidth));
             }
             if (maxHeight > 0) {
-                tilePane.setMaxHeight(maxHeight);
+                tilePane.setMaxHeight(ScaleProvider.scale(maxHeight));
             }
             
             tilePane.setTileAlignment(Pos.TOP_LEFT);
 
             if(spacingVertical > 0){
-                tilePane.setVgap(spacingVertical);
+                tilePane.setVgap(ScaleProvider.scale(spacingVertical));
             }
             if(spacingHorizontal > 0){
-                tilePane.setHgap(spacingHorizontal);
+                tilePane.setHgap(ScaleProvider.scale(spacingHorizontal));
             }
 
             if(alignment == Alignment.CENTER_HORIZONTALLY){
                 tilePane.setAlignment(Pos.TOP_CENTER);
             }
 
-            tilePane.setPadding(new Insets(paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
+            tilePane.setPadding(new Insets(
+                    ScaleProvider.scale(paddingUnitsTop),
+                    ScaleProvider.scale(paddingUnitsRight),
+                    ScaleProvider.scale(paddingUnitsDown),
+                    ScaleProvider.scale(paddingUnitsLeft)
+            ));
         }
     }
 
