@@ -7,6 +7,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
 import megalodonte.base.state.State;
 import megalodonte.base.state.ReadableState;
+import megalodonte.props.SimpleTableProps;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -22,14 +23,30 @@ public class SimpleTable<T> extends Component  {
     private Consumer<Boolean> onChangeFocus;
     
     public SimpleTable() {
-        super(new TableView<>());
+        this(new SimpleTableProps());
+    }
+
+    public SimpleTable(SimpleTableProps props) {
+        super(new TableView<>(), props);
         this.tableView = (TableView<T>) this.node;
         this.items = FXCollections.observableArrayList();
         this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
-        
+
+        loadStyleSheet();
         setupDefaultBehavior();
+    }
+
+    private void loadStyleSheet() {
+        var css = getClass().getResource("/simple-table.css");
+        if (css != null && !tableView.getStylesheets().contains(css.toExternalForm())) {
+            tableView.getStylesheets().add(css.toExternalForm());
+        }
+    }
+
+    public TableView<T> getTableView() {
+        return tableView;
     }
     
     private void setupDefaultBehavior() {

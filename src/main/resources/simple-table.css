@@ -1,0 +1,118 @@
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-font-size: 14px;
+}
+
+.table-view .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 2px 0;
+    -fx-size: 44px;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-padding: 0 8px;
+    -fx-alignment: center-left;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0;
+}
+
+.table-view .table-row-cell .table-cell {
+    -fx-padding: 10px 8px;
+    -fx-alignment: center-left;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.table-view .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .table-row-cell:empty .table-cell {
+    -fx-border-color: transparent;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #dbeafe;
+}
+
+.table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: #1e293b;
+}
+
+.table-view .table-row-cell:selected .text {
+    -fx-fill: #1e293b;
+}
+
+.table-view:focused {
+    -fx-background-color: transparent;
+}
+
+.table-view:focused .table-row-cell:selected {
+    -fx-background-color: #dbeafe;
+}
+
+.table-view .scroll-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 4px;
+    -fx-pref-width: 6px;
+}
+
+.table-view .scroll-bar .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.table-view .scroll-bar .increment-button,
+.table-view .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
+
+.table-view .scroll-bar .increment-arrow,
+.table-view .scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+    -fx-opacity: 0;
+}
+
+.table-view .scroll-bar:vertical {
+    -fx-pref-width: 8px;
+}
+
+.table-view .scroll-bar:horizontal {
+    -fx-pref-height: 8px;
+}
+
+.table-view .virtual-flow .clipped-container .table-row-cell {
+    -fx-background-color: transparent;
+}
