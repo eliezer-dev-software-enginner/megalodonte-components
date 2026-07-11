@@ -1,7 +1,6 @@
 package megalodonte.props;
 
 import javafx.scene.Node;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -23,70 +22,29 @@ public class SimpleTableProps extends Props {
     protected String rowEvenColor;
     protected String rowOddColor;
     protected String rowHoverColor;
+    protected String selectionColor;
+    protected String focusColor;
     protected String rowTextColor;
+    protected String separatorColor;
     protected int headerHeight;
 
     public SimpleTableProps() {}
 
-    public SimpleTableProps bgColor(String bgColor) {
-        this.bgColor = bgColor;
-        return this;
-    }
-
-    public SimpleTableProps headerBgColor(String headerBgColor) {
-        this.headerBgColor = headerBgColor;
-        return this;
-    }
-
-    public SimpleTableProps headerTextColor(String headerTextColor) {
-        this.headerTextColor = headerTextColor;
-        return this;
-    }
-
-    public SimpleTableProps borderColor(String borderColor) {
-        this.borderColor = borderColor;
-        return this;
-    }
-
-    public SimpleTableProps borderWidth(int borderWidth) {
-        this.borderWidth = borderWidth;
-        return this;
-    }
-
-    public SimpleTableProps borderRadius(int borderRadius) {
-        this.borderRadius = borderRadius;
-        return this;
-    }
-
-    public SimpleTableProps striped(boolean striped) {
-        this.striped = striped;
-        return this;
-    }
-
-    public SimpleTableProps rowEvenColor(String rowEvenColor) {
-        this.rowEvenColor = rowEvenColor;
-        return this;
-    }
-
-    public SimpleTableProps rowOddColor(String rowOddColor) {
-        this.rowOddColor = rowOddColor;
-        return this;
-    }
-
-    public SimpleTableProps rowHoverColor(String rowHoverColor) {
-        this.rowHoverColor = rowHoverColor;
-        return this;
-    }
-
-    public SimpleTableProps rowTextColor(String rowTextColor) {
-        this.rowTextColor = rowTextColor;
-        return this;
-    }
-
-    public SimpleTableProps headerHeight(int headerHeight) {
-        this.headerHeight = headerHeight;
-        return this;
-    }
+    public SimpleTableProps bgColor(String bgColor) { this.bgColor = bgColor; return this; }
+    public SimpleTableProps headerBgColor(String headerBgColor) { this.headerBgColor = headerBgColor; return this; }
+    public SimpleTableProps headerTextColor(String headerTextColor) { this.headerTextColor = headerTextColor; return this; }
+    public SimpleTableProps borderColor(String borderColor) { this.borderColor = borderColor; return this; }
+    public SimpleTableProps borderWidth(int borderWidth) { this.borderWidth = borderWidth; return this; }
+    public SimpleTableProps borderRadius(int borderRadius) { this.borderRadius = borderRadius; return this; }
+    public SimpleTableProps striped(boolean striped) { this.striped = striped; return this; }
+    public SimpleTableProps rowEvenColor(String rowEvenColor) { this.rowEvenColor = rowEvenColor; return this; }
+    public SimpleTableProps rowOddColor(String rowOddColor) { this.rowOddColor = rowOddColor; return this; }
+    public SimpleTableProps rowHoverColor(String rowHoverColor) { this.rowHoverColor = rowHoverColor; return this; }
+    public SimpleTableProps selectionColor(String selectionColor) { this.selectionColor = selectionColor; return this; }
+    public SimpleTableProps focusColor(String focusColor) { this.focusColor = focusColor; return this; }
+    public SimpleTableProps rowTextColor(String rowTextColor) { this.rowTextColor = rowTextColor; return this; }
+    public SimpleTableProps separatorColor(String separatorColor) { this.separatorColor = separatorColor; return this; }
+    public SimpleTableProps headerHeight(int headerHeight) { this.headerHeight = headerHeight; return this; }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -105,9 +63,11 @@ public class SimpleTableProps extends Props {
         int finalBorderRadius = borderRadius > 0
                 ? ScaleProvider.scale(borderRadius)
                 : theme.border().radiusMd();
+        int fontSize = theme.typography().body();
 
         Utils.updateBackgroundColor(tableView, finalBgColor);
         Utils.updateBorderRadius(tableView, finalBorderRadius);
+        Utils.updateFontSize(tableView, fontSize);
 
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
@@ -120,116 +80,88 @@ public class SimpleTableProps extends Props {
 
     @SuppressWarnings("unchecked")
     private void applyRowFactory(TableView<?> tableView, ThemeInterface theme) {
-        String finalRowTextColor = rowTextColor != null
+        String textColor = rowTextColor != null
                 ? rowTextColor : theme.colors().textPrimary();
-        String finalHoverColor = rowHoverColor != null
-                ? rowHoverColor : hexWithAlpha(theme.colors().primary(), 0.06);
-        String finalRowEven = rowEvenColor != null
+        String hoverColor = rowHoverColor != null
+                ? rowHoverColor : theme.colors().hover();
+        String evenColor = rowEvenColor != null
                 ? rowEvenColor : theme.colors().surface();
-        String finalRowOdd = rowOddColor != null
+        String oddColor = rowOddColor != null
                 ? rowOddColor : theme.colors().background();
+        String separator = separatorColor != null
+                ? separatorColor : theme.colors().border();
+        String selection = selectionColor != null
+                ? selectionColor : theme.colors().selection();
 
         ((TableView<Object>) tableView).setRowFactory(tv -> {
             TableRow<Object> row = new TableRow<>();
 
-            row.hoverProperty().addListener((obs, wasHover, isHover) -> {
-                if (row.isEmpty()) return;
-                if (isHover) {
-                    row.setStyle(row.getStyle()
-                            + " -fx-background-color: " + finalHoverColor + ";");
-                } else {
-                    applyRowBaseStyle(row, finalRowEven, finalRowOdd, finalRowTextColor);
-                }
-            });
+            row.hoverProperty().addListener((obs, old, isHover) -> refreshRowStyle(row, evenColor, oddColor, textColor, separator, hoverColor, selection));
+            row.selectedProperty().addListener((obs, old, isSelected) -> refreshRowStyle(row, evenColor, oddColor, textColor, separator, hoverColor, selection));
+            row.indexProperty().addListener((obs, old, idx) -> refreshRowStyle(row, evenColor, oddColor, textColor, separator, hoverColor, selection));
 
-            row.itemProperty().addListener((obs, oldItem, newItem) -> {
-                applyRowBaseStyle(row, finalRowEven, finalRowOdd, finalRowTextColor);
-            });
-
-            applyRowBaseStyle(row, finalRowEven, finalRowOdd, finalRowTextColor);
+            refreshRowStyle(row, evenColor, oddColor, textColor, separator, hoverColor, selection);
             return row;
         });
     }
 
-    private void applyRowBaseStyle(TableRow<?> row, String evenColor, String oddColor, String textColor) {
-        int index = row.getIndex();
-        String bgColor = (index % 2 == 0) ? evenColor : oddColor;
-        row.setStyle("-fx-background-color: " + bgColor + ";"
+    private void refreshRowStyle(TableRow<?> row, String evenColor, String oddColor,
+                                  String textColor, String separator, String hoverColor, String selectionColor) {
+        if (row.isEmpty()) {
+            row.setStyle("");
+            return;
+        }
+
+        String bg;
+        if (row.isSelected()) {
+            bg = selectionColor;
+        } else if (row.isHover()) {
+            bg = hoverColor;
+        } else {
+            bg = (row.getIndex() % 2 == 0) ? evenColor : oddColor;
+        }
+
+        row.setStyle("-fx-background-color: " + bg + ";"
                 + " -fx-text-fill: " + textColor + ";"
-                + " -fx-border-color: transparent transparent #e2e8f0 transparent;"
+                + " -fx-border-color: transparent transparent " + separator + " transparent;"
                 + " -fx-border-width: 0 0 1px 0;");
     }
 
     private void applyHeaderStyling(TableView<?> tableView, ThemeInterface theme) {
-        String finalHeaderBg = headerBgColor != null
+        String headerBg = headerBgColor != null
                 ? headerBgColor : theme.colors().surface();
-        String finalHeaderTextColor = headerTextColor != null
+        String headerText = headerTextColor != null
                 ? headerTextColor : theme.colors().textSecondary();
-
-        if (headerHeight > 0) {
-            tableView.setFixedCellSize(-1);
-        }
-
-        for (TableColumn<?, ?> column : tableView.getColumns()) {
-            @SuppressWarnings("unchecked")
-            TableColumn<Object, String> col = (TableColumn<Object, String>) column;
-            col.setCellFactory(c -> {
-                TableCell<Object, String> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(empty ? null : item);
-                    }
-                };
-                cell.setStyle("-fx-text-fill: " + finalHeaderTextColor + ";");
-                return cell;
-            });
-        }
+        String separator = separatorColor != null
+                ? separatorColor : theme.colors().border();
 
         tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
             if (newSkin == null) return;
-            javafx.application.Platform.runLater(() -> styleHeaderCells(tableView, finalHeaderBg, finalHeaderTextColor));
+            javafx.application.Platform.runLater(() ->
+                    styleHeaderCells(tableView, headerBg, headerText, separator));
         });
 
         if (tableView.getSkin() != null) {
-            styleHeaderCells(tableView, finalHeaderBg, finalHeaderTextColor);
+            styleHeaderCells(tableView, headerBg, headerText, separator);
         }
     }
 
-    private void styleHeaderCells(TableView<?> tableView, String bgColor, String textColor) {
-        for (TableColumn<?, ?> column : tableView.getColumns()) {
-            if (column == null || column.getGraphic() == null) continue;
-            if (column.getGraphic().getStyleClass().contains("column-header")) {
-                for (Node child : column.getGraphic().lookupAll(".column-header .label")) {
-                    child.setStyle("-fx-text-fill: " + textColor + "; -fx-font-weight: bold;");
-                }
+    private void styleHeaderCells(TableView<?> tableView, String bgColor, String textColor, String separatorColor) {
+        for (var child : tableView.lookupAll(".column-header")) {
+            child.setStyle("-fx-background-color: " + bgColor + ";"
+                    + " -fx-border-color: transparent transparent " + separatorColor + " transparent;"
+                    + " -fx-border-width: 0 0 1px 0;");
+
+            for (Node label : child.lookupAll(".label")) {
+                label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-weight: bold;");
             }
         }
 
         try {
-            var header = tableView.lookup(".column-header-background");
-            if (header != null) {
-                header.setStyle("-fx-background-color: " + bgColor + ";");
+            var headerBg = tableView.lookup(".column-header-background");
+            if (headerBg != null) {
+                headerBg.setStyle("-fx-background-color: " + bgColor + ";");
             }
         } catch (Exception ignored) {}
-
-        for (var child : tableView.lookupAll(".column-header")) {
-            child.setStyle(child.getStyle()
-                    + " -fx-background-color: " + bgColor + ";"
-                    + " -fx-border-color: transparent transparent #e2e8f0 transparent;"
-                    + " -fx-border-width: 0 0 1px 0;");
-        }
-    }
-
-    private static String hexWithAlpha(String hex, double alpha) {
-        if (hex == null || !hex.startsWith("#") || hex.length() < 7) return hex;
-        try {
-            int r = Integer.parseInt(hex.substring(1, 3), 16);
-            int g = Integer.parseInt(hex.substring(3, 5), 16);
-            int b = Integer.parseInt(hex.substring(5, 7), 16);
-            return String.format("rgba(%d, %d, %d, %.2f)", r, g, b, alpha);
-        } catch (NumberFormatException e) {
-            return hex;
-        }
     }
 }
