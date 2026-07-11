@@ -70,7 +70,7 @@ public class StyleUtils {
     /**
      * Applies common border styling.
      */
-    public static void applyBorderStyling(Node node, ThemeInterface theme, String borderColor, int borderWidth) {
+    public static void applyBorderStyling(Node node, ThemeInterface theme, String borderColor, int borderWidth, int borderRadius) {
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         Utils.updateBorderColor(node, finalBorderColor);
 
@@ -79,11 +79,7 @@ public class StyleUtils {
             Utils.updateBorderWidth(node, finalBorderWidth);
         }
 
-//        int finalBorderRadius = getFinalBorderRadius(theme);
-//        if (finalBorderRadius > 0) {
-//            Utils.updateBorderRadius(node, finalBorderRadius);
-//        }
-
-        Utils.updateBorderRadius(node, 0);
+        int finalBorderRadius = getFinalBorderRadius(theme, borderRadius);
+        Utils.updateBorderRadius(node, finalBorderRadius);
     }
 }

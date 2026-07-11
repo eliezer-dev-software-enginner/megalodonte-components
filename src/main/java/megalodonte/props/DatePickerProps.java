@@ -254,11 +254,7 @@ public class DatePickerProps extends Props {
             Utils.updateBorderWidth(node, finalBorderWidth);
         }
 
-//        int finalBorderRadius = getFinalBorderRadius(theme);
-//        if (finalBorderRadius > 0) {
-//            Utils.updateBorderRadius(node, finalBorderRadius);
-//        }
-
-        Utils.updateBorderRadius(node, 0);
+        int finalBorderRadius = getFinalBorderRadius(theme, ScaleProvider.scale(borderRadius));
+        Utils.updateBorderRadius(node, finalBorderRadius);
     }
 }
