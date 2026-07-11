@@ -1,5 +1,7 @@
 package megalodonte.components;
 
+import megalodonte.base.components.Component;
+
 /**
  * Interface para renderizar itens em uma lista ou tabela.
  * Permite personalização completa da aparência de cada item.
