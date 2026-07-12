@@ -224,7 +224,7 @@ public class InputProps extends TextComponentProps<InputProps> {
         Utils.updateTextColor_Input(inputNode, finalTextColor);
 
         String finalPlaceholderColor = placeholderColor != null && !placeholderColor.isBlank() ?
-                placeholderColor : getFinalInputTextColor(theme, props);
+                placeholderColor : theme.colors().placeholder();
         Utils.updatePlaceholderColor(inputNode, finalPlaceholderColor);
 
         int fontSize = theme.typography().resolve(props.getVariant());
