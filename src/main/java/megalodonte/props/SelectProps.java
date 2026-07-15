@@ -6,7 +6,6 @@ import javafx.scene.control.ComboBox;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.utils.Utils;
-import megalodonte.utils.related.TextVariant;
 
 import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.getFinalBorderColor;
@@ -33,17 +32,6 @@ public class SelectProps extends TextComponentProps<SelectProps> {
 
     public TextTone getTone() {
         return tone;
-    }
-
-    private TextVariant variant = TextVariant.BODY;
-
-    public SelectProps variant(TextVariant variant) {
-        this.variant = variant;
-        return this;
-    }
-
-    public TextVariant getVariant() {
-        return variant;
     }
 
     boolean disabled;
@@ -155,6 +143,13 @@ public class SelectProps extends TextComponentProps<SelectProps> {
 
         if (getFontSize() != null) {
             Utils.updateFontSize(cBox, ScaleProvider.scale(getFontSize()));
+        } else {
+            int fontSize = theme.typography().body();
+            Utils.updateFontSize(cBox, fontSize);
+
+            var currentStyle = cBox.getEditor().getStyle();
+            var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
+            cBox.getEditor().setStyle(updatedStyle);
         }
 
         // Background
@@ -176,6 +171,9 @@ public class SelectProps extends TextComponentProps<SelectProps> {
             finalTextColor = textColor;
         }
         Utils.updateTextColor_Input(cBox, finalTextColor);
+
+        // Placeholder color from theme
+        Utils.updatePlaceholderColor(cBox, theme.colors().placeholder());
     }
 
     private String getFinalSelectTextColor(ThemeInterface theme) {

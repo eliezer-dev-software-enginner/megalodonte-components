@@ -8,19 +8,25 @@ import megalodonte.base.theme.ThemeInterface;
 public class ImageProps extends Props {
     private double width = 100;
     private double height = 100;
+    private Boolean preserveRatio = true;
 
     public ImageProps size(double size){
         this.width(size);
         this.height(size);
         return this;
     }
-    
+
     public ImageProps width(double width){
         this.width = width;
         return this;
     }
     public ImageProps height(double height){
         this.height = height;
+        return this;
+    }
+
+    public ImageProps preserveRatio(boolean preserve){
+        this.preserveRatio = preserve;
         return this;
     }
 
@@ -33,12 +39,7 @@ public class ImageProps extends Props {
             if (height >= 0) {
                 image.setFitHeight(ScaleProvider.scale(height));
             }
-
-            if(width >=0 && height>=0){
-                if(width == height){
-                    image.setPreserveRatio(true);
-                }
-            }
+            image.setPreserveRatio(preserveRatio);
         }
     }
 }

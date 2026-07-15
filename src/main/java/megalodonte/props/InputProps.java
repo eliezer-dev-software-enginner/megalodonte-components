@@ -177,10 +177,10 @@ public class InputProps extends TextComponentProps<InputProps> {
         }
 
         if(width > 0){
-            double scaled = ScaleProvider.scale(height);
-            textArea.setPrefHeight(scaled);
-            textArea.setMinHeight(scaled);
-            textArea.setMaxHeight(scaled);
+            double scaled = ScaleProvider.scale(width);
+            textArea.setPrefWidth(scaled);
+            textArea.setMinWidth(scaled);
+            textArea.setMaxWidth(scaled);
         }
 
         if(disabled){
