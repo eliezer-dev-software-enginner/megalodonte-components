@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
+import megalodonte.styles.util.StyleUtils;
 
 import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 
@@ -49,8 +50,9 @@ public class RowProps extends LayoutProps<RowProps> {
                 HBox.setHgrow(hBox, Priority.ALWAYS);
             }
 
-            // Apply all common theme-aware styling
-           // applyBackgroundStyling(node, theme, bgColor);
+            if(bgColor != null){
+                StyleUtils.applyBackgroundStyling(node, theme, bgColor);
+            }
         }
     }
 
