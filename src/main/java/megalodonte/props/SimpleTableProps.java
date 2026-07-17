@@ -27,8 +27,11 @@ public class SimpleTableProps extends Props {
     protected String rowTextColor;
     protected String separatorColor;
     protected int headerHeight;
+    protected Double maxWidth;
 
     public SimpleTableProps() {}
+
+    public SimpleTableProps maxWidth(double maxWidth) { this.maxWidth = maxWidth; return this; }
 
     public SimpleTableProps bgColor(String bgColor) { this.bgColor = bgColor; return this; }
     public SimpleTableProps headerBgColor(String headerBgColor) { this.headerBgColor = headerBgColor; return this; }
@@ -68,6 +71,11 @@ public class SimpleTableProps extends Props {
         Utils.updateBackgroundColor(tableView, finalBgColor);
         Utils.updateBorderRadius(tableView, finalBorderRadius);
         Utils.updateFontSize(tableView, fontSize);
+
+
+        if (maxWidth != null) {
+            tableView.setMaxWidth(ScaleProvider.scale(maxWidth));
+        }
 
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);

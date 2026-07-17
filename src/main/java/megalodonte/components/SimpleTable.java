@@ -34,6 +34,10 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
 
+        this.tableView.setMaxHeight(Double.MAX_VALUE); // <- libera crescimento vertical
+        javafx.scene.layout.VBox.setVgrow(this.tableView, javafx.scene.layout.Priority.ALWAYS); // <- pede prioridade quando pai é VBox
+
+
         loadStyleSheet();
         setupDefaultBehavior();
     }
