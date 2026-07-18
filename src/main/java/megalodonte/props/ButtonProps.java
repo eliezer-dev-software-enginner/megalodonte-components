@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
@@ -16,13 +17,20 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     protected String borderColor;
     protected int borderWidth;
     protected int borderRadius;
+    protected boolean iconOnRight;
 
     //----------------States
     private ReadableState<String> bgColorState;
 
+
     // Fluent API methods
     public ButtonProps bgColor(String bgColor) {
         this.bgColor = bgColor;
+        return this;
+    }
+
+    public ButtonProps iconOnRight() {
+        this.iconOnRight = true;
         return this;
     }
 
@@ -188,7 +196,9 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props);
             applyColor(node, finalBgColor, Utils.FX_BG_COLOR);
         }
-
+        if(iconOnRight){
+            button.setContentDisplay(ContentDisplay.RIGHT);
+        }
 
         applyBorderStyling(button, theme);
     }

@@ -130,4 +130,7 @@ public class CardProps extends Props {
 
         Utils.updateBorderRadius(node, 0);
     }
+
+    public boolean hasFixedWidth() { return width > 0; }
+    public boolean hasFixedHeight() { return height > 0; }
 }

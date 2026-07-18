@@ -5,9 +5,13 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import megalodonte.base.components.IconInterface;
 import megalodonte.base.state.ReadableState;
 import megalodonte.props.ButtonProps;
 import megalodonte.base.components.Component;
+
+import java.util.Objects;
+
 public class Button extends Component  {
     private final javafx.scene.control.Button btn;
     private Timeline pressAnimation;
@@ -107,4 +111,26 @@ public class Button extends Component  {
         }
         return this;
     }
+
+    public Button icon(IconInterface icon) {
+        Objects.requireNonNull(icon);
+        btn.setGraphic(icon.getNode());
+        btn.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT); // default
+        btn.setGraphicTextGap(6);
+        return this;
+    }
+
+    public Button icon(ReadableState<IconInterface> iconState) {
+        this.icon(iconState.get());
+
+        iconState.subscribe(icon -> {
+            if (icon != null && icon.getNode()!=null) {
+               btn.setGraphic(icon.getNode());
+            } else {
+                btn.setGraphic(null);
+            }
+        });
+        return this;
+    }
+
 }
