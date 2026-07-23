@@ -23,6 +23,10 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
         return this;
     }
 
+    public boolean hasFillHeight() {
+        return fillHeight;
+    }
+
     // Fluent API methods
     @SuppressWarnings("unchecked")
     public ContainerProps bgColor(String bgColor) {
@@ -48,6 +52,7 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
             applyBaseLayout(node);
 
             if (fillHeight) {
+                node_.setMaxHeight(Double.MAX_VALUE);
                 VBox.setVgrow(node, Priority.ALWAYS);
             }
 

@@ -1,31 +1,28 @@
 package megalodonte.components;
 
 public class MenuItem {
-    private final javafx.scene.control.MenuItem menuItem;
+    private String title;
+    private final Runnable action;
 
     public MenuItem(String title) {
-        this.menuItem = new javafx.scene.control.MenuItem(title);
+        this(title, () -> {});
     }
 
     public MenuItem(String title, Runnable action) {
-        this.menuItem = new javafx.scene.control.MenuItem(title);
-        setOnAction(action);
-    }
-
-    public void setOnAction(Runnable action) {
-        this.menuItem.setOnAction(e -> action.run());
+        this.title = title;
+        this.action = action;
     }
 
     public String getTitle() {
-        return this.menuItem.getText();
+        return title;
     }
 
     public void setTitle(String title) {
-        this.menuItem.setText(title);
+        this.title = title;
     }
 
-    public javafx.scene.control.MenuItem getJavaFxMenuItem() {
-        return this.menuItem;
+    public void run() {
+        action.run();
     }
 
     public static MenuItem of(String title) {

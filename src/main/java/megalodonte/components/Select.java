@@ -3,6 +3,8 @@ package megalodonte.components;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import megalodonte.base.state.ReadableState;
+import megalodonte.base.theme.ThemeInterface;
+import megalodonte.base.theme.ThemeManager;
 import megalodonte.props.SelectProps;
 import megalodonte.base.state.State;
 
@@ -20,11 +22,72 @@ public class Select<T> extends Component  {
     public Select() {
         super(new ComboBox<T>());
         this.comboBox = (ComboBox<T>) this.node;
+        applyDefaultCellTheme();
     }
 
     public Select(SelectProps props) {
         super(new ComboBox<T>(), props);
         this.comboBox = (ComboBox<T>) this.node;
+        applyDefaultCellTheme();
+    }
+
+    /**
+     * Célula padrão themada (usa item.toString()). displayText(...) troca por uma
+     * versão com mapper customizado, mas reaproveita o mesmo estilo de tema — assim
+     * o popup do dropdown não volta a ficar com a cor padrão (azul) do JavaFX.
+     */
+    private void applyDefaultCellTheme() {
+        Function<T, String> toString = item -> item == null ? "" : item.toString();
+        comboBox.setCellFactory(lv -> themedListCell(toString));
+        comboBox.setButtonCell(buttonCell(toString));
+    }
+
+    /**
+     * Célula da lista do popup: recebe fundo/hover/seleção do tema.
+     */
+    private ListCell<T> themedListCell(Function<T, String> mapper) {
+        ListCell<T> cell = new ListCell<>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : mapper.apply(item));
+                styleListCell(this);
+            }
+        };
+        cell.hoverProperty().addListener((obs, was, isHover) -> styleListCell(cell));
+        cell.selectedProperty().addListener((obs, was, isSelected) -> styleListCell(cell));
+        return cell;
+    }
+
+    /**
+     * Célula que mostra o valor selecionado com o ComboBox fechado. Fica
+     * transparente de propósito: o próprio ComboBox já tem fundo/borda/radius
+     * do tema (via SelectProps) — se essa célula também pintar um fundo (como a
+     * da lista faz), vira um retângulo reto por cima do box já arredondado.
+     */
+    private ListCell<T> buttonCell(Function<T, String> mapper) {
+        return new ListCell<>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : mapper.apply(item));
+                setStyle("-fx-background-color: transparent;");
+            }
+        };
+    }
+
+    private void styleListCell(ListCell<T> cell) {
+        if (cell.isEmpty()) {
+            cell.setStyle("");
+            return;
+        }
+
+        ThemeInterface theme = ThemeManager.theme();
+        String bg = cell.isSelected() ? theme.colors().selection()
+                : cell.isHover() ? theme.colors().hover()
+                : theme.colors().background();
+
+        cell.setStyle("-fx-background-color: " + bg + "; -fx-text-fill: " + theme.colors().textPrimary() + ";");
     }
 
     public Select<T> items(Iterable<T> items) {
@@ -164,21 +227,8 @@ public class Select<T> extends Component  {
      * @return this Select instance for method chaining
      */
     public Select<T> displayText(Function<T, String> mapper) {
-        comboBox.setCellFactory(param -> new ListCell<T>() {
-            @Override
-            protected void updateItem(T item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? "" : mapper.apply(item));
-            }
-        });
-        
-        comboBox.setButtonCell(new ListCell<T>() {
-            @Override
-            protected void updateItem(T item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? "" : mapper.apply(item));
-            }
-        });
+        comboBox.setCellFactory(param -> themedListCell(mapper));
+        comboBox.setButtonCell(buttonCell(mapper));
         return this;
     }
 }

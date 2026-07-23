@@ -174,6 +174,12 @@ public class SelectProps extends TextComponentProps<SelectProps> {
 
         // Placeholder color from theme
         Utils.updatePlaceholderColor(cBox, theme.colors().placeholder());
+
+        // O popup (lista de opções) do ComboBox não dá pra estilizar por lookup
+        // (roda numa Scene separada, não é descendente de cBox) — e mesmo que desse,
+        // Select.displayText() é sempre chamado depois disso na prática e sobrescreve
+        // o cellFactory inteiro. Por isso quem estiliza as células é o próprio Select
+        // (default cellFactory + displayText compartilham o mesmo helper themado).
     }
 
     private String getFinalSelectTextColor(ThemeInterface theme) {

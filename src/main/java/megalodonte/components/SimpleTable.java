@@ -36,6 +36,12 @@ public class SimpleTable<T> extends Component  {
 
         this.tableView.setMaxHeight(Double.MAX_VALUE); // <- libera crescimento vertical
         this.tableView.setMinWidth(0);   // <- não deixa o piso das colunas virar o piso da página
+        // Piso mínimo de altura: sem isso, dentro de um ScrollPane com fitToHeight,
+        // a tabela encolhe pra caber no viewport em vez de nunca ultrapassá-lo — e
+        // como o conteúdo nunca ultrapassa a altura disponível, o scroll de fora
+        // nunca ativa. Com um mínimo, quando janela+form+busca+esse mínimo não
+        // cabem mais, o overflow acontece de verdade e o scroll externo volta.
+        this.tableView.setMinHeight(200);
         javafx.scene.layout.VBox.setVgrow(this.tableView, javafx.scene.layout.Priority.ALWAYS); // <- pede prioridade quando pai é VBox
 
 
@@ -69,9 +75,14 @@ public class SimpleTable<T> extends Component  {
             }
         });
         
-        // Configurar double click
+        // Configurar double click, preservando o rowFactory já definido por
+        // SimpleTableProps (hover/seleção/zebra) em vez de substituí-lo por
+        // uma TableRow "crua" — senão o hover para de funcionar.
+        var previousRowFactory = tableView.getRowFactory();
         tableView.setRowFactory(tv -> {
-            javafx.scene.control.TableRow<T> row = new javafx.scene.control.TableRow<>();
+            javafx.scene.control.TableRow<T> row = previousRowFactory != null
+                    ? previousRowFactory.call(tv)
+                    : new javafx.scene.control.TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     if (onItemDoubleClick != null) {

@@ -21,17 +21,16 @@ public class Container extends Component {
         this.container = (VBox) this.node;
         this.containerProps = props;
 
-        // 1. Limita a altura ao tamanho dos filhos
-        container.setMaxHeight(Region.USE_PREF_SIZE);
-
-        // 2. Impede que uma VBox pai force este Container a crescer verticalmente
-        VBox.setVgrow(container, Priority.NEVER);
-
-        // 3. Opcional: impede que uma HBox pai force o crescimento vertical
-        // (Por padrão, HBox estica a altura dos filhos se fillHeight for true)
-        // 3. SOLUÇÃO PARA HBOX: Garante que o componente mantenha sua altura preferida
-        // Mesmo que a HBox pai esteja configurada para esticar (fillHeight = true)
-        container.setMinHeight(Region.USE_PREF_SIZE);
+        // Por padrão, o Container "abraça" o conteúdo (não cresce além da altura
+        // preferida dos filhos, nem aceita esticar se o pai oferecer mais espaço).
+        // Quando fillHeight() foi pedido nas props, ContainerProps.applyTheme já
+        // configurou o oposto (Vgrow ALWAYS + maxHeight ilimitado) — não pisamos
+        // nisso aqui.
+        if (!containerProps.hasFillHeight()) {
+            container.setMaxHeight(Region.USE_PREF_SIZE);
+            VBox.setVgrow(container, Priority.NEVER);
+            container.setMinHeight(Region.USE_PREF_SIZE);
+        }
     }
 
     public Container c_child(Component component){
@@ -41,8 +40,11 @@ public class Container extends Component {
             VBox.setVgrow(c.getNode(), Priority.ALWAYS);
         }
 
-        // Garante que este container, quando colocado dentro de OUTRA VBox, também não cresça
-        VBox.setVgrow(this.container, Priority.NEVER);
+        // Reforça o "não cresce" a cada filho adicionado — mas só quando fillHeight()
+        // não foi pedido, senão isso desfaria o Vgrow ALWAYS aplicado nas props.
+        if (!containerProps.hasFillHeight()) {
+            VBox.setVgrow(this.container, Priority.NEVER);
+        }
 
 //        if (component.props instanceof ButtonProps buttonProps) {
 //            Insets margins = buttonProps.getMargins();
