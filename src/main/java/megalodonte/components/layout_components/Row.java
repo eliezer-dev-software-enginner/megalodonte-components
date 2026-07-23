@@ -3,6 +3,8 @@ package megalodonte.components.layout_components;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import megalodonte.base.state.ForEachState;
 import megalodonte.base.components.Component;
 import megalodonte.components.SpacerHorizontal;
@@ -23,6 +25,16 @@ public class Row extends Component  implements LayoutComponent {
         super(new HBox(), props);
         this.nodeInternal = (HBox) this.node;
         this.rowProps = props;
+
+        // 1. Ocupa toda a largura disponível (Largura Máxima Infinita)
+        this.nodeInternal.setMaxWidth(Double.MAX_VALUE);
+
+        // 2. Trava a altura vertical estritamente no tamanho calculado dos filhos
+        this.nodeInternal.setMinHeight(Region.USE_PREF_SIZE);
+        this.nodeInternal.setMaxHeight(Region.USE_PREF_SIZE);
+
+        // 3. Garante que se o pai for uma VBox, ele nunca vai esticar esta Row verticalmente
+        VBox.setVgrow(this.nodeInternal, Priority.NEVER);
     }
 
     public Row r_child(Component component){
@@ -101,9 +113,23 @@ public class Row extends Component  implements LayoutComponent {
             scrollPane.setFitToWidth(false);
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            HBox.setHgrow(scrollPane, Priority.ALWAYS);
+
+            // Se a Row deve ser estática e justa, remova o Hgrow ALWAYS:
+            // HBox.setHgrow(scrollPane, Priority.ALWAYS);
+
             this.nodeInternal.getChildren().add(scrollPane);
-        } else {
+        }
+
+//        if (isScrollable) {
+//            ScrollPane scrollPane = new ScrollPane(this.itemsHBox);
+//            scrollPane.setFitToHeight(true);
+//            scrollPane.setFitToWidth(false);
+//            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+//            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+//            HBox.setHgrow(scrollPane, Priority.ALWAYS);
+//            this.nodeInternal.getChildren().add(scrollPane);
+//        }
+        else {
             this.nodeInternal.getChildren().add(this.itemsHBox);
         }
 

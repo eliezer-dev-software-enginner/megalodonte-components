@@ -1,6 +1,7 @@
 package megalodonte.components.layout_components;
 
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Region;
 import megalodonte.base.state.ForEachState;
 import megalodonte.base.components.Component;
 import megalodonte.props.FlowRowProps;
@@ -18,6 +19,7 @@ public class FlowRow extends Component implements LayoutComponent {
     public FlowRow(FlowRowProps props) {
         super(new FlowPane(), props);
         this.nodeInternal = (FlowPane) this.node;
+        nodeInternal.setMaxHeight(Region.USE_PREF_SIZE);
     }
 
     public FlowRow r_child(Component component) {
