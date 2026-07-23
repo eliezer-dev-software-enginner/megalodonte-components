@@ -35,6 +35,7 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setEditable(true);
 
         this.tableView.setMaxHeight(Double.MAX_VALUE); // <- libera crescimento vertical
+        this.tableView.setMinWidth(0);   // <- não deixa o piso das colunas virar o piso da página
         javafx.scene.layout.VBox.setVgrow(this.tableView, javafx.scene.layout.Priority.ALWAYS); // <- pede prioridade quando pai é VBox
 
 

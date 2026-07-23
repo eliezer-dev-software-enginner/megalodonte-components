@@ -27,29 +27,6 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
         return this;
     }
 
-    // Common styling properties
-    protected String borderColor;
-    protected int borderWidth;
-    protected int borderRadius;
-
-    @SuppressWarnings("unchecked")
-    public ColumnProps borderColor(String borderColor) {
-        this.borderColor = borderColor;
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public ColumnProps borderWidth(int borderWidth) {
-        this.borderWidth = borderWidth;
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public ColumnProps borderRadius(int borderRadius) {
-        this.borderRadius = borderRadius;
-        return this;
-    }
-
     public ColumnProps fillHeight(){
         fillHeight = true;
         return this;

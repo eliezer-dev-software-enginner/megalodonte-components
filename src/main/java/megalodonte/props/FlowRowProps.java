@@ -3,6 +3,8 @@ package megalodonte.props;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.styles.util.StyleUtils;
@@ -10,6 +12,7 @@ import megalodonte.styles.util.StyleUtils;
 public class FlowRowProps extends LayoutProps<FlowRowProps> {
     protected String bgColor;
     protected double vSpacing = -1;
+    protected boolean fillWidth = false;
 
     public FlowRowProps bgColor(String bgColor) {
         this.bgColor = bgColor;
@@ -22,6 +25,16 @@ public class FlowRowProps extends LayoutProps<FlowRowProps> {
         return this;
     }
 
+    /**
+     * Faz o FlowRow crescer horizontalmente dentro do Row/HBox pai,
+     * ocupando o espaço disponível ao invés de ficar preso ao
+     * prefWrapLength padrão do FlowPane (400px).
+     */
+    public FlowRowProps fillWidth() {
+        this.fillWidth = true;
+        return this;
+    }
+
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof FlowPane flowPane) {
@@ -29,6 +42,9 @@ public class FlowRowProps extends LayoutProps<FlowRowProps> {
 
             flowPane.setMaxWidth(Double.MAX_VALUE); // <- garante que aceita a largura do pai
 
+            if (fillWidth) {
+                HBox.setHgrow(flowPane, Priority.ALWAYS);
+            }
 
             if (spacingUnits > 0) {
                 flowPane.setHgap(ScaleProvider.scale(spacingUnits));

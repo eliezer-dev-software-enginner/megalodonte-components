@@ -28,6 +28,26 @@ public class CardProps extends Props {
 
     private int height;
     private int width;
+    private boolean fillWidth = false;
+    private boolean fillHeight = false;
+
+    public CardProps fillHeight() {
+        this.fillHeight = true;
+        return this;
+    }
+
+    public boolean hasFillHeight() {
+        return fillHeight;
+    }
+
+    public CardProps fillWidth() {
+        this.fillWidth = true;
+        return this;
+    }
+
+    public boolean hasFillWidth() {
+        return fillWidth;
+    }
 
     public CardProps height(int height){
         this.height = height;
@@ -83,7 +103,8 @@ public class CardProps extends Props {
             r.setMinHeight(scaled);
             r.setMaxHeight(scaled);
         }
-        if(width > 0){
+        // width fixo só é aplicado se fillWidth NÃO estiver ativo
+        if (width > 0 && !fillWidth) {
             double scaled = ScaleProvider.scale(width);
             r.setPrefWidth(scaled);
             r.setMinWidth(scaled);
@@ -131,6 +152,6 @@ public class CardProps extends Props {
         Utils.updateBorderRadius(node, 0);
     }
 
-    public boolean hasFixedWidth() { return width > 0; }
+    public boolean hasFixedWidth() { return width > 0 && !fillWidth; }
     public boolean hasFixedHeight() { return height > 0; }
 }
