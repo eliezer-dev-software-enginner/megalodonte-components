@@ -42,6 +42,12 @@ public class FlowRowProps extends LayoutProps<FlowRowProps> {
 
             flowPane.setMaxWidth(Double.MAX_VALUE); // <- garante que aceita a largura do pai
 
+            // Faz o cálculo de wrap (e, portanto, de altura preferida) usar a largura
+            // real do FlowPane em vez do prefWrapLength padrão (400px). Sem isso, quando
+            // o pai é uma VBox (HBox.setHgrow abaixo não tem efeito nesse caso), o FlowPane
+            // superestima quantas linhas precisa, inflando sua altura preferida.
+            flowPane.prefWrapLengthProperty().bind(flowPane.widthProperty());
+
             if (fillWidth) {
                 HBox.setHgrow(flowPane, Priority.ALWAYS);
             }
