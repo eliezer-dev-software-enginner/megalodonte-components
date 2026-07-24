@@ -214,8 +214,35 @@ public class DatePickerProps extends Props {
         // Apply border styling
         applyBorderStyling(datePicker, theme);
 
+        // Modena renders text-field-like controls (DatePicker included) with several
+        // stacked background/border layers, each with its own inset and radius, to get
+        // the default bevel + focus-glow look. Overriding just the color leaves those
+        // extra layers active with mismatched insets, which shows up as a slightly
+        // stepped/uneven edge ("pixelated" border). Forcing a single layer here fixes
+        // that, but it also kills modena's own focus glow — so focus feedback is
+        // re-added explicitly below, using the theme's color instead of modena's blue.
+        Utils.applyStyleProperty(datePicker, "0", "-fx-background-insets");
+        Utils.applyStyleProperty(datePicker, "0", "-fx-border-insets");
+        applyFocusFeedback(datePicker, theme);
+
         // Apply text styling for the date picker
         applyDateInputTextStyling(datePicker, theme);
+    }
+
+    /**
+     * Modena's default focus glow around DatePicker/ComboBoxBase-like controls comes
+     * from -fx-focus-color (a saturated blue by default), which clashes with themed
+     * borders. Swaps the border to theme.colors().focusRing() while focused instead.
+     */
+    private void applyFocusFeedback(DatePicker datePicker, ThemeInterface theme) {
+        String restingBorderColor = getFinalBorderColor(theme, borderColor);
+        String focusColor = theme.colors().focusRing();
+
+        Utils.applyStyleProperty(datePicker, focusColor, "-fx-focus-color");
+        Utils.applyStyleProperty(datePicker, focusColor, "-fx-faint-focus-color");
+
+        datePicker.focusedProperty().addListener((obs, wasFocused, isFocused) ->
+                Utils.updateBorderColor(datePicker, isFocused ? focusColor : restingBorderColor));
     }
 
     /**
