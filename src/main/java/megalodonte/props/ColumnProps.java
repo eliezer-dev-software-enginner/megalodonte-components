@@ -2,6 +2,7 @@ package megalodonte.props;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.base.scale.ScaleProvider;
@@ -13,6 +14,7 @@ import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 
 public class ColumnProps extends LayoutProps<ColumnProps> {
     private boolean fillHeight;
+    private boolean fillWidth;
 
     private enum Alignment {CENTER_HORIZONTALLY, CENTER_VERTICALLY}
     private Alignment alignment;
@@ -27,31 +29,17 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
         return this;
     }
 
-    // Common styling properties
-    protected String borderColor;
-    protected int borderWidth;
-    protected int borderRadius;
-
-    @SuppressWarnings("unchecked")
-    public ColumnProps borderColor(String borderColor) {
-        this.borderColor = borderColor;
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public ColumnProps borderWidth(int borderWidth) {
-        this.borderWidth = borderWidth;
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public ColumnProps borderRadius(int borderRadius) {
-        this.borderRadius = borderRadius;
-        return this;
-    }
-
     public ColumnProps fillHeight(){
         fillHeight = true;
+        return this;
+    }
+
+    /**
+     * Faz a Column crescer horizontalmente quando o pai for um Row/HBox,
+     * ocupando o espaço disponível em vez de encolher pro tamanho do conteúdo.
+     */
+    public ColumnProps fillWidth(){
+        fillWidth = true;
         return this;
     }
 
@@ -76,6 +64,11 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
 
             if(fillHeight){
                 VBox.setVgrow(node, Priority.ALWAYS);
+            }
+
+            if (fillWidth) {
+                vBox.setMaxWidth(Double.MAX_VALUE);
+                HBox.setHgrow(node, Priority.ALWAYS);
             }
 
            //byte type = (byte) (bgImage != null? 1 : 0);

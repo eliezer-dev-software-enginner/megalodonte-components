@@ -50,6 +50,18 @@ public class Column extends Component implements LayoutComponent {
         return this;
     }
 
+    /**
+     * Constrói os filhos a partir de uma lista comum (não reativa), aplicando
+     * {@code mapper} a cada item. Use {@link #items(ForEachState)} quando a lista
+     * precisar reagir a mudanças de estado.
+     */
+    public <T> Column items(List<T> data, java.util.function.Function<T, ? extends Component> mapper) {
+        for (T item : data) {
+            c_child(mapper.apply(item));
+        }
+        return this;
+    }
+
     public <T, C extends Component > Column items(ForEachState<T, C> forEachState, int spacing) {
         // Só pode ser chamado uma vez por Column
         if (this.itemsVBox != null) {

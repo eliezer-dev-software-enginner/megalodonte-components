@@ -6,7 +6,7 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 import megalodonte.utils.related.TextVariant;
 
 import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
@@ -231,9 +231,7 @@ public class InputProps extends TextComponentProps<InputProps> {
         Utils.updateFontSize(inputNode, fontSize);
 
         // Explicitly set placeholder font size to match input font size
-        var currentStyle = inputNode.getStyle();
-        var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
-        inputNode.setStyle(updatedStyle);
+        Utils.updatePlaceholderFontSize(inputNode, fontSize);
     }
 
     /**

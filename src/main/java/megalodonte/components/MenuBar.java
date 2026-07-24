@@ -1,21 +1,35 @@
 package megalodonte.components;
 
+import javafx.geometry.Insets;
+import javafx.scene.layout.HBox;
+import megalodonte.base.components.Component;
+import megalodonte.base.theme.ThemeManager;
+
 import java.util.ArrayList;
 import java.util.List;
-import megalodonte.base.components.Component;
-public class MenuBar extends Component  {
-    private final javafx.scene.control.MenuBar menuBar;
+
+public class MenuBar extends Component {
+    private final HBox bar;
     private final List<Menu> menus;
 
     public MenuBar() {
-        super(new javafx.scene.control.MenuBar(), null);
-        this.menuBar = (javafx.scene.control.MenuBar) this.node;
+        super(new HBox());
+        this.bar = (HBox) this.node;
         this.menus = new ArrayList<>();
+
+        var theme = ThemeManager.theme();
+        bar.setSpacing(theme.spacing().sm());
+        bar.setPadding(new Insets(
+                theme.spacing().sm(), theme.spacing().md(),
+                theme.spacing().sm(), theme.spacing().md()
+        ));
+        bar.setStyle("-fx-background-color: " + theme.colors().surface() + ";");
+        bar.setMaxWidth(Double.MAX_VALUE);
     }
 
     public MenuBar addMenu(Menu menu) {
         this.menus.add(menu);
-        this.menuBar.getMenus().add(menu.getJavaFxMenu());
+        this.bar.getChildren().add(menu.getTrigger().getNode());
         return this;
     }
 
@@ -33,10 +47,6 @@ public class MenuBar extends Component  {
 
     public List<Menu> getMenus() {
         return new ArrayList<>(menus);
-    }
-
-    public javafx.scene.control.MenuBar getJavaFxMenuBar() {
-        return this.menuBar;
     }
 
     public static MenuBar of() {

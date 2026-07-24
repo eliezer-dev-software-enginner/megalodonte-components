@@ -44,10 +44,10 @@ public class MenuDemo {
         
         System.out.println("\n=== Testando actions ===");
         System.out.println("Executando ação do item 'Fornecedores':");
-        fornecedoresItem.getJavaFxMenuItem().getOnAction().handle(null);
-        
+        fornecedoresItem.run();
+
         System.out.println("Executando ação do item 'Empresa':");
-        menuGerencial.getItems().get(0).getJavaFxMenuItem().getOnAction().handle(null);
+        menuGerencial.getItems().get(0).run();
         
         System.out.println("\n=== Comparação com código original ===");
         System.out.println("Código original: ~15 linhas boilerplate");

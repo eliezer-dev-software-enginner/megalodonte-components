@@ -1,10 +1,14 @@
 package megalodonte.components;
 
+import javafx.application.Platform;
+import javafx.scene.layout.StackPane;
+import megalodonte.base.components.IconInterface;
 import megalodonte.base.state.State;
 import megalodonte.props.DatePickerProps;
 
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.Objects;
 import megalodonte.base.components.Component;
 public class DatePicker extends Component  {
 
@@ -32,6 +36,44 @@ public class DatePicker extends Component  {
 
     public DatePicker(LocalDate initialValue, DatePickerProps props) {
         super(new javafx.scene.control.DatePicker(initialValue), props);
+    }
+
+    /**
+     * Replaces the default calendar glyph in the arrow button with a custom icon,
+     * same idea as {@link Button#icon(IconInterface)}.
+     */
+    public DatePicker icon(IconInterface icon) {
+        Objects.requireNonNull(icon);
+        applyIcon((javafx.scene.control.DatePicker) this.node, icon);
+        return this;
+    }
+
+    /**
+     * The arrow button only exists once the skin is installed, so this either runs
+     * right away (skin already there) or waits for skinProperty to fire — same pattern
+     * used for header cell styling in SimpleTableProps.
+     */
+    private static void applyIcon(javafx.scene.control.DatePicker datePicker, IconInterface icon) {
+        Runnable apply = () -> {
+            var arrowButton = datePicker.lookup(".arrow-button");
+            if (!(arrowButton instanceof StackPane pane)) return;
+
+            var defaultArrow = pane.lookup(".arrow");
+            if (defaultArrow != null) {
+                defaultArrow.setVisible(false);
+                defaultArrow.setManaged(false);
+            }
+
+            pane.getChildren().add(icon.getNode());
+        };
+
+        if (datePicker.getSkin() != null) {
+            Platform.runLater(apply);
+        } else {
+            datePicker.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+                if (newSkin != null) Platform.runLater(apply);
+            });
+        }
     }
 
     @Deprecated(forRemoval = true)

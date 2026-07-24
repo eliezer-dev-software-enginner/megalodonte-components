@@ -1,36 +1,36 @@
 package megalodonte.components;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import megalodonte.base.components.Component;
+
 public class Clickable extends Component {
+    private static final double NORMAL_OPACITY = 1.0;
+    private static final double HOVER_OPACITY = 0.85;
+    private static final double PRESS_OPACITY = 0.65;
 
     private final StackPane container;
-    private final Timeline pressAnimation;
-    private final Timeline releaseAnimation;
+    private Timeline opacityAnimation;
     private Runnable onClick;
 
     public Clickable(Component content, Runnable onClick) {
         super(new StackPane(), null);
-        
+
         this.container = (StackPane) node;
         this.onClick = onClick;
-        
+
         // Configurar comportamento do StackPane
         setupContainerBehavior();
-        
+
         // Adicionar conteúdo
         this.container.getChildren().add(content.getNode());
-        
-        // Configurar animações
-        this.pressAnimation = createPressAnimation();
-        this.releaseAnimation = createReleaseAnimation();
-        
+
         // Configurar handlers de mouse
         setupMouseHandlers();
     }
@@ -38,69 +38,37 @@ public class Clickable extends Component {
     private void setupContainerBehavior() {
         // Impedir crescimento automático do Region
         container.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        
+
         // Tornar clicável
         container.setPickOnBounds(true);
-    }
-
-    private Timeline createPressAnimation() {
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.millis(100), event -> {
-                // Efeito de pressão - reduz opacity suavemente
-                String currentStyle = container.getStyle() != null ? container.getStyle() : "";
-                String newStyle = currentStyle + " -fx-opacity: 0.7;";
-                container.setStyle(newStyle);
-            })
-        );
-        timeline.setCycleCount(1);
-        return timeline;
-    }
-
-    private Timeline createReleaseAnimation() {
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.millis(150), event -> {
-                // Efeito de release - restaura opacity suavemente
-                String currentStyle = container.getStyle() != null ? container.getStyle() : "";
-                String newStyle = currentStyle.replace(" -fx-opacity: 0.7;", "");
-                container.setStyle(newStyle);
-            })
-        );
-        timeline.setCycleCount(1);
-        return timeline;
+        container.setCursor(Cursor.HAND);
     }
 
     private void setupMouseHandlers() {
-        container.setOnMousePressed(this::handleMousePressed);
+        container.setOnMouseEntered(e -> animateOpacityTo(HOVER_OPACITY, Duration.millis(150)));
+        container.setOnMouseExited(e -> animateOpacityTo(NORMAL_OPACITY, Duration.millis(150)));
+        container.setOnMousePressed(e -> animateOpacityTo(PRESS_OPACITY, Duration.millis(100)));
         container.setOnMouseReleased(this::handleMouseReleased);
-        container.setOnMouseExited(this::handleMouseExited);
-    }
-
-    private void handleMousePressed(MouseEvent event) {
-        // Iniciar animação de pressão
-        if (pressAnimation.getStatus() != Animation.Status.RUNNING) {
-            pressAnimation.playFromStart();
-        }
     }
 
     private void handleMouseReleased(MouseEvent event) {
-        if (container.contains(event.getX(), event.getY())) {
-            // Disparar onClick apenas se o mouse ainda estiver dentro do componente
-            if (onClick != null) {
-                onClick.run();
-            }
-            
-            // Iniciar animação de release
-            if (releaseAnimation.getStatus() != Animation.Status.RUNNING) {
-                releaseAnimation.playFromStart();
-            }
+        boolean stillInside = container.contains(event.getX(), event.getY());
+        animateOpacityTo(stillInside ? HOVER_OPACITY : NORMAL_OPACITY, Duration.millis(150));
+
+        // Disparar onClick apenas se o mouse ainda estiver dentro do componente
+        if (stillInside && onClick != null) {
+            onClick.run();
         }
     }
 
-    private void handleMouseExited(MouseEvent event) {
-        // Resetar opacity se o mouse sair do componente
-        if (releaseAnimation.getStatus() != Animation.Status.RUNNING) {
-            releaseAnimation.playFromStart();
+    private void animateOpacityTo(double target, Duration duration) {
+        if (opacityAnimation != null) {
+            opacityAnimation.stop();
         }
+        opacityAnimation = new Timeline(
+                new KeyFrame(duration, new KeyValue(container.opacityProperty(), target))
+        );
+        opacityAnimation.play();
     }
 
     /**

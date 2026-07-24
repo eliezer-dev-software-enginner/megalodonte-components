@@ -1,9 +1,8 @@
 package megalodonte.components;
 
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 import megalodonte.base.components.IconInterface;
 import megalodonte.base.state.ReadableState;
@@ -13,9 +12,12 @@ import megalodonte.base.components.Component;
 import java.util.Objects;
 
 public class Button extends Component  {
+    private static final double NORMAL_OPACITY = 1.0;
+    private static final double HOVER_OPACITY = 0.85;
+    private static final double PRESS_OPACITY = 0.65;
+
     private final javafx.scene.control.Button btn;
-    private Timeline pressAnimation;
-    private Timeline releaseAnimation;
+    private Timeline opacityAnimation;
 
     public Button(String textContent){
         this(textContent, new ButtonProps());
@@ -41,68 +43,30 @@ public class Button extends Component  {
 
     private void setupButtonBehavior() {
         btn.setCursor(javafx.scene.Cursor.HAND); // ← API Java, não CSS inline
-        
-        this.pressAnimation = createPressAnimation();
-        this.releaseAnimation = createReleaseAnimation();
-        
+
         setupMouseHandlers();
-        
+
         btn.setOnMouseClicked(e -> {});
     }
 
-    private Timeline createPressAnimation() {
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.millis(100), event -> {
-                // Efeito de pressão - reduz opacity suavemente
-                String currentStyle = btn.getStyle() != null ? btn.getStyle() : "";
-                String newStyle = currentStyle + " -fx-opacity: 0.7;";
-                btn.setStyle(newStyle);
-            })
-        );
-        timeline.setCycleCount(1);
-        return timeline;
-    }
-
-    private Timeline createReleaseAnimation() {
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.millis(150), event -> {
-                // Efeito de release - restaura opacity suavemente
-                String currentStyle = btn.getStyle() != null ? btn.getStyle() : "";
-                String newStyle = currentStyle.replace(" -fx-opacity: 0.7;", "");
-                btn.setStyle(newStyle);
-            })
-        );
-        timeline.setCycleCount(1);
-        return timeline;
-    }
-
     private void setupMouseHandlers() {
-        btn.setOnMousePressed(this::handleMousePressed);
-        btn.setOnMouseReleased(this::handleMouseReleased);
-        btn.setOnMouseExited(this::handleMouseExited);
+        btn.setOnMouseEntered(e -> animateOpacityTo(HOVER_OPACITY, Duration.millis(150)));
+        btn.setOnMouseExited(e -> animateOpacityTo(NORMAL_OPACITY, Duration.millis(150)));
+        btn.setOnMousePressed(e -> animateOpacityTo(PRESS_OPACITY, Duration.millis(100)));
+        btn.setOnMouseReleased(e -> {
+            boolean stillHovering = btn.contains(e.getX(), e.getY());
+            animateOpacityTo(stillHovering ? HOVER_OPACITY : NORMAL_OPACITY, Duration.millis(150));
+        });
     }
 
-    private void handleMousePressed(MouseEvent event) {
-        // Iniciar animação de pressão
-        if (pressAnimation.getStatus() != Animation.Status.RUNNING) {
-            pressAnimation.playFromStart();
+    private void animateOpacityTo(double target, Duration duration) {
+        if (opacityAnimation != null) {
+            opacityAnimation.stop();
         }
-    }
-
-    private void handleMouseReleased(MouseEvent event) {
-        // Iniciar animação de release se o mouse ainda estiver dentro do botão
-        if (btn.contains(event.getX(), event.getY())) {
-            if (releaseAnimation.getStatus() != Animation.Status.RUNNING) {
-                releaseAnimation.playFromStart();
-            }
-        }
-    }
-
-    private void handleMouseExited(MouseEvent event) {
-        // Resetar opacity se o mouse sair do componente
-        if (releaseAnimation.getStatus() != Animation.Status.RUNNING) {
-            releaseAnimation.playFromStart();
-        }
+        opacityAnimation = new Timeline(
+                new KeyFrame(duration, new KeyValue(btn.opacityProperty(), target))
+        );
+        opacityAnimation.play();
     }
 
     public Button onClick(Runnable handler) {

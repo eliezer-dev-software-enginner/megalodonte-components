@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 import megalodonte.utils.related.TextVariant;
 
 public class TextProps extends TextComponentProps<TextProps> {
@@ -31,27 +31,6 @@ public class TextProps extends TextComponentProps<TextProps> {
     }
 
 
-    private void applyFontWeight(Text t, String weight) {
-        var current = t.getStyle();
-
-        var updated = Utils.UpdateEspecificStyle(
-                current,
-                Utils.FX_FONT_WEIGHT,
-                String.valueOf(weight)
-        );
-        t.setStyle(updated);
-    }
-
-    private void applyColor(Text t, String color) {
-        var current = t.getStyle();
-        var updated = Utils.UpdateEspecificStyle(
-                current,
-                Utils.FX_FILL,
-                color
-        );
-        t.setStyle(updated);
-    }
-
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Text t)) return;
@@ -61,7 +40,7 @@ public class TextProps extends TextComponentProps<TextProps> {
         }
 
         if(getFontWeight() != null){
-            applyFontWeight(t, getFontWeight());
+            Utils.updateFontWeight(t, getFontWeight());
         }
 
         applyTextStyling(t, theme, (TextProps) props);
