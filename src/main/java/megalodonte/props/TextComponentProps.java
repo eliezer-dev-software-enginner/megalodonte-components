@@ -2,7 +2,7 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import megalodonte.base.state.ReadableState;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 
 public abstract class TextComponentProps<T extends TextComponentProps<T>> extends Props {
     protected Integer fontSize;
@@ -54,8 +54,6 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
     }
 
     protected void applyColor(Node node, String color, String fxField) {
-        var current = node.getStyle();
-        var updated = Utils.UpdateEspecificStyle(current, fxField, color);
-        node.setStyle(updated);
+        Utils.applyStyleProperty(node, color, fxField);
     }
 }

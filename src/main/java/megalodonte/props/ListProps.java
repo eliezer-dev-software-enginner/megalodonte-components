@@ -5,7 +5,7 @@ import javafx.scene.layout.VBox;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 
 import java.util.List;
 import java.util.function.Consumer;

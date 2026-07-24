@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 
 import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.getFinalBorderColor;
@@ -146,10 +146,7 @@ public class SelectProps extends TextComponentProps<SelectProps> {
         } else {
             int fontSize = theme.typography().body();
             Utils.updateFontSize(cBox, fontSize);
-
-            var currentStyle = cBox.getEditor().getStyle();
-            var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
-            cBox.getEditor().setStyle(updatedStyle);
+            Utils.updatePlaceholderFontSize(cBox.getEditor(), fontSize);
         }
 
         // Background

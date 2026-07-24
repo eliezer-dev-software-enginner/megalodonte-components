@@ -6,7 +6,7 @@ import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 import megalodonte.utils.related.TextVariant;
 
 import java.time.LocalDate;
@@ -237,9 +237,7 @@ public class DatePickerProps extends Props {
         Utils.updateFontSize(datePicker.getEditor(), fontSize);
 
         // Set placeholder font size to match
-        var currentStyle = datePicker.getEditor().getStyle();
-        var updatedStyle = Utils.UpdateEspecificStyle(currentStyle, "-fx-prompt-font-size", fontSize + "px");
-        datePicker.getEditor().setStyle(updatedStyle);
+        Utils.updatePlaceholderFontSize(datePicker.getEditor(), fontSize);
     }
 
     /**

@@ -6,7 +6,7 @@ import javafx.scene.control.ContentDisplay;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.utils.Utils;
+import megalodonte.styles.util.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
