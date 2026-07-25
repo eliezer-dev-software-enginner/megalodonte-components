@@ -113,6 +113,7 @@ public class Row extends Component  implements LayoutComponent {
             scrollPane.setFitToWidth(false);
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            megalodonte.components.Scroll.confineScrollEvents(scrollPane);
 
             // Se a Row deve ser estática e justa, remova o Hgrow ALWAYS:
             // HBox.setHgrow(scrollPane, Priority.ALWAYS);

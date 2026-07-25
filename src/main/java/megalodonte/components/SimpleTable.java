@@ -44,6 +44,10 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setMinHeight(200);
         javafx.scene.layout.VBox.setVgrow(this.tableView, javafx.scene.layout.Priority.ALWAYS); // <- pede prioridade quando pai é VBox
 
+        // Sem isso, rolar rápido/forte dentro da tabela (ex: chegando no fim da lista
+        // numa única passada de roda) deixa o resto do scroll vazar pro ScrollPane da
+        // página, rolando ela também. Ver Scroll.confineScrollEvents.
+        Scroll.confineScrollEvents(this.tableView);
 
         loadStyleSheet();
         setupDefaultBehavior();

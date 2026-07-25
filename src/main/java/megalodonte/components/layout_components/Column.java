@@ -112,6 +112,7 @@ public class Column extends Component implements LayoutComponent {
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
             VBox.setVgrow(scrollPane, Priority.ALWAYS); // ScrollPane expande dentro da Column pai
+            megalodonte.components.Scroll.confineScrollEvents(scrollPane);
             this.vBox.getChildren().add(scrollPane);
         } else {
             this.vBox.getChildren().add(this.itemsVBox);
