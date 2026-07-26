@@ -162,6 +162,7 @@ public class FlowRow extends Component implements LayoutComponent {
             scrollPane.setFitToHeight(false);
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+            megalodonte.components.Scroll.confineScrollEvents(scrollPane);
             this.nodeInternal.getChildren().add(scrollPane);
         } else {
             this.nodeInternal.getChildren().add(itemsFlowPane);

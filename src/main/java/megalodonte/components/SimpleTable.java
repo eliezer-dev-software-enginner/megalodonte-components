@@ -15,12 +15,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import megalodonte.base.components.Component;
 public class SimpleTable<T> extends Component  {
-    
+
     private final TableView<T> tableView;
     private final ObservableList<T> items;
     private Consumer<T> onItemSelectChange;
     private Consumer<T> onItemDoubleClick;
     private Consumer<Boolean> onChangeFocus;
+
+    // Cache por tabela — evita reler/redecodificar do disco a cada recycle de célula
+    // enquanto rola (TableView virtualiza: a mesma imagem passa por updateItem() várias
+    // vezes conforme o usuário rola pra cima/baixo). Uma entrada com valor null (falha
+    // ao carregar) não fica em cache — tenta de novo na próxima vez, de propósito.
+    private final java.util.Map<String, javafx.scene.image.Image> imageCache = new java.util.HashMap<>();
     
     public SimpleTable() {
         this(new SimpleTableProps());
@@ -44,9 +50,23 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setMinHeight(200);
         javafx.scene.layout.VBox.setVgrow(this.tableView, javafx.scene.layout.Priority.ALWAYS); // <- pede prioridade quando pai é VBox
 
+        // Sem isso, rolar rápido/forte dentro da tabela (ex: chegando no fim da lista
+        // numa única passada de roda) deixa o resto do scroll vazar pro ScrollPane da
+        // página, rolando ela também. Ver Scroll.confineScrollEvents.
+        Scroll.confineScrollEvents(this.tableView);
 
         loadStyleSheet();
         setupDefaultBehavior();
+    }
+
+    private javafx.scene.image.Image loadImage(String path, double size) {
+        return imageCache.computeIfAbsent(path, p -> {
+            try {
+                return new javafx.scene.image.Image(p, size, size, true, true, true);
+            } catch (Exception e) {
+                return null;
+            }
+        });
     }
 
     private void loadStyleSheet() {
@@ -253,6 +273,58 @@ public class SimpleTable<T> extends Component  {
             
             tableView.getColumns().add(col);
             return this;
+        }
+
+        /**
+         * Adiciona uma coluna que mostra uma miniatura de imagem em vez de texto.
+         * {@code pathExtractor} deve retornar um caminho que {@link javafx.scene.image.Image}
+         * aceite diretamente — URI de arquivo (ex: {@code file:///...}, o formato que
+         * FileChooser.getSelectedFile().toURI() já produz), URL http(s) ou caminho de
+         * recurso no classpath. Caminho nulo/vazio ou falha ao carregar deixam a célula
+         * em branco (não lança exceção nem quebra a linha).
+         *
+         * @param title         título da coluna
+         * @param pathExtractor função que extrai o caminho/URI da imagem do item
+         * @param size          largura e altura (em px) da miniatura
+         * @return ColumnsBuilder para method chaining
+         */
+        public ColumnsBuilder imageColumn(String title, Function<T, String> pathExtractor, double size) {
+            TableColumn<T, String> col = new TableColumn<>(title);
+            col.setSortable(false);
+            col.setCellValueFactory(data -> {
+                T item = data.getValue();
+                if (item == null) return new javafx.beans.property.SimpleStringProperty("");
+                try {
+                    String path = pathExtractor.apply(item);
+                    return new javafx.beans.property.SimpleStringProperty(path != null ? path : "");
+                } catch (Exception e) {
+                    return new javafx.beans.property.SimpleStringProperty("");
+                }
+            });
+
+            col.setCellFactory(c -> new TableCell<T, String>() {
+                private final javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView();
+                {
+                    imageView.setFitWidth(size);
+                    imageView.setFitHeight(size);
+                    imageView.setPreserveRatio(true);
+                    setGraphic(imageView);
+                }
+
+                @Override
+                protected void updateItem(String path, boolean empty) {
+                    super.updateItem(path, empty);
+                    imageView.setImage(empty || path == null || path.isBlank() ? null : loadImage(path, size));
+                }
+            });
+
+            tableView.getColumns().add(col);
+            return this;
+        }
+
+        /** Mesmo que {@link #imageColumn(String, Function, double)}, miniatura de 40px. */
+        public ColumnsBuilder imageColumn(String title, Function<T, String> pathExtractor) {
+            return imageColumn(title, pathExtractor, 40.0);
         }
 
         /**
