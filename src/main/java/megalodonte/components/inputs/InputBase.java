@@ -164,4 +164,8 @@ public abstract class InputBase extends Component {
         });
         return this;
     }
+
+    public void requestFocus() {
+        megalodonte.base.UI.runOnUi(field::requestFocus);
+    }
 }
