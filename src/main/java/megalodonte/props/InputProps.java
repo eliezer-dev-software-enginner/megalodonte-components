@@ -3,6 +3,7 @@ package megalodonte.props;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
@@ -126,6 +127,15 @@ public class InputProps extends TextComponentProps<InputProps> {
             input.setPrefHeight(scaled);
             input.setMinHeight(scaled);
             input.setMaxHeight(scaled);
+        } else {
+            // Same reasoning as the width branch below: without a cap, a fitToHeight
+            // ScrollPane (e.g. Components.ScrollPaneDefault, used by every CRUD screen)
+            // asks this input's wrapping StackPane to grow to the viewport height, and
+            // an uncapped TextInputControl inside it can drive JavaFX's layout pass into
+            // unbounded recursion — StackOverflowError — instead of just hugging its
+            // natural single-line height.
+            input.setMaxHeight(Region.USE_PREF_SIZE);
+            stackPane.setMaxHeight(Region.USE_PREF_SIZE);
         }
 
         if(width > 0){
@@ -133,6 +143,12 @@ public class InputProps extends TextComponentProps<InputProps> {
             stackPane.setPrefWidth(scaled);
             stackPane.setMinWidth(scaled);
             stackPane.setMaxWidth(scaled);
+        } else {
+            // TextField's own max width is unbounded by default, so without this a
+            // parent VBox/HBox with fillWidth (e.g. Container) stretches the input to
+            // fill all available space instead of hugging its natural/content width —
+            // same "don't grow unless asked to" default Container already follows.
+            stackPane.setMaxWidth(Region.USE_PREF_SIZE);
         }
 
         // Apply background styling to both stackpane and input
@@ -174,6 +190,9 @@ public class InputProps extends TextComponentProps<InputProps> {
             textArea.setPrefHeight(scaled);
             textArea.setMinHeight(scaled);
             textArea.setMaxHeight(scaled);
+        } else {
+            // Same reasoning as Input's height branch above.
+            textArea.setMaxHeight(Region.USE_PREF_SIZE);
         }
 
         if(width > 0){
