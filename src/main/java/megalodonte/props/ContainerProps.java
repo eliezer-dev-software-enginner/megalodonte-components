@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 
 import java.util.Objects;
@@ -50,6 +51,14 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof Pane node_) {
             applyBaseLayout(node);
+
+            // applyBaseLayout() não aplica spacingUnits — cada Props que estica de
+            // LayoutProps (Column/Row/FlowRow) seta o gap por conta própria depois,
+            // e Container esquecia de fazer o mesmo, então spacingOf(...) era
+            // guardado no field mas nunca chegava no VBox de verdade.
+            if (spacingUnits > 0 && node_ instanceof VBox vBox) {
+                vBox.setSpacing(ScaleProvider.scale(spacingUnits));
+            }
 
             if (fillHeight) {
                 node_.setMaxHeight(Double.MAX_VALUE);
