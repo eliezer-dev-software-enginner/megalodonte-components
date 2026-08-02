@@ -8,7 +8,6 @@ import javafx.scene.layout.StackPane;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.styles.util.Utils;
-import megalodonte.utils.related.TextVariant;
 
 import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.getFinalBorderColor;
@@ -27,17 +26,6 @@ public class InputProps extends TextComponentProps<InputProps> {
     public InputProps tone(TextTone tone) {
         this.tone = tone;
         return this;
-    }
-
-    private TextVariant variant = TextVariant.BODY;
-
-    public InputProps variant(TextVariant variant) {
-        this.variant = variant;
-        return this;
-    }
-
-    public TextVariant getVariant() {
-        return variant;
     }
 
     public TextTone getTone() {
@@ -246,7 +234,9 @@ public class InputProps extends TextComponentProps<InputProps> {
                 placeholderColor : theme.colors().placeholder();
         Utils.updatePlaceholderColor(inputNode, finalPlaceholderColor);
 
-        int fontSize = theme.typography().resolve(props.getVariant());
+        int fontSize = props.getFontSize() != null ?
+                ScaleProvider.scale(props.getFontSize()) :
+                theme.typography().body();
         Utils.updateFontSize(inputNode, fontSize);
 
         // Explicitly set placeholder font size to match input font size

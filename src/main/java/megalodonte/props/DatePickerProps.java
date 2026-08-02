@@ -7,7 +7,6 @@ import megalodonte.base.state.ReadableState;
 import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.styles.util.Utils;
-import megalodonte.utils.related.TextVariant;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -75,17 +74,6 @@ public class DatePickerProps extends Props {
     public DatePickerProps tone(TextTone tone) {
         this.tone = tone;
         return this;
-    }
-
-    private TextVariant variant = TextVariant.BODY;
-
-    public DatePickerProps variant(TextVariant variant) {
-        this.variant = variant;
-        return this;
-    }
-
-    public TextVariant getVariant() {
-        return variant;
     }
 
     public TextTone getTone() {
@@ -259,7 +247,6 @@ public class DatePickerProps extends Props {
 
         Utils.updatePlaceholderColor(datePicker.getEditor(), finalPlaceholderColor);
 
-        // Set font size using theme's body variant
         int fontSize = theme.typography().body();
         Utils.updateFontSize(datePicker.getEditor(), fontSize);
 
