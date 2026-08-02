@@ -11,6 +11,10 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 import megalodonte.base.components.Component;
+
+import static megalodonte.styles.util.StyleUtils.updateBorderRadius;
+import static megalodonte.styles.util.StyleUtils.updateFontSize;
+
 public class CurrencyInput extends Component  {
 
     protected final TextInputControl field;
@@ -25,7 +29,8 @@ public class CurrencyInput extends Component  {
 
         // Configuração básica
         field.setPadding(new Insets(8));
-        field.setStyle("-fx-font-size: 14px; -fx-border-radius: 4px;");
+        updateFontSize(field, 14);
+        updateBorderRadius(field, 4);
 
         // Aplica formatação inicial se for valor monetário
         String initialValue = state.get();

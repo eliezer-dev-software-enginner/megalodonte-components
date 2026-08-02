@@ -8,6 +8,8 @@ import megalodonte.base.theme.ThemeManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
+
 public class MenuBar extends Component {
     private final HBox bar;
     private final List<Menu> menus;
@@ -23,7 +25,7 @@ public class MenuBar extends Component {
                 theme.spacing().sm(), theme.spacing().md(),
                 theme.spacing().sm(), theme.spacing().md()
         ));
-        bar.setStyle("-fx-background-color: " + theme.colors().surface() + ";");
+        updateBackgroundColor(bar, theme.colors().surface());
         bar.setMaxWidth(Double.MAX_VALUE);
     }
 

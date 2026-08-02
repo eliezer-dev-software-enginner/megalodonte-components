@@ -6,7 +6,6 @@ import javafx.scene.control.ContentDisplay;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
@@ -152,16 +151,16 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     protected void applyBorderStyling(Node node, ThemeInterface theme) {
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
-            Utils.updateBorderColor(node, finalBorderColor);
-            Utils.updateBorderWidth(node, ScaleProvider.scale(borderWidth));
+            updateBorderColor(node, finalBorderColor);
+            updateBorderWidth(node, ScaleProvider.scale(borderWidth));
         } else {
             // Sem borda definida, só zera para não herdar do CSS padrão
-            Utils.updateBorderColor(node, "transparent");
-            Utils.updateBorderWidth(node, 0);
+            updateBorderColor(node, "transparent");
+            updateBorderWidth(node, 0);
         }
 
         int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
-        Utils.updateBorderRadius(node, finalRadius);
+        updateBorderRadius(node, finalRadius);
     }
 
     @Override
@@ -173,7 +172,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         }
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(button, ScaleProvider.scale(getFontSize()));
+            updateFontSize(button, ScaleProvider.scale(getFontSize()));
         }
 
         if (height > 0) {
@@ -186,15 +185,15 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         String finalTextColor = getButtonTextColor((ButtonProps) props, theme);
 
         if (textColor != null) {
-            applyColor(node, textColor, Utils.FX_TEXT_FILL);
+            applyColor(node, textColor, FX_TEXT_FILL);
         } else {
-            applyColor(node, finalTextColor, Utils.FX_TEXT_FILL);
+            applyColor(node, finalTextColor, FX_TEXT_FILL);
         }
 
         // bgColor só aplica se não há state reativo controlando
         if (bgColorState == null) {
             String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props);
-            applyColor(node, finalBgColor, Utils.FX_BG_COLOR);
+            applyColor(node, finalBgColor, FX_BG_COLOR);
         }
         if(iconOnRight){
             button.setContentDisplay(ContentDisplay.RIGHT);
@@ -206,7 +205,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     @Override
     protected void bindStates(Node node) {
         bind(node, bgColorState, color ->
-                applyColor(node, color, Utils.FX_BG_COLOR)
+                applyColor(node, color, FX_BG_COLOR)
         );
     }
 }

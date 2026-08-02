@@ -7,6 +7,10 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
+
+import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
+import static megalodonte.styles.util.StyleUtils.updateBorderColor;
+
 public class Scroll extends Component  {
 
     private final ScrollPane scrollPane;
@@ -16,7 +20,8 @@ public class Scroll extends Component  {
         super(new ScrollPane(), null);
         this.scrollPane = (ScrollPane) node;
 
-        this.scrollPane.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;");
+        updateBackgroundColor(scrollPane, "transparent");
+        updateBorderColor(scrollPane, "transparent");
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         this.scrollPane.setFitToWidth(true);
         this.scrollPane.setContent(component.getJavaFxNode());

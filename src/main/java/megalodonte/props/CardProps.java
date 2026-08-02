@@ -7,7 +7,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
@@ -114,12 +113,10 @@ public class CardProps extends Props {
         int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
 
         // Neutraliza qualquer borda padrão do JavaFX no estilo inline
-        r.setStyle(
-                "-fx-background-radius: " + finalRadius + ";" +
-                        "-fx-background-color: white;" +
-                        "-fx-border-color: transparent;" +  // ← isso elimina a borda do hover
-                        "-fx-border-width: 0;"
-        );
+        updateBackgroundColor(node, "white");
+        updateBorderColor(node, "transparent"); // ← isso elimina a borda do hover
+        updateBorderWidth(node, 0);
+        updateBorderRadius(node, finalRadius);
 
         applyBackgroundStyling(node, theme, bgColor);
         applyBorderStyling(node, theme);
@@ -142,14 +139,14 @@ public class CardProps extends Props {
         }
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        Utils.updateBorderColor(node, finalBorderColor);
+        updateBorderColor(node, finalBorderColor);
 
         int finalBorderWidth = getFinalBorderWidth(theme, ScaleProvider.scale(borderWidth));
         if (finalBorderWidth > 0) {
-            Utils.updateBorderWidth(node, finalBorderWidth);
+            updateBorderWidth(node, finalBorderWidth);
         }
 
-        Utils.updateBorderRadius(node, 0);
+        updateBorderRadius(node, 0);
     }
 
     public boolean hasFixedWidth() { return width > 0 && !fillWidth; }

@@ -5,12 +5,8 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
 
-import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
-import static megalodonte.styles.util.StyleUtils.getFinalBorderColor;
-import static megalodonte.styles.util.StyleUtils.getFinalBorderRadius;
-import static megalodonte.styles.util.StyleUtils.getFinalBorderWidth;
+import static megalodonte.styles.util.StyleUtils.*;
 
 public class SelectProps extends TextComponentProps<SelectProps> {
     private double minWidth;
@@ -142,35 +138,35 @@ public class SelectProps extends TextComponentProps<SelectProps> {
         }
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(cBox, ScaleProvider.scale(getFontSize()));
+            updateFontSize(cBox, ScaleProvider.scale(getFontSize()));
         } else {
             int fontSize = theme.typography().body();
-            Utils.updateFontSize(cBox, fontSize);
-            Utils.updatePlaceholderFontSize(cBox.getEditor(), fontSize);
+            updateFontSize(cBox, fontSize);
+            updatePlaceholderFontSize(cBox.getEditor(), fontSize);
         }
 
         // Background
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
-        Utils.updateBackgroundColor(cBox, finalBgColor);
+        updateBackgroundColor(cBox, finalBgColor);
 
         // Border
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
         int finalBorderWidth = getFinalBorderWidth(theme, ScaleProvider.scale(borderWidth));
         int finalBorderRadius = getFinalBorderRadius(theme, ScaleProvider.scale(borderRadius));
 
-        Utils.updateBorderColor(cBox, finalBorderColor);
-        Utils.updateBorderWidth(cBox, finalBorderWidth);
-        Utils.updateBorderRadius(cBox, finalBorderRadius);
+        updateBorderColor(cBox, finalBorderColor);
+        updateBorderWidth(cBox, finalBorderWidth);
+        updateBorderRadius(cBox, finalBorderRadius);
 
         // Text color via theme tone or inline
         String finalTextColor = getFinalSelectTextColor(theme);
         if (textColor != null && !textColor.isBlank()) {
             finalTextColor = textColor;
         }
-        Utils.updateTextColor_Input(cBox, finalTextColor);
+        updateTextColor_Input(cBox, finalTextColor);
 
         // Placeholder color from theme
-        Utils.updatePlaceholderColor(cBox, theme.colors().placeholder());
+        updatePlaceholderColor(cBox, theme.colors().placeholder());
 
         // O popup (lista de opções) do ComboBox não dá pra estilizar por lookup
         // (roda numa Scene separada, não é descendente de cBox) — e mesmo que desse,

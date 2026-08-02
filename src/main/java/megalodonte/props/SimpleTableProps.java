@@ -6,7 +6,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
@@ -68,9 +67,9 @@ public class SimpleTableProps extends Props {
                 : theme.border().radiusMd();
         int fontSize = theme.typography().body();
 
-        Utils.updateBackgroundColor(tableView, finalBgColor);
-        Utils.updateBorderRadius(tableView, finalBorderRadius);
-        Utils.updateFontSize(tableView, fontSize);
+        updateBackgroundColor(tableView, finalBgColor);
+        updateBorderRadius(tableView, finalBorderRadius);
+        updateFontSize(tableView, fontSize);
 
 
         if (maxWidth != null) {
@@ -79,10 +78,10 @@ public class SimpleTableProps extends Props {
 
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
-            Utils.updateBorderColor(tableView, finalBorderColor);
-            Utils.updateBorderWidth(tableView, ScaleProvider.scale(borderWidth));
+            updateBorderColor(tableView, finalBorderColor);
+            updateBorderWidth(tableView, ScaleProvider.scale(borderWidth));
         } else {
-            Utils.updateBorderColor(tableView, "transparent");
+            updateBorderColor(tableView, "transparent");
         }
     }
 
@@ -129,10 +128,12 @@ public class SimpleTableProps extends Props {
             bg = (row.getIndex() % 2 == 0) ? evenColor : oddColor;
         }
 
-        row.setStyle("-fx-background-color: " + bg + ";"
-                + " -fx-text-fill: " + textColor + ";"
-                + " -fx-border-color: transparent transparent " + separator + " transparent;"
-                + " -fx-border-width: 0 0 1px 0;");
+        updateBackgroundColor(row, bg);
+        updateTextColor_Input(row, textColor);
+        // Só a borda de baixo (separador entre linhas) — updateBorderColor/Width
+        // aplicariam nos 4 lados, então isso vai direto via applyStyleProperty.
+        applyStyleProperty(row, "transparent transparent " + separator + " transparent", FX_BORDER_COLOR);
+        applyStyleProperty(row, "0 0 1px 0", FX_BORDER_WIDTH);
     }
 
     private void applyHeaderStyling(TableView<?> tableView, ThemeInterface theme) {
@@ -156,19 +157,20 @@ public class SimpleTableProps extends Props {
 
     private void styleHeaderCells(TableView<?> tableView, String bgColor, String textColor, String separatorColor) {
         for (var child : tableView.lookupAll(".column-header")) {
-            child.setStyle("-fx-background-color: " + bgColor + ";"
-                    + " -fx-border-color: transparent transparent " + separatorColor + " transparent;"
-                    + " -fx-border-width: 0 0 1px 0;");
+            updateBackgroundColor(child, bgColor);
+            applyStyleProperty(child, "transparent transparent " + separatorColor + " transparent", FX_BORDER_COLOR);
+            applyStyleProperty(child, "0 0 1px 0", FX_BORDER_WIDTH);
 
             for (Node label : child.lookupAll(".label")) {
-                label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-weight: bold;");
+                updateTextColor_Input(label, textColor);
+                updateFontWeight(label, "bold");
             }
         }
 
         try {
             var headerBg = tableView.lookup(".column-header-background");
             if (headerBg != null) {
-                headerBg.setStyle("-fx-background-color: " + bgColor + ";");
+                updateBackgroundColor(headerBg, bgColor);
             }
         } catch (Exception ignored) {}
     }

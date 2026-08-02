@@ -6,7 +6,6 @@ import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -174,11 +173,11 @@ public class DatePickerProps extends Props {
         }
 
         if (fontSize != null) {
-            Utils.updateFontSize(datePicker, ScaleProvider.scale(fontSize));
+            updateFontSize(datePicker, ScaleProvider.scale(fontSize));
         }
 
         if (color != null) {
-            Utils.updateTextColor_Input(datePicker, color);
+            updateTextColor_Input(datePicker, color);
         }
 
 
@@ -209,8 +208,8 @@ public class DatePickerProps extends Props {
         // stepped/uneven edge ("pixelated" border). Forcing a single layer here fixes
         // that, but it also kills modena's own focus glow — so focus feedback is
         // re-added explicitly below, using the theme's color instead of modena's blue.
-        Utils.applyStyleProperty(datePicker, "0", "-fx-background-insets");
-        Utils.applyStyleProperty(datePicker, "0", "-fx-border-insets");
+        applyStyleProperty(datePicker, "0", "-fx-background-insets");
+        applyStyleProperty(datePicker, "0", "-fx-border-insets");
         applyFocusFeedback(datePicker, theme);
 
         // Apply text styling for the date picker
@@ -226,11 +225,11 @@ public class DatePickerProps extends Props {
         String restingBorderColor = getFinalBorderColor(theme, borderColor);
         String focusColor = theme.colors().focusRing();
 
-        Utils.applyStyleProperty(datePicker, focusColor, "-fx-focus-color");
-        Utils.applyStyleProperty(datePicker, focusColor, "-fx-faint-focus-color");
+        applyStyleProperty(datePicker, focusColor, "-fx-focus-color");
+        applyStyleProperty(datePicker, focusColor, "-fx-faint-focus-color");
 
         datePicker.focusedProperty().addListener((obs, wasFocused, isFocused) ->
-                Utils.updateBorderColor(datePicker, isFocused ? focusColor : restingBorderColor));
+                updateBorderColor(datePicker, isFocused ? focusColor : restingBorderColor));
     }
 
     /**
@@ -240,18 +239,18 @@ public class DatePickerProps extends Props {
         String finalTextColor = textColor != null && !textColor.isBlank() ?
                 textColor : theme.colors().textPrimary();
 
-        Utils.updateTextColor_Input(datePicker.getEditor(), finalTextColor);
+        updateTextColor_Input(datePicker.getEditor(), finalTextColor);
 
         String finalPlaceholderColor = placeholderColor != null && !placeholderColor.isBlank() ?
                 placeholderColor : theme.colors().textSecondary();
 
-        Utils.updatePlaceholderColor(datePicker.getEditor(), finalPlaceholderColor);
+        updatePlaceholderColor(datePicker.getEditor(), finalPlaceholderColor);
 
         int fontSize = theme.typography().body();
-        Utils.updateFontSize(datePicker.getEditor(), fontSize);
+        updateFontSize(datePicker.getEditor(), fontSize);
 
         // Set placeholder font size to match
-        Utils.updatePlaceholderFontSize(datePicker.getEditor(), fontSize);
+        updatePlaceholderFontSize(datePicker.getEditor(), fontSize);
     }
 
     /**
@@ -259,14 +258,14 @@ public class DatePickerProps extends Props {
      */
     protected void applyBorderStyling(Node node, ThemeInterface theme) {
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        Utils.updateBorderColor(node, finalBorderColor);
+        updateBorderColor(node, finalBorderColor);
 
         int finalBorderWidth = getFinalBorderWidth(theme, ScaleProvider.scale(borderWidth));
         if (finalBorderWidth > 0) {
-            Utils.updateBorderWidth(node, finalBorderWidth);
+            updateBorderWidth(node, finalBorderWidth);
         }
 
         int finalBorderRadius = getFinalBorderRadius(theme, ScaleProvider.scale(borderRadius));
-        Utils.updateBorderRadius(node, finalBorderRadius);
+        updateBorderRadius(node, finalBorderRadius);
     }
 }

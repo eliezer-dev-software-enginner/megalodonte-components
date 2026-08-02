@@ -432,17 +432,6 @@ outer page. `SimpleTable`, `Column`/`Row`/`FlowRow`'s scrollable `.items(...)`
 overloads, and `Components.ScrollPaneDefault` all call it internally; call it
 yourself if you build a custom `ScrollPane`.
 
-## Unused scaffolding
-
-A few classes exist in the source but nothing in this library or `plics-sw`
-actually constructs/uses them — don't build against these, they may be removed:
-
-- **`ListProps<T>` / `ListItemRenderer<T>`** — an apparent parallel design for a
-  list component that was never built. `SimpleTable` is the real, maintained
-  table/list component.
-- **`CommonProps`** (padding/opacity/visible/style) — no component accepts it in a
-  constructor.
-
 ## Technologies
 
 - Java 25

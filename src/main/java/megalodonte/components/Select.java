@@ -14,6 +14,9 @@ import java.util.function.BiPredicate;
 import java.lang.reflect.Field;
 import megalodonte.base.components.Component;
 
+import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
+import static megalodonte.styles.util.StyleUtils.updateTextColor_Input;
+
 public class Select<T> extends Component  {
 
     private final ComboBox<T> comboBox;
@@ -71,7 +74,7 @@ public class Select<T> extends Component  {
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? "" : mapper.apply(item));
-                setStyle("-fx-background-color: transparent;");
+                updateBackgroundColor(this, "transparent");
             }
         };
     }
@@ -87,7 +90,8 @@ public class Select<T> extends Component  {
                 : cell.isHover() ? theme.colors().hover()
                 : theme.colors().background();
 
-        cell.setStyle("-fx-background-color: " + bg + "; -fx-text-fill: " + theme.colors().textPrimary() + ";");
+        updateBackgroundColor(cell, bg);
+        updateTextColor_Input(cell, theme.colors().textPrimary());
     }
 
     public Select<T> items(Iterable<T> items) {

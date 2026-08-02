@@ -16,6 +16,11 @@ import megalodonte.props.TextProps;
 import java.util.ArrayList;
 import java.util.List;
 
+import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
+import static megalodonte.styles.util.StyleUtils.updateBorderColor;
+import static megalodonte.styles.util.StyleUtils.updateBorderRadius;
+import static megalodonte.styles.util.StyleUtils.updateBorderWidth;
+
 /**
  * Menu suspenso (dropdown) próprio, sem depender de javafx.scene.control.Menu —
  * o menu nativo usa Label internamente com uma área de clique que às vezes não
@@ -114,13 +119,10 @@ public class Menu {
         // passada de mouse. Aqui a sombra é fixa (não reage a hover).
         var wrapper = new Container(new ContainerProps().paddingAll(4)).children(column);
         var wrapperNode = wrapper.getNode();
-        wrapperNode.setStyle(
-                "-fx-background-color: " + theme.colors().surface() + ";"
-                        + " -fx-background-radius: " + theme.border().radiusMd() + ";"
-                        + " -fx-border-color: " + theme.colors().border() + ";"
-                        + " -fx-border-width: 1px;"
-                        + " -fx-border-radius: " + theme.border().radiusMd() + ";"
-        );
+        updateBackgroundColor(wrapperNode, theme.colors().surface());
+        updateBorderRadius(wrapperNode, theme.border().radiusMd());
+        updateBorderColor(wrapperNode, theme.colors().border());
+        updateBorderWidth(wrapperNode, 1);
         wrapperNode.setEffect(new javafx.scene.effect.DropShadow(8, javafx.scene.paint.Color.rgb(0, 0, 0, 0.2)));
 
         return wrapper;
@@ -144,8 +146,8 @@ public class Menu {
     }
 
     private void addHoverHighlight(Node node, ThemeInterface theme) {
-        node.setOnMouseEntered(e -> node.setStyle("-fx-background-color: " + theme.colors().hover() + ";"));
-        node.setOnMouseExited(e -> node.setStyle("-fx-background-color: transparent;"));
+        node.setOnMouseEntered(e -> updateBackgroundColor(node, theme.colors().hover()));
+        node.setOnMouseExited(e -> updateBackgroundColor(node, "transparent"));
     }
 
     public static Menu of(String title) {

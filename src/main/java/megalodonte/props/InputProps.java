@@ -7,10 +7,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
 
-import static megalodonte.styles.util.StyleUtils.getFinalBackgroundColor;
-import static megalodonte.styles.util.StyleUtils.getFinalBorderColor;
+import static megalodonte.styles.util.StyleUtils.*;
 
 //TODO: criar placeholderSize
 public class InputProps extends TextComponentProps<InputProps> {
@@ -95,11 +93,11 @@ public class InputProps extends TextComponentProps<InputProps> {
         if(input == null) return;
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(input, ScaleProvider.scale(getFontSize()));
+            updateFontSize(input, ScaleProvider.scale(getFontSize()));
         }
 
         if (getFontSizeState() != null) {
-            getFontSizeState().subscribe(v ->  Utils.updateFontSize(input, ScaleProvider.scale(v)));
+            getFontSizeState().subscribe(v -> updateFontSize(input, ScaleProvider.scale(v)));
         }
 
         if(disabled){
@@ -141,8 +139,8 @@ public class InputProps extends TextComponentProps<InputProps> {
 
         // Apply background styling to both stackpane and input
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
-        Utils.updateBackgroundColor(stackPane, finalBgColor);
-        Utils.updateBackgroundColor(input, finalBgColor);
+        updateBackgroundColor(stackPane, finalBgColor);
+        updateBackgroundColor(input, finalBgColor);
 
         // Apply border styling without custom radius
         applyInputBorderStyling(stackPane, theme);
@@ -159,18 +157,15 @@ public class InputProps extends TextComponentProps<InputProps> {
 
         // No SW pipeline, background-color precisa de um layer explícito
         // e background-radius precisa corresponder a cada layer
-        textArea.setStyle(
-                "-fx-control-inner-background: " + finalBgColor + ";" +
-                        "-fx-background-color: -fx-control-inner-background;" +
-                        "-fx-background-radius: " + finalRadius + ";" +
-                        "-fx-border-color: " + finalBorderColor + ";" +
-                        "-fx-border-width: " + finalBorderWidth + ";" +
-                        "-fx-border-radius: " + finalRadius + ";" +
-                        "-fx-padding: 4px;"
-        );
+        applyStyleProperty(textArea, finalBgColor, "-fx-control-inner-background");
+        updateBackgroundColor(textArea, "-fx-control-inner-background");
+        updateBorderRadius(textArea, finalRadius); // seta -fx-border-radius e -fx-background-radius
+        updateBorderColor(textArea, finalBorderColor);
+        updateBorderWidth(textArea, finalBorderWidth);
+        applyStyleProperty(textArea, "4px", "-fx-padding");
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(textArea, ScaleProvider.scale(getFontSize()));
+            updateFontSize(textArea, ScaleProvider.scale(getFontSize()));
         }
 
         if (height > 0) {
@@ -208,19 +203,19 @@ public class InputProps extends TextComponentProps<InputProps> {
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        Utils.updateBorderColor(input, finalBorderColor);
+        updateBorderColor(input, finalBorderColor);
 
         int finalBorderWidth = theme.border().width();
         if (finalBorderWidth > 0) {
-            Utils.updateBorderWidth(input, finalBorderWidth);
+            updateBorderWidth(input, finalBorderWidth);
         }
 
         int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
-        Utils.updateBorderRadius(input, finalRadius);
+        updateBorderRadius(input, finalRadius);
 
         // StackPane também precisa do mesmo radius para não clipar as bordas do filho
-        Utils.updateBorderRadius(stackPane, finalRadius);
-        Utils.updateBorderColor(stackPane, "transparent");
+        updateBorderRadius(stackPane, finalRadius);
+        updateBorderColor(stackPane, "transparent");
     }
 
     /**
@@ -228,19 +223,19 @@ public class InputProps extends TextComponentProps<InputProps> {
      */
     protected void applyInputTextStyling(Node inputNode, ThemeInterface theme, InputProps props) {
         String finalTextColor = getFinalInputTextColor(theme, props);
-        Utils.updateTextColor_Input(inputNode, finalTextColor);
+        updateTextColor_Input(inputNode, finalTextColor);
 
         String finalPlaceholderColor = placeholderColor != null && !placeholderColor.isBlank() ?
                 placeholderColor : theme.colors().placeholder();
-        Utils.updatePlaceholderColor(inputNode, finalPlaceholderColor);
+        updatePlaceholderColor(inputNode, finalPlaceholderColor);
 
         int fontSize = props.getFontSize() != null ?
                 ScaleProvider.scale(props.getFontSize()) :
                 theme.typography().body();
-        Utils.updateFontSize(inputNode, fontSize);
+        updateFontSize(inputNode, fontSize);
 
         // Explicitly set placeholder font size to match input font size
-        Utils.updatePlaceholderFontSize(inputNode, fontSize);
+        updatePlaceholderFontSize(inputNode, fontSize);
     }
 
     /**

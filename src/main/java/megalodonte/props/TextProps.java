@@ -4,7 +4,10 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
-import megalodonte.styles.util.Utils;
+
+import static megalodonte.styles.util.StyleUtils.updateFontSize;
+import static megalodonte.styles.util.StyleUtils.updateFontWeight;
+import static megalodonte.styles.util.StyleUtils.updateTextColor;
 
 public class TextProps extends TextComponentProps<TextProps> {
     private TextTone tone = TextTone.PRIMARY;
@@ -24,11 +27,11 @@ public class TextProps extends TextComponentProps<TextProps> {
         if (!(node instanceof Text t)) return;
 
         if (getFontSize() != null) {
-            Utils.updateFontSize(t, ScaleProvider.scale(getFontSize()));
+            updateFontSize(t, ScaleProvider.scale(getFontSize()));
         }
 
         if(getFontWeight() != null){
-            Utils.updateFontWeight(t, getFontWeight());
+            updateFontWeight(t, getFontWeight());
         }
 
         applyTextStyling(t, theme, (TextProps) props);
@@ -39,12 +42,12 @@ public class TextProps extends TextComponentProps<TextProps> {
      */
     protected void applyTextStyling(javafx.scene.text.Text textNode, ThemeInterface theme, megalodonte.props.TextProps props) {
         String finalTextColor = getFinalTextColor(theme, props);
-        Utils.updateTextColor(textNode, finalTextColor);
+        updateTextColor(textNode, finalTextColor);
 
         int fontSize = props.getFontSize() != null ?
                 ScaleProvider.scale(props.getFontSize()) :
                 theme.typography().body();
-        Utils.updateFontSize(textNode, fontSize);
+        updateFontSize(textNode, fontSize);
     }
 
     /**
