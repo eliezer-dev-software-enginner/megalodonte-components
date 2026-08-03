@@ -1,0 +1,29 @@
+/*
+ * Modena (tema padrão do JavaFX) renderiza .text-field com várias camadas de
+ * background/border empilhadas (cada uma com seu próprio inset) mais um
+ * innershadow, pra simular um bevel "afundado". Overrides inline via
+ * node.setStyle() (InputProps) já tentam neutralizar isso, mas continuam
+ * disputando com as regras do Modena por propriedade — este stylesheet
+ * (origem "author", que tem prioridade sobre o stylesheet "user-agent" do
+ * Modena independente de pseudo-classe/especificidade) zera tudo de uma vez,
+ * deixando só os valores que a aplicação define via InputProps visíveis.
+ * Mesma técnica já usada em text-area.css para corrigir os cantos do TextArea.
+ */
+.text-field {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-effect: null;
+}
+
+.text-field:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-effect: null;
+}

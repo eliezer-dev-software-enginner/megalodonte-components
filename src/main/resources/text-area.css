@@ -1,5 +1,23 @@
+/*
+ * Modena define .text-area (assim como .text-field/.text-input) com 3 camadas
+ * de background empilhadas (-fx-shadow-highlight-color, -fx-text-box-border,
+ * -fx-control-inner-background) em insets diferentes, pra simular um bevel.
+ * Overrides inline via node.setStyle() (InputProps.applyTextAreaTheme) não
+ * conseguem sobrescrever essas 3 camadas de forma confiável (limitação
+ * documentada do JavaFX CSS pra propriedades multi-camada) — por isso a
+ * borda customizada aplicada via Java ficava com um contorno duplo/inconsistente
+ * por baixo. Achatar pra 1 camada só aqui no stylesheet evita esse problema:
+ * a borda real (cor/largura/raio) continua vindo do InputProps, aplicada por
+ * cima disso via inline style, sem mais nenhuma camada do Modena por baixo
+ * pra disputar. Mesma técnica usada em text-field.css.
+ */
 .text-area {
     -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-effect: null;
 }
 
 .text-area .scroll-pane {

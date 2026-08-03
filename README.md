@@ -158,25 +158,32 @@ Without an explicit `fontSize`, text falls back to `theme.typography().body()`.
 
 ## Inputs
 
-All text inputs (`Input`, `TextAreaInput`, `PasswordInput`) extend `InputBase`,
-which wraps the real JavaFX control (`TextField`/`TextArea`/`PasswordField`) in a
-`StackPane` and provides: `.onChange(Function<String, OnChangeResult>)`,
-`.onInitialize(...)` (same shape, runs once when the bound state's initial value is
-applied — e.g. to format a raw stored value for display),
-`.onEnter(Runnable)`, `.left(Node)`/`.right(Node)` (icon/adornment inside the field),
-`.lockCursorToEnd()`, `.onChangeFocus(Consumer<Boolean>)`, `.requestFocus()`.
+`TextAreaInput`/`PasswordInput` extend `InputBase`, which wraps the real JavaFX
+control (`TextArea`/`PasswordField`) in a `StackPane`. **`megalodonte.components.inputs.Input`
+is deprecated** (still works — `text-field.css` neutralizes Modena's border/bevel —
+but it's still a real `TextField` underneath, so it's still exposed to whatever
+Modena does). Use **`megalodonte.components.v2.Input`** for any new single-line
+text field: built from scratch on a plain `Pane` (`Text` for content, `Rectangle`
+for caret/selection, manual key/mouse handling) — no `Control`/`TextInputControl`
+at all underneath, so there's no Modena skin to fight, by construction rather than
+by override. All four (`Input` v1/v2, `TextAreaInput`, `PasswordInput`) share the
+same fluent API: `.onChange(Function<String, OnChangeResult>)`, `.onInitialize(...)`
+(same shape, runs once when the bound state's initial value is applied — e.g. to
+format a raw stored value for display), `.onEnter(Runnable)`, `.left(Node)`/`.right(Node)`
+(icon/adornment inside the field), `.lockCursorToEnd()`, `.onChangeFocus(Consumer<Boolean>)`,
+`.requestFocus()`.
 
 `OnChangeResult.of(displayValue, stateValue)` lets you show a formatted string
 (currency, masked input, ...) while storing a different raw value in the bound
 `State<String>` — see the currency example below.
 
-### `Input`
+### `v2.Input`
 
 ```java
 public static Component searchInput(State<String> stateInput, String placeholder) {
     var icon = FontIcon.of(AntDesignIconsOutlined.SEARCH, 20, Color.web(ThemeManager.theme().colors().secondary()));
-    return new Input(stateInput,
-            new InputProps().placeHolder(placeholder).width(300).height(31))
+    return new megalodonte.components.v2.Input(stateInput,
+            new megalodonte.props.v2.InputProps().placeHolder(placeholder).width(300).height(31))
             .left(icon);
 }
 ```
@@ -209,6 +216,23 @@ final Ref<Input> qtdRef = new Ref<>();
 // ... Components.InputColumnComEnterHandler(label, state, placeholder, onEnter, qtdRef)
 if (qtdRef.current() != null) qtdRef.current().requestFocus();
 ```
+
+`v2.Input` known gaps (not implemented, unlike a real `TextField`): no mouse
+drag-select, no right-click context menu, no IME beyond what `KeyEvent.getCharacter()`
+already delivers as-is — worth testing with accented input (ç, ã, õ, ...) before
+trusting it for free-text fields. Keyboard select-all/extend (Ctrl+A, Shift+arrows)
+and copy/cut/paste (Ctrl+C/X/V) do work.
+
+`megalodonte.props.v2.InputProps`: `placeHolder(String)`, `height/width(int)` —
+**without an explicit size, the field is capped at `Region.USE_PREF_SIZE`** instead
+of stretching to fill a parent `VBox`/`HBox` or a `fitToHeight` `ScrollPane` (same
+reasoning as `InputProps` below — the size constraint has to live on the outer
+`StackPane` node that actually goes into the parent's layout, not on the inner
+`Pane` alone, or nothing caps how far it can stretch), `disable()`, `tone(TextTone)`,
+`bgColor/borderColor(String)`, `borderWidth/borderRadius(int)`, plus everything from
+`TextComponentProps` (`fontSize`, `bold`, `color`/`textColor`).
+
+### `Input` (deprecated)
 
 `InputProps`: `placeHolder(String)`, `height/width(int)` — **without an explicit
 size, both the field and its wrapping `StackPane` are capped at
@@ -307,11 +331,31 @@ programmatically).
 
 ### `Checkbox`
 
-Minimal `CheckBox` wrapper, two-way bound to a `State<Boolean>`:
+Themed `CheckBox` wrapper, two-way bound to a `State<Boolean>`. Unlike a plain
+`javafx.scene.control.CheckBox`, the box and checkmark are recolored from the
+current theme (`theme.colors().primary()` when checked, `theme.colors().surface()`
+otherwise, border from `theme.colors().border()`) instead of the OS-native look:
 
 ```java
 new Checkbox("É uma venda fiada?", vm.isVendaFiada)
 ```
+
+Combine with `ForEachState` + `FlowRow`/`Column`'s `.items(...)` for a reactive list
+of checkboxes instead of manually rebuilding rows on every change, from
+`ProdutoScreen.coresCheckboxes()`:
+
+```java
+var checkboxesPorCor = ForEachState.of(vm.cores, this::corCheckbox);
+
+return new Column().children(
+        new Text("Cores"),
+        new FlowRow(new FlowRowProps().spacingOf(8)).items(checkboxesPorCor)
+);
+```
+
+`CheckboxProps` (extends `TextComponentProps<T>`): `fontSize`, `bold`,
+`color`/`textColor` (applies to the label text; the box/mark colors always come
+from the theme and aren't customizable yet).
 
 ### `DatePicker`
 

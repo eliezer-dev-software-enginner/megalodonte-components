@@ -163,6 +163,11 @@ public class InputProps extends TextComponentProps<InputProps> {
         updateBorderColor(textArea, finalBorderColor);
         updateBorderWidth(textArea, finalBorderWidth);
         applyStyleProperty(textArea, "4px", "-fx-padding");
+        // O bevel de 3 camadas do Modena em .text-area é achatado via
+        // text-area.css (author stylesheet), não aqui — inline setStyle() não
+        // sobrescreve as 3 camadas de -fx-background-color/-fx-background-insets
+        // de forma confiável (limitação documentada do JavaFX CSS pra
+        // propriedades multi-camada; ver TextAreaInput/text-area.css).
 
         if (getFontSize() != null) {
             updateFontSize(textArea, ScaleProvider.scale(getFontSize()));
@@ -216,6 +221,16 @@ public class InputProps extends TextComponentProps<InputProps> {
         // StackPane também precisa do mesmo radius para não clipar as bordas do filho
         updateBorderRadius(stackPane, finalRadius);
         updateBorderColor(stackPane, "transparent");
+
+        // Modena define .text-field com 3 camadas de background empilhadas
+        // (-fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background,
+        // cada uma com seu próprio -fx-background-insets) pra simular um bevel.
+        // setStyle() aqui não sobrescreve essas 3 camadas de forma confiável — é uma
+        // limitação documentada do JavaFX CSS pra propriedades multi-camada (o valor
+        // inline não "cicla" pelas 3 camadas do jeito que cicla numa regra de
+        // stylesheet). Por isso o fix real está em text-field.css (author stylesheet,
+        // achata pra 1 camada só), anexado ao próprio TextField em Input — aqui só
+        // a borda visível (cor/largura/raio) mesmo, que ele complementa.
     }
 
     /**

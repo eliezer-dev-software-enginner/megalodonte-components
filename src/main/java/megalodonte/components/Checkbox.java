@@ -1,32 +1,23 @@
 package megalodonte.components;
 
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import megalodonte.base.state.ReadableState;
-import megalodonte.base.state.State;
 import megalodonte.base.components.Component;
-import megalodonte.props.ButtonProps;
-import megalodonte.props.SelectProps;
+import megalodonte.base.state.State;
+import megalodonte.props.CheckboxProps;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-
-public class Checkbox extends Component  {
+public class Checkbox extends Component {
 
     private final CheckBox javaFxCheckbox;
 
-    public Checkbox(String label,State<Boolean> state) {
-        super(new CheckBox(label));
+    public Checkbox(String label, State<Boolean> state) {
+        this(label, state, new CheckboxProps());
+    }
+
+    public Checkbox(String label, State<Boolean> state, CheckboxProps props) {
+        super(new CheckBox(label), props);
         this.javaFxCheckbox = (CheckBox) this.node;
 
-        javaFxCheckbox.selectedProperty().addListener((_,_,v)->{
-            state.set(v);
-        });
-
-        state.subscribe((stateValue)-> javaFxCheckbox.setSelected(stateValue));
+        javaFxCheckbox.selectedProperty().addListener((obs, old, v) -> state.set(v));
+        state.subscribe(javaFxCheckbox::setSelected);
     }
 }
-

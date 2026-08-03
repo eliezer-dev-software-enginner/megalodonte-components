@@ -158,6 +158,14 @@ public class SelectProps extends TextComponentProps<SelectProps> {
         updateBorderWidth(cBox, finalBorderWidth);
         updateBorderRadius(cBox, finalBorderRadius);
 
+        // Modena renderiza ComboBox com várias camadas de background/border
+        // empilhadas (cada uma com seu próprio inset), mesmo problema documentado
+        // em InputProps.applyInputBorderStyling/DatePickerProps — sem zerar os
+        // insets, a camada padrão do Modena continua visível por baixo da nossa
+        // borda, aparentando uma segunda borda escura por dentro da nossa.
+        applyStyleProperty(cBox, "0", "-fx-background-insets");
+        applyStyleProperty(cBox, "0", "-fx-border-insets");
+
         // Text color via theme tone or inline
         String finalTextColor = getFinalSelectTextColor(theme);
         if (textColor != null && !textColor.isBlank()) {
