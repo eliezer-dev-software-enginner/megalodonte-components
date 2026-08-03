@@ -1,7 +1,12 @@
 package megalodonte.props;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+import javafx.stage.PopupWindow;
+import javafx.stage.Window;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.state.State;
@@ -214,19 +219,120 @@ public class DatePickerProps extends Props {
 
         // Apply text styling for the date picker
         applyDateInputTextStyling(datePicker, theme);
+
+        applyCalendarPopupTheme(datePicker, theme);
     }
 
     /**
-     * Modena's default focus glow around DatePicker/ComboBoxBase-like controls comes
-     * from -fx-focus-color (a saturated blue by default), which clashes with themed
-     * borders. Swaps the border to theme.colors().focusRing() while focused instead.
+     * O popup do calendário (mês/ano, dias) roda numa Scene separada da do
+     * DatePicker (mesmo problema documentado em Select/SelectProps pro popup do
+     * ComboBox) — nada do que a gente aplica no próprio DatePicker chega até lá
+     * por herança normal de CSS. Só dá pra alcançar via {@link Window#getWindows()}
+     * depois que o popup abre, procurando a janela cuja Scene tem ".date-picker-popup".
+     * Os seletores/estrutura (".month-year-pane", ".day-cell", ".selected", ".today",
+     * ".previous-month"/".next-month") vêm do modena.css real (conferido no jar do
+     * JavaFX), não inventados.
+     */
+    private void applyCalendarPopupTheme(DatePicker datePicker, ThemeInterface theme) {
+        datePicker.showingProperty().addListener((obs, wasShowing, isShowing) -> {
+            if (isShowing) {
+                Platform.runLater(() -> styleCalendarPopup(theme));
+            }
+        });
+    }
+
+    private void styleCalendarPopup(ThemeInterface theme) {
+        for (Window window : Window.getWindows()) {
+            if (!(window instanceof PopupWindow)) continue;
+
+            Scene scene = window.getScene();
+            if (scene == null || scene.getRoot() == null) continue;
+
+            Parent root = scene.getRoot();
+            Node popupNode = root.getStyleClass().contains("date-picker-popup")
+                    ? root : root.lookup(".date-picker-popup");
+            if (!(popupNode instanceof Parent popup)) continue;
+
+            updateBackgroundColor(popup, theme.colors().surface());
+
+            for (Node pane : popup.lookupAll(".month-year-pane")) {
+                updateBackgroundColor(pane, theme.colors().primary());
+            }
+            for (Node label : popup.lookupAll(".spinner .label")) {
+                updateTextColor_Input(label, "white");
+            }
+            for (Node arrow : popup.lookupAll(".left-arrow, .right-arrow")) {
+                applyStyleProperty(arrow, "white", "-fx-background-color");
+            }
+            for (Node dayName : popup.lookupAll(".day-name-cell")) {
+                updateBackgroundColor(dayName, theme.colors().surface());
+                updateTextColor_Input(dayName, theme.colors().textSecondary());
+            }
+            for (Node cell : popup.lookupAll(".day-cell")) {
+                wireDayCell(cell, theme);
+            }
+        }
+    }
+
+    /**
+     * A célula do dia sinaliza selecionado/hoje via style class (".selected",
+     * ".today"), não pseudo-classe — então reage-se a mudanças na styleClass list,
+     * mais o hover normal do Node, pra recolorir a cada troca de estado.
+     */
+    private void wireDayCell(Node cell, ThemeInterface theme) {
+        if (Boolean.TRUE.equals(cell.getProperties().get("megalodonte-day-cell-wired"))) {
+            styleDayCell(cell, theme);
+            return;
+        }
+        cell.getProperties().put("megalodonte-day-cell-wired", true);
+
+        styleDayCell(cell, theme);
+        cell.hoverProperty().addListener((obs, was, isHover) -> styleDayCell(cell, theme));
+        cell.getStyleClass().addListener((javafx.collections.ListChangeListener<String>) change -> styleDayCell(cell, theme));
+    }
+
+    private void styleDayCell(Node cell, ThemeInterface theme) {
+        boolean selected = cell.getStyleClass().contains("selected");
+        boolean today = cell.getStyleClass().contains("today");
+        boolean otherMonth = cell.getStyleClass().contains("previous-month") || cell.getStyleClass().contains("next-month");
+
+        String bg;
+        String textColor;
+        String borderColor;
+
+        if (selected) {
+            bg = theme.colors().primary();
+            textColor = "white";
+            borderColor = theme.colors().primary();
+        } else if (cell.isHover()) {
+            bg = theme.colors().hover();
+            textColor = theme.colors().textPrimary();
+            borderColor = theme.colors().border();
+        } else {
+            bg = theme.colors().surface();
+            textColor = otherMonth ? theme.colors().placeholder() : theme.colors().textPrimary();
+            borderColor = today ? theme.colors().primary() : theme.colors().border();
+        }
+
+        updateBackgroundColor(cell, bg);
+        updateTextColor_Input(cell, textColor);
+        updateBorderColor(cell, borderColor);
+    }
+
+    /**
+     * Modena's default focus feedback around DatePicker/ComboBoxBase-like controls
+     * is a soft glow/halo (a dropshadow-ish effect driven by -fx-faint-focus-color),
+     * not just a border color change — mesmo trocando a cor pelo focusRing do tema,
+     * o efeito de "brilho" ao redor continua feio/deslocado do resto da UI. Zera
+     * -fx-faint-focus-color (mata o glow) e mantém só a troca de cor da borda em si
+     * via listener abaixo, que é o único feedback visual de foco desejado.
      */
     private void applyFocusFeedback(DatePicker datePicker, ThemeInterface theme) {
         String restingBorderColor = getFinalBorderColor(theme, borderColor);
         String focusColor = theme.colors().focusRing();
 
         applyStyleProperty(datePicker, focusColor, "-fx-focus-color");
-        applyStyleProperty(datePicker, focusColor, "-fx-faint-focus-color");
+        applyStyleProperty(datePicker, "transparent", "-fx-faint-focus-color");
 
         datePicker.focusedProperty().addListener((obs, wasFocused, isFocused) ->
                 updateBorderColor(datePicker, isFocused ? focusColor : restingBorderColor));

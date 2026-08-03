@@ -16,6 +16,7 @@ import megalodonte.base.components.Component;
 
 import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.updateTextColor_Input;
+import static megalodonte.styles.util.StyleUtils.updateFontSize;
 
 public class Select<T> extends Component  {
 
@@ -75,6 +76,7 @@ public class Select<T> extends Component  {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? "" : mapper.apply(item));
                 updateBackgroundColor(this, "transparent");
+                updateFontSize(this, ThemeManager.theme().typography().small());
             }
         };
     }
@@ -86,6 +88,10 @@ public class Select<T> extends Component  {
         }
 
         ThemeInterface theme = ThemeManager.theme();
+        // O popup do dropdown roda numa Scene separada da do ComboBox (ver
+        // comentário em SelectProps.applyTheme), então -fx-font-size setado
+        // ali não chega até aqui — precisa ser aplicado direto na célula.
+        updateFontSize(cell, theme.typography().small());
         String bg = cell.isSelected() ? theme.colors().selection()
                 : cell.isHover() ? theme.colors().hover()
                 : theme.colors().background();

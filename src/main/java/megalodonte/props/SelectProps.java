@@ -140,7 +140,7 @@ public class SelectProps extends TextComponentProps<SelectProps> {
         if (getFontSize() != null) {
             updateFontSize(cBox, ScaleProvider.scale(getFontSize()));
         } else {
-            int fontSize = theme.typography().body();
+            int fontSize = theme.typography().small();
             updateFontSize(cBox, fontSize);
             updatePlaceholderFontSize(cBox.getEditor(), fontSize);
         }

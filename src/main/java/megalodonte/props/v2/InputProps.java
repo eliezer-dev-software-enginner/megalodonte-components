@@ -23,6 +23,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     private String placeholder;
     private int height;
     private int width;
+    private int maxWidth;
     private TextTone tone = TextTone.PRIMARY;
     private boolean disabled;
 
@@ -48,6 +49,11 @@ public class InputProps extends TextComponentProps<InputProps> {
 
     public InputProps width(int width) {
         this.width = width;
+        return this;
+    }
+
+    public InputProps maxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
         return this;
     }
 
@@ -122,6 +128,10 @@ public class InputProps extends TextComponentProps<InputProps> {
             outer.setMaxWidth(scaled);
         } else {
             outer.setMaxWidth(Region.USE_PREF_SIZE);
+        }
+
+        if (maxWidth > 0) {
+            outer.setMaxWidth(ScaleProvider.scale(maxWidth));
         }
 
         if (disabled) {

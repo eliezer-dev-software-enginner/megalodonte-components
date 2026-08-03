@@ -58,6 +58,7 @@ public class Input extends Component {
     private String value = "";
     private int caretIndex = 0;
     private int selectionAnchor = -1;
+    private double scrollOffset = 0;
 
     private boolean internalChange = false;
     private boolean lockCursorToEnd = false;
@@ -109,6 +110,14 @@ public class Input extends Component {
         surface.getChildren().addAll(placeholderNode, selectionRect, textNode, caret, measurer);
         outer.getChildren().add(surface);
 
+        // Pane não corta filhos que ultrapassam seus próprios limites por
+        // padrão — sem isso, texto/caret que passam da largura fixada do
+        // campo vazam visualmente pra fora da borda.
+        var clip = new Rectangle();
+        clip.widthProperty().bind(surface.widthProperty());
+        clip.heightProperty().bind(surface.heightProperty());
+        surface.setClip(clip);
+
         caretBlink = new Timeline(new KeyFrame(Duration.millis(530), e -> caret.setVisible(!caret.isVisible())));
         caretBlink.setCycleCount(Timeline.INDEFINITE);
 
@@ -116,6 +125,7 @@ public class Input extends Component {
         setupMouseHandling();
         setupKeyHandling();
         surface.heightProperty().addListener((obs, old, h) -> layoutContent());
+        surface.widthProperty().addListener((obs, old, w) -> layoutContent());
 
         if (props != null) props.apply(node);
 
@@ -250,7 +260,7 @@ public class Input extends Component {
     }
 
     private int indexAt(double clickX) {
-        double x = clickX - leftPad;
+        double x = clickX - leftPad + scrollOffset;
         if (x <= 0) return 0;
         for (int i = 0; i <= value.length(); i++) {
             double w = widthOf(value.substring(0, i));
@@ -296,21 +306,45 @@ public class Input extends Component {
     private void layoutContent() {
         textNode.setText(value);
         placeholderNode.setVisible(value.isEmpty());
-        textNode.setLayoutX(leftPad);
         placeholderNode.setLayoutX(leftPad);
 
         double centerY = surface.getHeight() > 0 ? surface.getHeight() / 2.0 : 15;
-        textNode.setLayoutY(centerY);
         placeholderNode.setLayoutY(centerY);
+        textNode.setLayoutY(centerY);
         caret.setY(centerY - caret.getHeight() / 2.0);
         selectionRect.setY(centerY - selectionRect.getHeight() / 2.0);
 
-        double caretX = leftPad + widthOf(value.substring(0, Math.min(caretIndex, value.length())));
-        caret.setX(caretX);
+        // Rola o texto horizontalmente pra manter o caret sempre visível
+        // dentro da área útil (largura do campo menos o padding) — sem isso,
+        // digitar além da largura fixada deixa o texto/caret escondidos atrás
+        // do clip em vez de "empurrar" o conteúdo visível, como um TextField
+        // de verdade faz.
+        double caretXUnscrolled = widthOf(value.substring(0, Math.min(caretIndex, value.length())));
+        double visibleWidth = Math.max(0, surface.getWidth() - leftPad - rightPad);
+
+        if (caretXUnscrolled - scrollOffset > visibleWidth) {
+            scrollOffset = caretXUnscrolled - visibleWidth;
+        }
+        if (caretXUnscrolled - scrollOffset < 0) {
+            scrollOffset = caretXUnscrolled;
+        }
+
+        // Trava de segurança independente do rastreamento do caret acima:
+        // scrollOffset nunca pode passar do necessário pro comprimento ATUAL
+        // do texto. Sem isso, um scrollOffset "herdado" de um valor bem mais
+        // longo (ex: colar uma string gigante e depois apagar tudo de uma vez
+        // via seleção) podia deixar layoutX = leftPad - scrollOffset negativo,
+        // empurrando o texto pra trás do ícone à esquerda.
+        double maxScroll = Math.max(0, widthOf(value) - visibleWidth);
+        scrollOffset = Math.min(scrollOffset, maxScroll);
+        scrollOffset = Math.max(0, scrollOffset);
+
+        textNode.setLayoutX(leftPad - scrollOffset);
+        caret.setX(leftPad + caretXUnscrolled - scrollOffset);
 
         if (hasSelection()) {
-            double startX = leftPad + widthOf(value.substring(0, selectionStart()));
-            double endX = leftPad + widthOf(value.substring(0, selectionEnd()));
+            double startX = leftPad + widthOf(value.substring(0, selectionStart())) - scrollOffset;
+            double endX = leftPad + widthOf(value.substring(0, selectionEnd())) - scrollOffset;
             selectionRect.setX(startX);
             selectionRect.setWidth(endX - startX);
             selectionRect.setVisible(true);
@@ -382,12 +416,18 @@ public class Input extends Component {
 
         state.subscribe(v -> {
             if (internalChange) return;
+            // Guard de internalChange acima já filtra a auto-notificação de
+            // uma digitação (state.set(...) disparado de dentro de
+            // notifyChange() com internalChange=true) — então esse listener só
+            // roda mesmo pra mudanças externas de state (valor inicial, reset
+            // de formulário, carregar registro pra edição). Nesses casos o
+            // caret sempre vai pro final, não pro início.
             if (onInitialize != null) {
                 applyInitialFormat(v);
             } else {
                 internalChange = true;
                 value = v == null ? "" : v;
-                caretIndex = lockCursorToEnd ? value.length() : Math.min(caretIndex, value.length());
+                caretIndex = value.length();
                 internalChange = false;
             }
             layoutContent();
@@ -400,7 +440,7 @@ public class Input extends Component {
         if (result != null) {
             internalChange = true;
             value = result.getDisplayValue() != null ? result.getDisplayValue() : "";
-            caretIndex = lockCursorToEnd ? value.length() : 0;
+            caretIndex = value.length();
             if (result.getStateValue() != null && !result.getStateValue().equals(v) && state != null) {
                 state.set(result.getStateValue());
             }
