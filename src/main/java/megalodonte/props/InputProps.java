@@ -18,6 +18,8 @@ public class InputProps extends TextComponentProps<InputProps> {
     private String placeholder;
     private int height;
     private int width;
+    private int minHeight;
+    private int maxHeight;
 
     private TextTone tone = TextTone.PRIMARY;
 
@@ -37,6 +39,24 @@ public class InputProps extends TextComponentProps<InputProps> {
 
     public InputProps width(int width){
         this.width = width;
+        return this;
+    }
+
+    /**
+     * Só tem efeito em {@link megalodonte.components.inputs.TextAreaInput} (TextArea
+     * de várias linhas) e só quando {@link #height(int)} NÃO for usado — os dois são
+     * modos alternativos: {@code height} trava um tamanho fixo, {@code minHeight}/
+     * {@link #maxHeight(int)} deixam a caixa crescer com o conteúdo dentro desse
+     * intervalo (rola por dentro só depois de passar do máximo).
+     */
+    public InputProps minHeight(int minHeight){
+        this.minHeight = minHeight;
+        return this;
+    }
+
+    /** Ver {@link #minHeight(int)}. */
+    public InputProps maxHeight(int maxHeight){
+        this.maxHeight = maxHeight;
         return this;
     }
 
@@ -178,6 +198,8 @@ public class InputProps extends TextComponentProps<InputProps> {
             textArea.setPrefHeight(scaled);
             textArea.setMinHeight(scaled);
             textArea.setMaxHeight(scaled);
+        } else if (maxHeight > 0) {
+            growWithContentUpToMax(textArea, minHeight, maxHeight);
         } else {
             // Same reasoning as Input's height branch above.
             textArea.setMaxHeight(Region.USE_PREF_SIZE);
@@ -199,6 +221,50 @@ public class InputProps extends TextComponentProps<InputProps> {
         }
 
         applyInputTextStyling(textArea, theme, props);
+    }
+
+    /**
+     * TextArea nativo não cresce sozinho com o conteúdo — sem {@code prefRowCount}
+     * explícito, a altura preferida fica travada em ~2 linhas pra sempre, não importa
+     * quanto texto tenha dentro (só rola por dentro). Pra imitar um textarea que
+     * cresce até um teto, medimos o texto atual com um {@link Text} auxiliar (mesma
+     * técnica já usada em {@code v2.Input} pro caret/scroll horizontal) do mesmo jeito
+     * que ele vai quebrar linha dentro do TextArea (largura igual, wrapping ligado), e
+     * recalculamos {@code prefHeight} a cada mudança de texto ou de largura,
+     * limitado entre {@code minHeight} e {@code maxHeight}.
+     */
+    private void growWithContentUpToMax(TextArea textArea, int minHeightRaw, int maxHeightRaw) {
+        double minH = ScaleProvider.scale(minHeightRaw > 0 ? minHeightRaw : 60);
+        double maxH = ScaleProvider.scale(maxHeightRaw);
+        double vPadding = 24; // borda + padding interno do TextArea (ver -fx-padding acima)
+
+        textArea.setMinHeight(minH);
+        textArea.setMaxHeight(maxH);
+
+        var measurer = new javafx.scene.text.Text();
+        measurer.setFont(textArea.getFont());
+        measurer.setWrappingWidth(Math.max(0, textArea.getWidth() - 12));
+
+        Runnable recalc = () -> {
+            String value = textArea.getText();
+            measurer.setText(value == null || value.isEmpty() ? " " : value);
+            double needed = measurer.getLayoutBounds().getHeight() + vPadding;
+            textArea.setPrefHeight(Math.max(minH, Math.min(maxH, needed)));
+        };
+
+        textArea.fontProperty().addListener((obs, old, font) -> {
+            measurer.setFont(font);
+            recalc.run();
+        });
+        textArea.textProperty().addListener((obs, old, v) -> recalc.run());
+        textArea.widthProperty().addListener((obs, old, w) -> {
+            measurer.setWrappingWidth(Math.max(0, w.doubleValue() - 12));
+            recalc.run();
+        });
+
+        // Na primeira aplicação a largura real do TextArea ainda não existe (layout
+        // do pai só roda depois) — adia o primeiro cálculo pro próximo pulse.
+        javafx.application.Platform.runLater(recalc);
     }
 
     /**

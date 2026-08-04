@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import megalodonte.base.UI;
 import megalodonte.base.components.Component;
 import megalodonte.base.state.State;
+import megalodonte.components.FocusableFieldInterface;
 import megalodonte.components.inputs.OnChangeResult;
 import megalodonte.props.v2.InputProps;
 
@@ -41,7 +42,7 @@ import java.util.function.Function;
  * (clique-direito). Copiar/colar/recortar e seleção via teclado (Shift+setas,
  * Ctrl+A) funcionam.
  */
-public class Input extends Component {
+public class Input extends Component implements FocusableFieldInterface<Input> {
 
     private final StackPane outer;
     private final Pane surface;
@@ -373,6 +374,7 @@ public class Input extends Component {
 
     private Consumer<Boolean> onChangeFocusHandler;
 
+    @Override
     public Input onChangeFocus(Consumer<Boolean> eventHandler) {
         this.onChangeFocusHandler = eventHandler;
         return this;
@@ -407,6 +409,7 @@ public class Input extends Component {
         layoutContent();
     }
 
+    @Override
     public void requestFocus() {
         UI.runOnUi(surface::requestFocus);
     }
