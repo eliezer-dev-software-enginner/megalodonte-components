@@ -15,9 +15,15 @@ import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 public class ColumnProps extends LayoutProps<ColumnProps> {
     private boolean fillHeight;
     private boolean fillWidth;
+    protected String bgColor;
 
     private enum Alignment {CENTER_HORIZONTALLY, CENTER_VERTICALLY}
     private Alignment alignment;
+
+    public ColumnProps bgColor(String bgColor) {
+        this.bgColor = bgColor;
+        return this;
+    }
 
     public ColumnProps centerHorizontally() {
         alignment = Alignment.CENTER_HORIZONTALLY;
@@ -71,9 +77,9 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
                 HBox.setHgrow(node, Priority.ALWAYS);
             }
 
-           //byte type = (byte) (bgImage != null? 1 : 0);
-            // Apply all common theme-aware styling
-           // applyBackgroundStyling(node, theme,  bgImage != null? bgImage : bgColor, type);
+            if (bgColor != null) {
+                applyBackgroundStyling(node, theme, bgColor);
+            }
         }
     }
 }
