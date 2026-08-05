@@ -2,6 +2,7 @@ package megalodonte.components;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import megalodonte.base.components.Component;
 import megalodonte.base.theme.ThemeManager;
 
@@ -49,6 +50,14 @@ public class MenuBar extends Component {
 
     public List<Menu> getMenus() {
         return new ArrayList<>(menus);
+    }
+
+    /** Docks an arbitrary component (e.g. a theme-toggle icon) at the far right of the bar, after every menu added so far. */
+    public MenuBar trailing(Component component) {
+        SpacerHorizontal spacer = new SpacerHorizontal().fill();
+        HBox.setHgrow(spacer.getNode(), Priority.ALWAYS);
+        this.bar.getChildren().addAll(spacer.getNode(), component.getNode());
+        return this;
     }
 
     public static MenuBar of() {
