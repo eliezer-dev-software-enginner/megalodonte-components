@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.styles.util.StyleUtils;
@@ -13,6 +14,7 @@ import static megalodonte.styles.util.StyleUtils.applyBackgroundStyling;
 public class RowProps extends LayoutProps<RowProps> {
     protected String bgColor;
     protected boolean fillWidth;
+    private boolean fillHeight = false;
 
     public RowProps bgColor(String bgColor) {
         this.bgColor = bgColor;
@@ -22,6 +24,16 @@ public class RowProps extends LayoutProps<RowProps> {
     public RowProps fillWidth(){
         fillWidth = true;
         return this;
+    }
+
+    /** Deixa a Row esticar verticalmente se o pai (uma VBox) oferecer mais espaço, em vez de travar na altura preferida dos filhos (comportamento padrão, ver {@link megalodonte.components.layout_components.Row}). */
+    public RowProps fillHeight() {
+        this.fillHeight = true;
+        return this;
+    }
+
+    public boolean hasFillHeight() {
+        return fillHeight;
     }
 
     @Override
@@ -48,6 +60,11 @@ public class RowProps extends LayoutProps<RowProps> {
 
             if(fillWidth){
                 HBox.setHgrow(hBox, Priority.ALWAYS);
+            }
+
+            if (fillHeight) {
+                hBox.setMaxHeight(Double.MAX_VALUE);
+                VBox.setVgrow(hBox, Priority.ALWAYS);
             }
 
             if(bgColor != null){

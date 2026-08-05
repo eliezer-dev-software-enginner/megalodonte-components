@@ -29,12 +29,16 @@ public class Row extends Component  implements LayoutComponent {
         // 1. Ocupa toda a largura disponível (Largura Máxima Infinita)
         this.nodeInternal.setMaxWidth(Double.MAX_VALUE);
 
-        // 2. Trava a altura vertical estritamente no tamanho calculado dos filhos
-        this.nodeInternal.setMinHeight(Region.USE_PREF_SIZE);
-        this.nodeInternal.setMaxHeight(Region.USE_PREF_SIZE);
-
-        // 3. Garante que se o pai for uma VBox, ele nunca vai esticar esta Row verticalmente
-        VBox.setVgrow(this.nodeInternal, Priority.NEVER);
+        // 2/3. Por padrão, trava a altura vertical estritamente no tamanho calculado
+        // dos filhos e garante que, se o pai for uma VBox, ele nunca vai esticar esta
+        // Row verticalmente. Quando RowProps.fillHeight() foi pedido, RowProps.applyTheme
+        // já configurou o oposto (maxHeight ilimitado + Vgrow ALWAYS) durante o super(...)
+        // acima — não pisamos nisso aqui.
+        if (!rowProps.hasFillHeight()) {
+            this.nodeInternal.setMinHeight(Region.USE_PREF_SIZE);
+            this.nodeInternal.setMaxHeight(Region.USE_PREF_SIZE);
+            VBox.setVgrow(this.nodeInternal, Priority.NEVER);
+        }
     }
 
     public Row r_child(Component component){
