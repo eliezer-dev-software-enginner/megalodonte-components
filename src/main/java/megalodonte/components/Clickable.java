@@ -19,11 +19,21 @@ public class Clickable extends Component {
     private Timeline opacityAnimation;
     private Runnable onClick;
 
+    /**
+     * @deprecated pass {@code onClick} via the fluent {@link #onClick(Runnable)}
+     * instead — {@code new Clickable(content).onClick(() -> ...)}. Use
+     * {@link #Clickable(Component)} for the constructor.
+     */
+    @Deprecated
     public Clickable(Component content, Runnable onClick) {
+        this(content);
+        this.onClick = onClick;
+    }
+
+    public Clickable(Component content) {
         super(new StackPane(), null);
 
         this.container = (StackPane) node;
-        this.onClick = onClick;
 
         // Configurar comportamento do StackPane
         setupContainerBehavior();
@@ -33,6 +43,12 @@ public class Clickable extends Component {
 
         // Configurar handlers de mouse
         setupMouseHandlers();
+    }
+
+    /** Fluent — chain after the constructor: {@code new Clickable(content).onClick(() -> ...)}. */
+    public Clickable onClick(Runnable onClick) {
+        this.onClick = onClick;
+        return this;
     }
 
     private void setupContainerBehavior() {

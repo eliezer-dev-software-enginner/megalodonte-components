@@ -46,7 +46,7 @@ public class Menu {
         var triggerContainer = new Container(new ContainerProps().paddingAll(8)).children(label);
         addHoverHighlight(triggerContainer.getNode(), theme);
 
-        this.trigger = new Clickable(triggerContainer, this::toggle);
+        this.trigger = new Clickable(triggerContainer).onClick(this::toggle);
 
         popup.setAutoHide(true);
         popup.setOnAutoHide(e -> {
@@ -133,7 +133,7 @@ public class Menu {
                 .children(new Text(item.getTitle(), new TextProps().textColor(theme.colors().textPrimary())));
         addHoverHighlight(itemContainer.getNode(), theme);
 
-        var clickable = new Clickable(itemContainer, () -> {
+        var clickable = new Clickable(itemContainer).onClick(() -> {
             popup.hide();
             item.run();
         });
