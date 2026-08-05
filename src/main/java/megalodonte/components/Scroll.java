@@ -8,6 +8,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
 
+import static megalodonte.styles.util.StyleUtils.applyStyleProperty;
 import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.updateBorderColor;
 
@@ -22,10 +23,34 @@ public class Scroll extends Component  {
 
         updateBackgroundColor(scrollPane, "transparent");
         updateBorderColor(scrollPane, "transparent");
+        // Modena's ".scroll-pane .viewport" rule paints its own opaque
+        // background (-fx-control-inner-background, white by default),
+        // independent of the ScrollPane's own -fx-background-color above - so
+        // without this, the ScrollPane's content area stays hardcoded white/light
+        // regardless of theme no matter what color the ScrollPane control itself
+        // is given. "-fx-background" is the looked-up color several of Modena's
+        // built-in skins (including the viewport) fall back to; making the skin
+        // apply it here is override, not a lucky reference. transparentizeViewport
+        // additionally targets ".viewport" directly once the skin exists, in case
+        // a given JavaFX version's viewport rule doesn't chain through it.
+        applyStyleProperty(scrollPane, "transparent", "-fx-background");
+        transparentizeViewport(scrollPane);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         this.scrollPane.setFitToWidth(true);
         this.scrollPane.setContent(component.getJavaFxNode());
         confineScrollEvents(scrollPane);
+    }
+
+    private static void transparentizeViewport(ScrollPane scrollPane) {
+        scrollPane.skinProperty().addListener((obs, oldSkin, newSkin) -> applyViewportBackground(scrollPane));
+        applyViewportBackground(scrollPane);
+    }
+
+    private static void applyViewportBackground(ScrollPane scrollPane) {
+        Node viewport = scrollPane.lookup(".viewport");
+        if (viewport != null) {
+            applyStyleProperty(viewport, "transparent", "-fx-background-color");
+        }
     }
 
     /**
