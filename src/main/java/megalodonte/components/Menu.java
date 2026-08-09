@@ -5,12 +5,15 @@ import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import megalodonte.base.components.Component;
+import megalodonte.base.components.IconInterface;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.base.theme.ThemeManager;
 import megalodonte.components.layout_components.Column;
 import megalodonte.components.layout_components.Container;
+import megalodonte.components.layout_components.Row;
 import megalodonte.props.ColumnProps;
 import megalodonte.props.ContainerProps;
+import megalodonte.props.RowProps;
 import megalodonte.props.TextProps;
 
 import java.util.ArrayList;
@@ -57,6 +60,10 @@ public class Menu {
     public Menu addItem(MenuItem item) {
         items.add(item);
         return this;
+    }
+
+    public Menu item(IconInterface icon, String title, Runnable action) {
+        return addItem(new MenuItem(icon, title, action));
     }
 
     public Menu item(MenuItem item) {
@@ -129,8 +136,14 @@ public class Menu {
     }
 
     private Component menuItemRow(MenuItem item, ThemeInterface theme) {
+        Text label = new Text(item.getTitle(), new TextProps().textColor(theme.colors().textPrimary()));
+
+        Component content = item.getIcon() != null
+                ? new Row(new RowProps()).children(Component.CreateFromJavaFxNode(item.getIcon().getNode()), label)
+                : label;
+
         var itemContainer = new Container(new ContainerProps().paddingAll(8))
-                .children(new Text(item.getTitle(), new TextProps().textColor(theme.colors().textPrimary())));
+                .children(content);
         addHoverHighlight(itemContainer.getNode(), theme);
 
         var clickable = new Clickable(itemContainer).onClick(() -> {
