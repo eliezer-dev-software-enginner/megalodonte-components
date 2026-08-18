@@ -23,6 +23,7 @@ import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.updateBorderColor;
 import static megalodonte.styles.util.StyleUtils.updateBorderRadius;
 import static megalodonte.styles.util.StyleUtils.updateBorderWidth;
+import static megalodonte.styles.util.StyleUtils.updateTextColor;
 
 /**
  * Menu suspenso (dropdown) próprio, sem depender de javafx.scene.control.Menu —
@@ -84,6 +85,18 @@ public class Menu {
 
     public void setTitle(String title) {
         triggerLabel.setText(title);
+    }
+
+    /**
+     * Sobrescreve a cor padrão do título ({@code theme.colors().textPrimary()}) — útil quando a
+     * MenuBar tem um fundo escuro custom. Precisa ir pelo mesmo mecanismo de estilo inline
+     * ({@code -fx-fill}) que {@code TextProps} usa na construção — um {@code setFill()} direto
+     * é sobrescrito de volta pelo próximo processamento de CSS do JavaFX, porque o estilo
+     * inline já aplicado tem prioridade mais alta que uma propriedade setada via API.
+     */
+    public Menu textColor(String color) {
+        updateTextColor(triggerLabel, color);
+        return this;
     }
 
     Component getTrigger() {

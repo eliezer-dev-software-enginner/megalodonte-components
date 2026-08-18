@@ -20,6 +20,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
 
     //----------------States
     private ReadableState<String> bgColorState;
+    private ReadableState<String> textColorState;
 
 
     // Fluent API methods
@@ -58,6 +59,11 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     @Override
     public ButtonProps textColor(String color) {
         return super.textColor(color);
+    }
+
+    public ButtonProps textColor(ReadableState<String> textColorState) {
+        this.textColorState = textColorState;
+        return this;
     }
 
     private String variant = "primary";
@@ -182,12 +188,10 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             button.setMaxHeight(scaled);
         }
 
-        String finalTextColor = getButtonTextColor((ButtonProps) props, theme);
-
-        if (textColor != null) {
-            applyColor(node, textColor, FX_TEXT_FILL);
-        } else {
-            applyColor(node, finalTextColor, FX_TEXT_FILL);
+        // textColor só aplica estaticamente se não há state reativo controlando
+        if (textColorState == null) {
+            String finalTextColor = getButtonTextColor((ButtonProps) props, theme);
+            applyColor(node, textColor != null ? textColor : finalTextColor, FX_TEXT_FILL);
         }
 
         // bgColor só aplica se não há state reativo controlando
@@ -206,6 +210,9 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     protected void bindStates(Node node) {
         bind(node, bgColorState, color ->
                 applyColor(node, color, FX_BG_COLOR)
+        );
+        bind(node, textColorState, color ->
+                applyColor(node, color, FX_TEXT_FILL)
         );
     }
 }

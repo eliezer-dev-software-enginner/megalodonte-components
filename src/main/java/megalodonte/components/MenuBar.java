@@ -40,6 +40,12 @@ public class MenuBar extends Component {
         return addMenu(menu);
     }
 
+    /** Sobrescreve o fundo padrão ({@code theme.colors().surface()}) — útil pra combinar com outra área da UI (ex.: sidebar escura). */
+    public MenuBar bgColor(String color) {
+        updateBackgroundColor(bar, color);
+        return this;
+    }
+
     public MenuBar menu(String title, MenuItem... items) {
         Menu menu = new Menu(title);
         for (MenuItem item : items) {
