@@ -40,7 +40,10 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
 
-        this.tableView.setMaxHeight(Double.MAX_VALUE); // <- libera crescimento vertical
+        // maxHeight (livre por padrão, ou o teto de SimpleTableProps.maxHeight) já foi
+        // aplicado por props.apply(node) dentro do super(...) acima — ver
+        // SimpleTableProps.applyContainerStyling. Setar de novo aqui sempre sobrescreveria
+        // um teto customizado de volta pro padrão, incondicionalmente.
         this.tableView.setMinWidth(0);   // <- não deixa o piso das colunas virar o piso da página
         // Piso mínimo de altura: sem isso, dentro de um ScrollPane com fitToHeight,
         // a tabela encolhe pra caber no viewport em vez de nunca ultrapassá-lo — e

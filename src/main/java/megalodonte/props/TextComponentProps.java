@@ -10,6 +10,7 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
     protected ReadableState<Integer> fontSizeState;
     protected String fontWeight;
     protected String textColor;
+    protected String fontFamily;
 
     public T fontSize(int fontSize) {
         this.fontSize = fontSize;
@@ -43,6 +44,21 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
         return fontWeight;
     }
 
+    /** Ex.: {@code "'Courier New', monospace"} — qualquer valor CSS válido de font-family. */
+    public T fontFamily(String fontFamily) {
+        this.fontFamily = fontFamily;
+        return (T) this;
+    }
+
+    public String getFontFamily() {
+        return fontFamily;
+    }
+
+    protected void applyFontFamily(Node node) {
+        if (fontFamily != null && !fontFamily.isBlank()) {
+            applyStyleProperty(node, fontFamily, "-fx-font-family");
+        }
+    }
 
     public T color(String color) {
         this.textColor = color;

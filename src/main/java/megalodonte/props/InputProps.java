@@ -3,8 +3,10 @@ package megalodonte.props;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.theme.ThemeInterface;
 
@@ -71,6 +73,28 @@ public class InputProps extends TextComponentProps<InputProps> {
         return this;
     }
 
+    private boolean editable = true;
+
+    /** {@code false} deixa o texto só-leitura (selecionável/copiável, mas não editável). */
+    public InputProps editable(boolean editable) {
+        this.editable = editable;
+        return this;
+    }
+
+    private boolean fillHeight;
+
+    /**
+     * Só tem efeito em {@link megalodonte.components.inputs.TextAreaInput} — estica pra
+     * preencher a altura que o pai oferecer (VBox.setVgrow ALWAYS + sem teto de altura),
+     * em vez de travar na altura preferida do conteúdo. Alternativa a {@link #height(int)}/
+     * {@link #maxHeight(int)}, pro caso de um viewer que deve ocupar o espaço disponível da
+     * tela (ex.: um log inteiro) em vez de crescer/rolar com um teto fixo.
+     */
+    public InputProps fillHeight() {
+        this.fillHeight = true;
+        return this;
+    }
+
     protected String bgColor;
     protected String borderColor;
     protected int borderWidth;
@@ -123,6 +147,8 @@ public class InputProps extends TextComponentProps<InputProps> {
         if(disabled){
             input.setDisable(true);
         }
+
+        input.setEditable(editable);
 
         if (placeholder != null) {
             input.setPromptText(placeholder);
@@ -193,6 +219,9 @@ public class InputProps extends TextComponentProps<InputProps> {
             updateFontSize(textArea, ScaleProvider.scale(getFontSize()));
         }
 
+        applyFontFamily(textArea);
+        textArea.setEditable(editable);
+
         if (height > 0) {
             double scaled = ScaleProvider.scale(height);
             textArea.setPrefHeight(scaled);
@@ -200,6 +229,10 @@ public class InputProps extends TextComponentProps<InputProps> {
             textArea.setMaxHeight(scaled);
         } else if (maxHeight > 0) {
             growWithContentUpToMax(textArea, minHeight, maxHeight);
+        } else if (fillHeight) {
+            textArea.setMinHeight(Region.USE_COMPUTED_SIZE);
+            textArea.setMaxHeight(Double.MAX_VALUE);
+            VBox.setVgrow(textArea, Priority.ALWAYS);
         } else {
             // Same reasoning as Input's height branch above.
             textArea.setMaxHeight(Region.USE_PREF_SIZE);
@@ -210,6 +243,11 @@ public class InputProps extends TextComponentProps<InputProps> {
             textArea.setPrefWidth(scaled);
             textArea.setMinWidth(scaled);
             textArea.setMaxWidth(scaled);
+        } else if (fillHeight) {
+            // Ecoa o mesmo raciocínio do teto de altura acima: sem isso, um viewer em
+            // fillHeight ainda fica travado na largura do conteúdo em vez de esticar
+            // pra ocupar a largura real da tela.
+            textArea.setMaxWidth(Double.MAX_VALUE);
         }
 
         if(disabled){

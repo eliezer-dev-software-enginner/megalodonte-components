@@ -27,10 +27,18 @@ public class SimpleTableProps extends Props {
     protected String separatorColor;
     protected int headerHeight;
     protected Double maxWidth;
+    protected Double maxHeight;
 
     public SimpleTableProps() {}
 
     public SimpleTableProps maxWidth(double maxWidth) { this.maxWidth = maxWidth; return this; }
+
+    /**
+     * Teto de altura — sem isso a tabela cresce livremente pra preencher todo o espaço
+     * vertical disponível (comportamento padrão, ver {@link #applyContainerStyling}). Acima
+     * do teto a tabela rola por dentro sozinha (comportamento nativo do TableView).
+     */
+    public SimpleTableProps maxHeight(double maxHeight) { this.maxHeight = maxHeight; return this; }
 
     public SimpleTableProps bgColor(String bgColor) { this.bgColor = bgColor; return this; }
     public SimpleTableProps headerBgColor(String headerBgColor) { this.headerBgColor = headerBgColor; return this; }
@@ -75,6 +83,12 @@ public class SimpleTableProps extends Props {
         if (maxWidth != null) {
             tableView.setMaxWidth(ScaleProvider.scale(maxWidth));
         }
+
+        // Teto de altura customizado, ou libera crescimento vertical por padrão (mesmo
+        // default que SimpleTable já tinha hardcoded no construtor — movido pra cá porque
+        // Props.apply() roda no super(...) do Component, antes do resto do construtor de
+        // SimpleTable: um valor fixo lá depois SEMPRE sobrescrevia o que os Props setassem).
+        tableView.setMaxHeight(maxHeight != null ? ScaleProvider.scale(maxHeight) : Double.MAX_VALUE);
 
         if (borderWidth > 0) {
             String finalBorderColor = getFinalBorderColor(theme, borderColor);
