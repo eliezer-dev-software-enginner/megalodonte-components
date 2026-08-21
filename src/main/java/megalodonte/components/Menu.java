@@ -45,10 +45,10 @@ public class Menu {
         var theme = ThemeManager.theme();
 
         Text label = new Text(title, new TextProps().textColor(theme.colors().textPrimary()).bold());
-        this.triggerLabel = (javafx.scene.text.Text) label.getNode();
+        this.triggerLabel = (javafx.scene.text.Text) label.getJavaFxNode();
 
         var triggerContainer = new Container(new ContainerProps().paddingAll(8)).children(label);
-        addHoverHighlight(triggerContainer.getNode(), theme);
+        addHoverHighlight(triggerContainer.getJavaFxNode(), theme);
 
         this.trigger = new Clickable(triggerContainer).onClick(this::toggle);
 
@@ -112,9 +112,9 @@ public class Menu {
             currentlyOpen.hide();
         }
 
-        popup.getContent().setAll(buildDropdown().getNode());
+        popup.getContent().setAll(buildDropdown().getJavaFxNode());
 
-        Node triggerNode = trigger.getNode();
+        Node triggerNode = trigger.getJavaFxNode();
         Point2D screenPoint = triggerNode.localToScreen(0, triggerNode.getBoundsInLocal().getHeight());
         popup.show(triggerNode, screenPoint.getX(), screenPoint.getY());
         currentlyOpen = popup;
@@ -138,7 +138,7 @@ public class Menu {
         // layout, isso fazia a janela do popup "pulsar"/reposicionar a cada
         // passada de mouse. Aqui a sombra é fixa (não reage a hover).
         var wrapper = new Container(new ContainerProps().paddingAll(4)).children(column);
-        var wrapperNode = wrapper.getNode();
+        var wrapperNode = wrapper.getJavaFxNode();
         updateBackgroundColor(wrapperNode, theme.colors().surface());
         updateBorderRadius(wrapperNode, theme.border().radiusMd());
         updateBorderColor(wrapperNode, theme.colors().border());
@@ -152,12 +152,12 @@ public class Menu {
         Text label = new Text(item.getTitle(), new TextProps().textColor(theme.colors().textPrimary()));
 
         Component content = item.getIcon() != null
-                ? new Row(new RowProps()).children(Component.CreateFromJavaFxNode(item.getIcon().getNode()), label)
+                ? new Row(new RowProps()).children(Component.CreateFromJavaFxNode(item.getIcon().getJavaFxNode()), label)
                 : label;
 
         var itemContainer = new Container(new ContainerProps().paddingAll(8))
                 .children(content);
-        addHoverHighlight(itemContainer.getNode(), theme);
+        addHoverHighlight(itemContainer.getJavaFxNode(), theme);
 
         var clickable = new Clickable(itemContainer).onClick(() -> {
             popup.hide();
@@ -167,7 +167,7 @@ public class Menu {
         // querer em outros usos) — aqui a gente quer o oposto: a linha precisa
         // esticar até a largura da Column, senão o fundo do hover só cobre o
         // texto em vez da linha inteira.
-        ((Region) clickable.getNode()).setMaxWidth(Double.MAX_VALUE);
+        ((Region) clickable.getJavaFxNode()).setMaxWidth(Double.MAX_VALUE);
         return clickable;
     }
 

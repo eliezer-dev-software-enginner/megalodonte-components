@@ -42,16 +42,16 @@ public class Row extends Component  implements LayoutComponent {
     }
 
     public Row r_child(Component component){
-        this.nodeInternal.getChildren().add(component.getNode());
+        this.nodeInternal.getChildren().add(component.getJavaFxNode());
 
         if (component instanceof SpacerHorizontal c) {
-            HBox.setHgrow(c.getNode(), Priority.ALWAYS);
+            HBox.setHgrow(c.getJavaFxNode(), Priority.ALWAYS);
         }
 
 //        if (component.props instanceof megalodonte.props.ButtonProps buttonProps) {
 //            javafx.geometry.Insets margins = buttonProps.getMargins();
 //            if (margins != null) {
-//                HBox.setMargin(component.getNode(), margins);
+//                HBox.setMargin(component.getJavaFxNode(), margins);
 //            }
 //        }
 
@@ -89,14 +89,14 @@ public class Row extends Component  implements LayoutComponent {
 
         List<C> componentes = forEachState.getComponents();
         for (C component : componentes) {
-            this.itemsHBox.getChildren().add(component.getNode());
+            this.itemsHBox.getChildren().add(component.getJavaFxNode());
         }
 
         forEachState.getState().subscribe(newItems -> {
             this.itemsHBox.getChildren().clear();
             List<C> novosComponentes = forEachState.getComponents();
             for (C component : novosComponentes) {
-                this.itemsHBox.getChildren().add(component.getNode());
+                this.itemsHBox.getChildren().add(component.getJavaFxNode());
             }
         });
 
@@ -140,14 +140,14 @@ public class Row extends Component  implements LayoutComponent {
 
         List<C> componentes = forEachState.getComponents();
         for (C component : componentes) {
-            this.itemsHBox.getChildren().add(component.getNode());
+            this.itemsHBox.getChildren().add(component.getJavaFxNode());
         }
 
         forEachState.getState().subscribe(newItems -> {
             this.itemsHBox.getChildren().clear();
             List<C> novosComponentes = forEachState.getComponents();
             for (C component : novosComponentes) {
-                this.itemsHBox.getChildren().add(component.getNode());
+                this.itemsHBox.getChildren().add(component.getJavaFxNode());
             }
         });
 

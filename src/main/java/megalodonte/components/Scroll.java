@@ -82,7 +82,7 @@ public class Scroll extends Component  {
 //        this.container = (StackPane) node;
 //        impedirCrescimentoAutomaticoDoFilho();
 //
-//        this.container.getChildren().add(content.getNode());
+//        this.container.getChildren().add(content.getJavaFxNode());
 //    }
 
 }

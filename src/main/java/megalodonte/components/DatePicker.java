@@ -64,7 +64,7 @@ public class DatePicker extends Component  {
                 defaultArrow.setManaged(false);
             }
 
-            pane.getChildren().add(icon.getNode());
+            pane.getChildren().add(icon.getJavaFxNode());
         };
 
         if (datePicker.getSkin() != null) {

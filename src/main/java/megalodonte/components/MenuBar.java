@@ -32,7 +32,7 @@ public class MenuBar extends Component {
 
     public MenuBar addMenu(Menu menu) {
         this.menus.add(menu);
-        this.bar.getChildren().add(menu.getTrigger().getNode());
+        this.bar.getChildren().add(menu.getTrigger().getJavaFxNode());
         return this;
     }
 
@@ -61,8 +61,8 @@ public class MenuBar extends Component {
     /** Docks an arbitrary component (e.g. a theme-toggle icon) at the far right of the bar, after every menu added so far. */
     public MenuBar trailing(Component component) {
         SpacerHorizontal spacer = new SpacerHorizontal().fill();
-        HBox.setHgrow(spacer.getNode(), Priority.ALWAYS);
-        this.bar.getChildren().addAll(spacer.getNode(), component.getNode());
+        HBox.setHgrow(spacer.getJavaFxNode(), Priority.ALWAYS);
+        this.bar.getChildren().addAll(spacer.getJavaFxNode(), component.getJavaFxNode());
         return this;
     }
 

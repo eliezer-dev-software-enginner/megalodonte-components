@@ -28,7 +28,7 @@ public class Stack extends Component {
 
     public Stack children(Component... components) {
         for (Component c : components) {
-            stackPane.getChildren().add(c.getNode());
+            stackPane.getChildren().add(c.getJavaFxNode());
         }
         return this;
     }
@@ -42,7 +42,7 @@ public class Stack extends Component {
      * @param margin espaçamento (mesmo valor pras duas bordas que tocam o canto escolhido)
      */
     public Stack childInCorner(Component component, Corner corner, int margin) {
-        var childNode = component.getNode();
+        var childNode = component.getJavaFxNode();
         StackPane.setAlignment(childNode, toPos(corner));
         StackPane.setMargin(childNode, toInsets(corner, margin));
         stackPane.getChildren().add(childNode);

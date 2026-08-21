@@ -26,16 +26,16 @@ public class Column extends Component implements LayoutComponent {
     }
 
     public Column c_child(Component component){
-        this.vBox.getChildren().add(component.getNode());
+        this.vBox.getChildren().add(component.getJavaFxNode());
 
         if (component instanceof SpacerVertical c) {
-            VBox.setVgrow(c.getNode(), Priority.ALWAYS);
+            VBox.setVgrow(c.getJavaFxNode(), Priority.ALWAYS);
         }
 
 //        if (component.props instanceof ButtonProps buttonProps) {
 //            Insets margins = buttonProps.getMargins();
 //            if (margins != null) {
-//                VBox.setMargin(component.getNode(), margins);
+//                VBox.setMargin(component.getJavaFxNode(), margins);
 //            }
 //        }
 
@@ -75,7 +75,7 @@ public class Column extends Component implements LayoutComponent {
         // Adiciona os componentes iniciais
         List<C> componentes = forEachState.getComponents();
         for (C component : componentes) {
-            this.itemsVBox.getChildren().add(component.getNode());
+            this.itemsVBox.getChildren().add(component.getJavaFxNode());
         }
         
         // Se inscreve para atualizar automaticamente quando o estado mudar
@@ -86,7 +86,7 @@ public class Column extends Component implements LayoutComponent {
             // Adiciona os componentes atualizados
             List<C> novosComponentes = forEachState.getComponents();
             for (C component : novosComponentes) {
-                this.itemsVBox.getChildren().add(component.getNode());
+                this.itemsVBox.getChildren().add(component.getJavaFxNode());
             }
         });
         
@@ -121,7 +121,7 @@ public class Column extends Component implements LayoutComponent {
         // Adiciona os componentes iniciais
         List<C> componentes = forEachState.getComponents();
         for (C component : componentes) {
-            this.itemsVBox.getChildren().add(component.getNode());
+            this.itemsVBox.getChildren().add(component.getJavaFxNode());
         }
 
         // Atualiza automaticamente quando o estado mudar
@@ -130,7 +130,7 @@ public class Column extends Component implements LayoutComponent {
 
             List<C> novosComponentes = forEachState.getComponents();
             for (C component : novosComponentes) {
-                this.itemsVBox.getChildren().add(component.getNode());
+                this.itemsVBox.getChildren().add(component.getJavaFxNode());
             }
         });
 

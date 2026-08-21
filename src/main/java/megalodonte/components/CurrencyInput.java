@@ -23,7 +23,7 @@ public class CurrencyInput extends Component  {
     public CurrencyInput(State<String> state) {
         super(new StackPane());
         this.field = new javafx.scene.control.TextField();
-        this.container = (StackPane) getNode();
+        this.container = (StackPane) getJavaFxNode();
 
         container.getChildren().add(field);
 
@@ -50,7 +50,7 @@ public class CurrencyInput extends Component  {
     }
 
     @Override
-    public Node getNode() {
+    public Node getJavaFxNode() {
         return container;
     }
 

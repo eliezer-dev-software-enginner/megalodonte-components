@@ -17,7 +17,7 @@ public class Card extends Component {
         this.container = (VBox) node;
         this.cardProps = props;
 
-        this.container.getChildren().add(content.getNode());
+        this.container.getChildren().add(content.getJavaFxNode());
         applySizeConstraints(props);
     }
 

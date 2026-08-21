@@ -39,7 +39,7 @@ public class Clickable extends Component {
         setupContainerBehavior();
 
         // Adicionar conteúdo
-        this.container.getChildren().add(content.getNode());
+        this.container.getChildren().add(content.getJavaFxNode());
 
         // Configurar handlers de mouse
         setupMouseHandlers();

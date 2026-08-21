@@ -35,7 +35,7 @@ public class PaginatedTable<T> {
         return table.getTableView();
     }
 
-    public Node getNode() {
+    public Node getJavaFxNode() {
         return pagination;
     }
 }

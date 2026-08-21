@@ -31,7 +31,7 @@ public class FlowRow extends Component implements LayoutComponent {
     }
 
     public FlowRow r_child(Component component) {
-        this.nodeInternal.getChildren().add(component.getNode());
+        this.nodeInternal.getChildren().add(component.getJavaFxNode());
         return this;
     }
 
@@ -88,7 +88,7 @@ public class FlowRow extends Component implements LayoutComponent {
     private void reconcileReactiveItems(FlowPane pane, List<Node> tracked, List<? extends Component> newComponents) {
         List<Node> newNodes = new ArrayList<>(newComponents.size());
         for (Component c : newComponents) {
-            newNodes.add(c.getNode());
+            newNodes.add(c.getJavaFxNode());
         }
 
         List<Node> removed = new ArrayList<>(tracked);
@@ -107,7 +107,7 @@ public class FlowRow extends Component implements LayoutComponent {
         }
 
         for (Component c : newComponents) {
-            Node n = c.getNode();
+            Node n = c.getJavaFxNode();
             if (tracked.contains(n)) continue;
 
             tracked.add(n);
@@ -125,7 +125,7 @@ public class FlowRow extends Component implements LayoutComponent {
     private void playEntering(Component c) {
         if (transition == null) return;
 
-        Node n = c.getNode();
+        Node n = c.getJavaFxNode();
         if (n.getScene() != null) {
             Animation anim = transition.play(c, true);
             if (anim != null) anim.play();

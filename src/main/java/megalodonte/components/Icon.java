@@ -22,7 +22,7 @@ public class Icon extends IconInterface {
     }
 
     @Override
-    public Node getNode() {
+    public Node getJavaFxNode() {
         return imageView;
     }
 }

@@ -10,7 +10,7 @@ public class TextFlow extends Component {
         //setupContainerBehavior();
         
         // Adicionar conteúdo
-        this.container.getChildren().add(content.getNode());
+        this.container.getChildren().add(content.getJavaFxNode());
     }
 
 //    private void setupContainerBehavior() {

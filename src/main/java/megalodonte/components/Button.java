@@ -78,7 +78,7 @@ public class Button extends Component  {
 
     public Button icon(IconInterface icon) {
         Objects.requireNonNull(icon);
-        btn.setGraphic(icon.getNode());
+        btn.setGraphic(icon.getJavaFxNode());
         btn.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT); // default
         btn.setGraphicTextGap(6);
         return this;
@@ -88,8 +88,8 @@ public class Button extends Component  {
         this.icon(iconState.get());
 
         iconState.subscribe(icon -> {
-            if (icon != null && icon.getNode()!=null) {
-               btn.setGraphic(icon.getNode());
+            if (icon != null && icon.getJavaFxNode()!=null) {
+               btn.setGraphic(icon.getJavaFxNode());
             } else {
                 btn.setGraphic(null);
             }

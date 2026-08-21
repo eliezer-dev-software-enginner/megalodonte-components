@@ -33,7 +33,7 @@ public class Canva extends Component {
 
     /** Adds a child positioned at absolute ({@code x}, {@code y}) coordinates inside the canvas. */
     public Canva child(Component component, double x, double y) {
-        var node = component.getNode();
+        var node = component.getJavaFxNode();
         node.setLayoutX(x);
         node.setLayoutY(y);
         this.pane.getChildren().add(node);

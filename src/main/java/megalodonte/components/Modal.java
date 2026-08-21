@@ -52,11 +52,11 @@ public class Modal extends Component {
                 .bgColor("transparent")
                 .textColor(ThemeManager.theme().colors().textPrimary())
         ).onClick(() -> visible.set(false));
-        StackPane.setAlignment(closeButton.getNode(), Pos.TOP_RIGHT);
-        StackPane.setMargin(closeButton.getNode(), new Insets(6, 6, 0, 0));
+        StackPane.setAlignment(closeButton.getJavaFxNode(), Pos.TOP_RIGHT);
+        StackPane.setMargin(closeButton.getJavaFxNode(), new Insets(6, 6, 0, 0));
 
         var card = new Card(content);
-        var cardStack = new StackPane(card.getNode(), closeButton.getNode());
+        var cardStack = new StackPane(card.getJavaFxNode(), closeButton.getJavaFxNode());
         cardStack.setPickOnBounds(false);
 
         backdrop.getChildren().add(cardStack);

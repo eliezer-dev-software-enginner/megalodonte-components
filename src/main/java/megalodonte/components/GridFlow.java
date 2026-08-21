@@ -18,7 +18,7 @@ public class GridFlow extends Component  {
     }
 
     public GridFlow child(Component component){
-        this.tilePane.getChildren().add(component.getNode());
+        this.tilePane.getChildren().add(component.getJavaFxNode());
         return this;
     }
 
@@ -28,7 +28,7 @@ public class GridFlow extends Component  {
     ) {
         for (T item : items) {
             Component c = renderer.render(item);
-            tilePane.getChildren().add(c.getNode());
+            tilePane.getChildren().add(c.getJavaFxNode());
         }
         return this;
     }

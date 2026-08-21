@@ -34,10 +34,10 @@ public class Container extends Component {
     }
 
     public Container c_child(Component component){
-        this.container.getChildren().add(component.getNode());
+        this.container.getChildren().add(component.getJavaFxNode());
 
         if (component instanceof SpacerVertical c) {
-            VBox.setVgrow(c.getNode(), Priority.ALWAYS);
+            VBox.setVgrow(c.getJavaFxNode(), Priority.ALWAYS);
         }
 
         // Reforça o "não cresce" a cada filho adicionado — mas só quando fillHeight()
@@ -49,7 +49,7 @@ public class Container extends Component {
 //        if (component.props instanceof ButtonProps buttonProps) {
 //            Insets margins = buttonProps.getMargins();
 //            if (margins != null) {
-//                VBox.setMargin(component.getNode(), margins);
+//                VBox.setMargin(component.getJavaFxNode(), margins);
 //            }
 //        }
 
