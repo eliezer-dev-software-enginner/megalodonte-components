@@ -36,6 +36,18 @@ public class RowProps extends LayoutProps<RowProps> {
         return fillHeight;
     }
 
+    private boolean hugWidth = false;
+
+    /** Faz a Row não ocupar toda a largura disponível: a largura fica limitada à soma da largura dos filhos (comportamento padrão do HBox é ser esticado pela Row, ver {@link megalodonte.components.layout_components.Row}). */
+    public RowProps hugWidth() {
+        this.hugWidth = true;
+        return this;
+    }
+
+    public boolean hasHugWidth() {
+        return hugWidth;
+    }
+
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof HBox hBox) {
@@ -57,6 +69,9 @@ public class RowProps extends LayoutProps<RowProps> {
             if (alignment == Alignment.LEFT_HORIZONTALLY) {
                 hBox.setAlignment(Pos.TOP_LEFT);
             }
+            if (alignment == Alignment.RIGHT_HORIZONTALLY) {
+                hBox.setAlignment(Pos.TOP_RIGHT);
+            }
 
             if(fillWidth){
                 HBox.setHgrow(hBox, Priority.ALWAYS);
@@ -73,7 +88,7 @@ public class RowProps extends LayoutProps<RowProps> {
         }
     }
 
-    private enum Alignment {BOTTOM_VERTICALLY, CENTER_HORIZONTALLY, CENTER_VERTICALLY, LEFT_HORIZONTALLY}
+    private enum Alignment {BOTTOM_VERTICALLY, CENTER_HORIZONTALLY, CENTER_VERTICALLY, LEFT_HORIZONTALLY, RIGHT_HORIZONTALLY}
     private Alignment alignment;
 
     public RowProps bottomVertically() {
@@ -93,6 +108,11 @@ public class RowProps extends LayoutProps<RowProps> {
 
     public RowProps centerVertically() {
         alignment = Alignment.CENTER_VERTICALLY;
+        return this;
+    }
+
+    public RowProps rightHorizontally() {
+        alignment = Alignment.RIGHT_HORIZONTALLY;
         return this;
     }
 }

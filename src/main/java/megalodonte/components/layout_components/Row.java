@@ -26,8 +26,26 @@ public class Row extends Component  implements LayoutComponent {
         this.nodeInternal = (HBox) this.node;
         this.rowProps = props;
 
-        // 1. Ocupa toda a largura disponível (Largura Máxima Infinita)
-        this.nodeInternal.setMaxWidth(Double.MAX_VALUE);
+//        // 1. Ocupa toda a largura disponível (Largura Máxima Infinita)
+//        this.nodeInternal.setMaxWidth(Double.MAX_VALUE);
+
+        // 1. Por padrão ocupa toda a largura disponível. Quando hugWidth() foi
+        // pedido, mantemos o comportamento nativo do HBox (largura = soma dos
+        // filhos) em vez de travar em MAX_VALUE.
+//        if (!rowProps.hasHugWidth()) {
+//            this.nodeInternal.setMaxWidth(Double.MAX_VALUE);
+//        } else {
+//            HBox.setHgrow(this.nodeInternal, Priority.NEVER);
+//        }
+
+        if (!rowProps.hasHugWidth()) {
+            this.nodeInternal.setMaxWidth(Double.MAX_VALUE);
+        } else {
+            this.nodeInternal.setMinWidth(Region.USE_PREF_SIZE);
+            this.nodeInternal.setMaxWidth(Region.USE_PREF_SIZE);
+            HBox.setHgrow(this.nodeInternal, Priority.NEVER);
+        }
+
 
         // 2/3. Por padrão, trava a altura vertical estritamente no tamanho calculado
         // dos filhos e garante que, se o pai for uma VBox, ele nunca vai esticar esta
