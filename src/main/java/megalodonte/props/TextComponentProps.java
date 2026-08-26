@@ -2,6 +2,8 @@ package megalodonte.props;
 
 import javafx.scene.Node;
 import megalodonte.base.state.ReadableState;
+import megalodonte.base.theme.Fonts;
+import megalodonte.styles.util.StyleUtils;
 
 import static megalodonte.styles.util.StyleUtils.applyStyleProperty;
 
@@ -72,5 +74,15 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
 
     protected void applyColor(Node node, String color, String fxField) {
         applyStyleProperty(node, color, fxField);
+    }
+
+    protected void applyFontStyling(Node node) {
+        if (fontFamily != null && !fontFamily.isBlank()) {
+            String resolvedFamily = Fonts.resolveWeightedFamily(fontFamily, fontWeight);
+            applyStyleProperty(node, resolvedFamily, "-fx-font-family");
+        }
+        if (fontWeight != null && !fontWeight.isBlank()) {
+            applyStyleProperty(node, fontWeight, StyleUtils.FX_FONT_WEIGHT); // fallback normal/bold puro
+        }
     }
 }

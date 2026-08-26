@@ -181,6 +181,8 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
             updateFontSize(button, ScaleProvider.scale(getFontSize()));
         }
 
+        applyFontStyling(button);
+
         if (height > 0) {
             double scaled = ScaleProvider.scale(height);
             button.setPrefHeight(scaled);

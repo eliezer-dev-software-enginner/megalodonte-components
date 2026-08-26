@@ -30,9 +30,7 @@ public class TextProps extends TextComponentProps<TextProps> {
             updateFontSize(t, ScaleProvider.scale(getFontSize()));
         }
 
-        if(getFontWeight() != null){
-            updateFontWeight(t, getFontWeight());
-        }
+        applyFontStyling(t);
 
         applyTextStyling(t, theme, (TextProps) props);
     }

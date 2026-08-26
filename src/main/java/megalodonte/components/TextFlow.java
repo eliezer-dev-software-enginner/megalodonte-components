@@ -3,6 +3,11 @@ import megalodonte.base.components.Component;
 public class TextFlow extends Component {
     private final javafx.scene.text.TextFlow container;
 
+    /**
+     * Use another constructor
+     * @param content
+     */
+    @Deprecated(forRemoval = true)
     public TextFlow(Component content) {
         super((new javafx.scene.text.TextFlow()), null);
         
@@ -11,6 +16,16 @@ public class TextFlow extends Component {
         
         // Adicionar conteúdo
         this.container.getChildren().add(content.getJavaFxNode());
+    }
+
+    public TextFlow(Text textComponent) {
+        super((new javafx.scene.text.TextFlow()), null);
+
+        this.container = (javafx.scene.text.TextFlow) node;
+        //setupContainerBehavior();
+
+        // Adicionar conteúdo
+        this.container.getChildren().add(textComponent.getJavaFxNode());
     }
 
 //    private void setupContainerBehavior() {

@@ -146,6 +146,8 @@ public class InputProps extends TextComponentProps<InputProps> {
         updateFontSize(text, fontSize);
         updateFontSize(placeholderNode, fontSize);
 
+        applyFontStyling(text);
+
         String finalTextColor = getFinalInputTextColor(theme);
         updateTextColor(text, finalTextColor);
         if (caret != null) updateTextColor(caret, finalTextColor);
