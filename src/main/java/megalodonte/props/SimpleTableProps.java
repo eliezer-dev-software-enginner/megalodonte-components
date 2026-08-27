@@ -64,8 +64,20 @@ public class SimpleTableProps extends Props {
         TableView<Object> tableView = (TableView<Object>) tv;
 
         applyContainerStyling(tableView, theme);
+        applySelectedRowTextColor(tableView, theme);
         applyRowFactory(tableView, theme);
         applyHeaderStyling(tableView, theme);
+    }
+
+    /**
+     * Injeta regra CSS que sobrescreve o branco padrão do Modena em células selecionadas.
+     * Regra de usuário tem prioridade sobre user-agent (Modena) no cascade do JavaFX.
+     */
+    private void applySelectedRowTextColor(TableView<?> tableView, ThemeInterface theme) {
+        String textColor = rowTextColor != null
+                ? rowTextColor : theme.colors().textPrimary();
+        tableView.getStylesheets().add(
+                "data:text/css,.table-row-cell:selected .label { -fx-text-fill: " + textColor + "; }");
     }
 
     private void applyContainerStyling(TableView<?> tableView, ThemeInterface theme) {
