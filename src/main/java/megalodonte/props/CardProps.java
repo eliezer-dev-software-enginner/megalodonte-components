@@ -1,6 +1,5 @@
 package megalodonte.props;
 
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Region;
@@ -10,7 +9,7 @@ import megalodonte.base.theme.ThemeInterface;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
-public class CardProps extends Props {
+public class CardProps extends Props implements Paddable<CardProps> {
 
     private final DropShadow normal =
             new DropShadow(8, Color.rgb(0, 0, 0, 0.15));
@@ -23,7 +22,10 @@ public class CardProps extends Props {
     protected int borderWidth;
     protected int borderRadius;
 
-    private int padding = 12;
+    protected int paddingUnitsTop = UNSET;
+    protected int paddingUnitsRight = UNSET;
+    protected int paddingUnitsDown = UNSET;
+    protected int paddingUnitsLeft = UNSET;
 
     private int height;
     private int width;
@@ -84,17 +86,35 @@ public class CardProps extends Props {
         return this;
     }
 
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
 
-    public CardProps padding(int value) {
-        this.padding = value;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
+
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
+
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
+
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Region r)) return;
 
-        r.setPadding(new Insets(ScaleProvider.scale(padding)));
+        r.setPadding(resolvePadding(theme));
 
         if(height > 0){
             double scaled = ScaleProvider.scale(height);
