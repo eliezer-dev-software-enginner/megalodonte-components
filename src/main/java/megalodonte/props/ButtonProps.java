@@ -1,6 +1,5 @@
 package megalodonte.props;
 
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -10,7 +9,7 @@ import megalodonte.base.theme.ThemeInterface;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
-public class ButtonProps extends TextComponentProps<ButtonProps> {
+public class ButtonProps extends TextComponentProps<ButtonProps> implements Paddable<ButtonProps> {
     private int height;
     private boolean fillWidth;
     protected String bgColor;
@@ -29,35 +28,31 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     private ReadableState<String> textColorState;
 
 
-    // Fluent API methods
+    // Fluent API methods — padding inherited from Paddable<ButtonProps>
 
-    public ButtonProps paddingAll(int units) {
-        this.paddingUnitsTop = units;
-        this.paddingUnitsRight = units;
-        this.paddingUnitsDown = units;
-        this.paddingUnitsLeft = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
 
-    public ButtonProps paddingTop(int units) {
-        this.paddingUnitsTop = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
 
-    public ButtonProps paddingRight(int units) {
-        this.paddingUnitsRight = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
 
-    public ButtonProps paddingDown(int units) {
-        this.paddingUnitsDown = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
 
-    public ButtonProps paddingLeft(int units) {
-        this.paddingUnitsLeft = units;
-        return this;
-    }
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     public ButtonProps bgColor(String bgColor) {
         this.bgColor = bgColor;
@@ -242,12 +237,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
 
         applyBorderStyling(button, theme);
 
-        button.setPadding(new Insets(
-                ScaleProvider.scale(paddingUnitsTop),
-                ScaleProvider.scale(paddingUnitsRight),
-                ScaleProvider.scale(paddingUnitsDown),
-                ScaleProvider.scale(paddingUnitsLeft)
-        ));
+        button.setPadding(toInsets());
     }
 
     @Override

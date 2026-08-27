@@ -1,6 +1,5 @@
 package megalodonte.props;
 
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import megalodonte.base.scale.ScaleProvider;
@@ -8,7 +7,7 @@ import megalodonte.base.theme.ThemeInterface;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
-public class SelectProps extends TextComponentProps<SelectProps> {
+public class SelectProps extends TextComponentProps<SelectProps> implements Paddable<SelectProps> {
     private double minWidth;
     private double maxWidth;
     private double maxHeight;
@@ -77,33 +76,29 @@ public class SelectProps extends TextComponentProps<SelectProps> {
         return this;
     }
 
-    public SelectProps paddingAll(int units){
-       this.paddingUnitsTop = units;
-       this.paddingUnitsRight = units;
-       this.paddingUnitsDown = units;
-       this.paddingUnitsLeft = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
 
-    public SelectProps paddingTop(int units){
-        this.paddingUnitsTop = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
 
-    public SelectProps paddingRight(int units){
-        this.paddingUnitsRight = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
 
-    public SelectProps paddingDown(int units){
-        this.paddingUnitsDown = units;
-        return this;
-    }
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
 
-    public SelectProps paddingLeft(int units){
-        this.paddingUnitsLeft = units;
-        return this;
-    }
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
@@ -126,12 +121,7 @@ public class SelectProps extends TextComponentProps<SelectProps> {
             cBox.setMaxHeight(scaled);
         }
 
-        cBox.setPadding(new Insets(
-                ScaleProvider.scale(paddingUnitsTop),
-                ScaleProvider.scale(paddingUnitsRight),
-                ScaleProvider.scale(paddingUnitsDown),
-                ScaleProvider.scale(paddingUnitsLeft)
-        ));
+        cBox.setPadding(toInsets());
 
         if (disabled) {
             cBox.setDisable(true);
