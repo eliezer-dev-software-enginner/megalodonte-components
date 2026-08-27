@@ -4,6 +4,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+import megalodonte.application.ErrorReporter;
+import megalodonte.base.async.RunnableThrowing;
 import megalodonte.base.components.IconInterface;
 import megalodonte.base.state.ReadableState;
 import megalodonte.props.ButtonProps;
@@ -69,9 +71,15 @@ public class Button extends Component  {
         opacityAnimation.play();
     }
 
-    public Button onClick(Runnable handler) {
+    public Button onClick(RunnableThrowing handler) {
         if (handler != null) {
-            btn.setOnMouseClicked(e -> handler.run());
+            btn.setOnMouseClicked(e -> {
+                try {
+                    handler.run();
+                } catch (Exception ex) {
+                    ErrorReporter.handle(ex);
+                }
+            });
         }
         return this;
     }
