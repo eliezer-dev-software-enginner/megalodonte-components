@@ -143,7 +143,9 @@ public class SimpleTableProps extends Props {
         }
 
         updateBackgroundColor(row, bg);
-        updateTextColor_Input(row, textColor);
+        for (Node label : row.lookupAll(".label")) {
+            updateTextColor_Input(label, textColor);
+        }
         // Só a borda de baixo (separador entre linhas) — updateBorderColor/Width
         // aplicariam nos 4 lados, então isso vai direto via applyStyleProperty.
         applyStyleProperty(row, "transparent transparent " + separator + " transparent", FX_BORDER_COLOR);
