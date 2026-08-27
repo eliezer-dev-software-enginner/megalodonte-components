@@ -54,38 +54,29 @@ public abstract class LayoutProps<T extends LayoutProps<T>> extends Props implem
         return (T) this;
     }
 
-    @SuppressWarnings("unchecked")
-    public T paddingAll(int units) {
-        this.paddingUnitsTop = units;
-        this.paddingUnitsRight = units;
-        this.paddingUnitsDown = units;
-        this.paddingUnitsLeft = units;
-        return (T) this;
-    }
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
 
-    @SuppressWarnings("unchecked")
-    public T paddingTop(int units) {
-        this.paddingUnitsTop = units;
-        return (T) this;
-    }
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
 
-    @SuppressWarnings("unchecked")
-    public T paddingRight(int units) {
-        this.paddingUnitsRight = units;
-        return (T) this;
-    }
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
 
-    @SuppressWarnings("unchecked")
-    public T paddingDown(int units) {
-        this.paddingUnitsDown = units;
-        return (T) this;
-    }
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
 
-    @SuppressWarnings("unchecked")
-    public T paddingLeft(int units) {
-        this.paddingUnitsLeft = units;
-        return (T) this;
-    }
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     @SuppressWarnings("unchecked")
     public T onClick(Runnable callback) {
@@ -115,7 +106,7 @@ public abstract class LayoutProps<T extends LayoutProps<T>> extends Props implem
             region.setMaxHeight(scaled);
         }
 
-        region.setPadding(resolvePadding(theme, paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
+        region.setPadding(resolvePadding(theme));
 
         if (onClick != null) {
             region.setOnMouseClicked(ev -> onClick.run());
