@@ -64,25 +64,8 @@ public class SimpleTableProps extends Props {
         TableView<Object> tableView = (TableView<Object>) tv;
 
         applyContainerStyling(tableView, theme);
-        applySelectedRowTextColor(tableView, theme);
         applyRowFactory(tableView, theme);
         applyHeaderStyling(tableView, theme);
-    }
-
-    /**
-     * Injeta regra CSS que sobrescreve o branco padrão do Modena em células selecionadas.
-     * Regra de usuário tem prioridade sobre user-agent (Modena) no cascade do JavaFX.
-     */
-    private void applySelectedRowTextColor(TableView<?> tableView, ThemeInterface theme) {
-        String textColor = rowTextColor != null
-                ? rowTextColor : theme.colors().textPrimary();
-        try {
-            var tempFile = java.nio.file.Files.createTempFile("simple-table-selected-", ".css");
-            java.nio.file.Files.writeString(tempFile,
-                    ".table-row-cell:selected .label { -fx-text-fill: " + textColor + "; }");
-            tempFile.toFile().deleteOnExit();
-            tableView.getStylesheets().add(tempFile.toUri().toString());
-        } catch (Exception ignored) {}
     }
 
     private void applyContainerStyling(TableView<?> tableView, ThemeInterface theme) {
@@ -144,7 +127,7 @@ public class SimpleTableProps extends Props {
     }
 
     private void refreshRowStyle(TableRow<?> row, String evenColor, String oddColor,
-                                  String textColor, String separator, String hoverColor, String selectionColor) {
+                                 String textColor, String separator, String hoverColor, String selectionColor) {
         if (row.isEmpty()) {
             row.setStyle("");
             return;
@@ -160,8 +143,12 @@ public class SimpleTableProps extends Props {
         }
 
         updateBackgroundColor(row, bg);
-        for (Node label : row.lookupAll(".label")) {
-            updateTextColor_Input(label, textColor);
+        // TableCell (não Label) é o node real que renderiza o texto de cada célula —
+        // sua classe CSS é "table-cell", não "label". Buscar por ".label" aqui nunca
+        // encontra nada (a menos que a célula use um Label customizado como graphic),
+        // deixando a cor de texto selecionado cair no branco padrão do Modena.
+        for (Node cell : row.lookupAll(".table-cell")) {
+            updateTextColor_Input(cell, textColor);
         }
         // Só a borda de baixo (separador entre linhas) — updateBorderColor/Width
         // aplicariam nos 4 lados, então isso vai direto via applyStyleProperty.
