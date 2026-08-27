@@ -30,29 +30,33 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
     // Fluent API methods — padding inherited from Paddable<ButtonProps>
 
-    @Override
-    public int getPaddingUnitsTop() { return paddingUnitsTop; }
+    public ButtonProps paddingAll(int units) {
+        this.paddingUnitsTop = units;
+        this.paddingUnitsRight = units;
+        this.paddingUnitsDown = units;
+        this.paddingUnitsLeft = units;
+        return this;
+    }
 
-    @Override
-    public int getPaddingUnitsRight() { return paddingUnitsRight; }
+    public ButtonProps paddingTop(int units) {
+        this.paddingUnitsTop = units;
+        return this;
+    }
 
-    @Override
-    public int getPaddingUnitsDown() { return paddingUnitsDown; }
+    public ButtonProps paddingRight(int units) {
+        this.paddingUnitsRight = units;
+        return this;
+    }
 
-    @Override
-    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
+    public ButtonProps paddingDown(int units) {
+        this.paddingUnitsDown = units;
+        return this;
+    }
 
-    @Override
-    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
-
-    @Override
-    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
-
-    @Override
-    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
-
-    @Override
-    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
+    public ButtonProps paddingLeft(int units) {
+        this.paddingUnitsLeft = units;
+        return this;
+    }
 
     public ButtonProps bgColor(String bgColor) {
         this.bgColor = bgColor;
@@ -237,7 +241,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
         applyBorderStyling(button, theme);
 
-        button.setPadding(resolvePadding(theme));
+        button.setPadding(resolvePadding(theme, paddingUnitsTop, paddingUnitsRight, paddingUnitsDown, paddingUnitsLeft));
     }
 
     @Override
