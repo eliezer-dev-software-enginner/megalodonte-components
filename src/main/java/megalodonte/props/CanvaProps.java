@@ -46,7 +46,7 @@ public class CanvaProps extends LayoutProps<CanvaProps> {
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Pane)) return;
 
-        applyBaseLayout(node);
+        applyBaseLayout(node, theme);
 
         if (bgColor != null) {
             applyBackgroundStyling(node, theme, bgColor);

@@ -51,7 +51,7 @@ public class RowProps extends LayoutProps<RowProps> {
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof HBox hBox) {
-            applyBaseLayout(node);
+            applyBaseLayout(node, theme);
 
             if (spacingUnits > 0) {
                 hBox.setSpacing(ScaleProvider.scale(spacingUnits));

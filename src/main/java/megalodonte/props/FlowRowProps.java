@@ -38,7 +38,7 @@ public class FlowRowProps extends LayoutProps<FlowRowProps> {
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof FlowPane flowPane) {
-            applyBaseLayout(node);
+            applyBaseLayout(node, theme);
 
             flowPane.setMaxWidth(Double.MAX_VALUE); // <- garante que aceita a largura do pai
 

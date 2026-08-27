@@ -50,7 +50,7 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof Pane node_) {
-            applyBaseLayout(node);
+            applyBaseLayout(node, theme);
 
             // applyBaseLayout() não aplica spacingUnits — cada Props que estica de
             // LayoutProps (Column/Row/FlowRow) seta o gap por conta própria depois,

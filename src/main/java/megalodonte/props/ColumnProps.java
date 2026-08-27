@@ -52,7 +52,7 @@ public class ColumnProps extends LayoutProps<ColumnProps> {
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (node instanceof VBox vBox) {
-            applyBaseLayout(node);
+            applyBaseLayout(node, theme);
 
             if (spacingUnits > 0) {
                 vBox.setSpacing(ScaleProvider.scale(spacingUnits));

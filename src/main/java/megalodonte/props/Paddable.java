@@ -2,8 +2,11 @@ package megalodonte.props;
 
 import javafx.geometry.Insets;
 import megalodonte.base.scale.ScaleProvider;
+import megalodonte.base.theme.ThemeInterface;
 
 public interface Paddable<T extends Paddable<T>> {
+
+    int UNSET = -1;
 
     int getPaddingUnitsTop();
 
@@ -54,12 +57,28 @@ public interface Paddable<T extends Paddable<T>> {
         return (T) this;
     }
 
-    default Insets toInsets() {
+    /**
+     * Resolve o {@code Insets} final de padding para cada lado independentemente:
+     * <ul>
+     *   <li>Se o valor foi setado (>= 0), escala com {@link ScaleProvider#scale(int)}.</li>
+     *   <li>Se o valor é {@code UNSET} (-1), usa {@code theme.spacing().md()}
+     *       (já escalado internamente pelo {@code ThemeSpacing}).</li>
+     * </ul>
+     * Cada fonte de escala é aplicada exatamente uma vez — nunca duas.
+     */
+    default Insets resolvePadding(ThemeInterface theme) {
+        int top = getPaddingUnitsTop();
+        int right = getPaddingUnitsRight();
+        int down = getPaddingUnitsDown();
+        int left = getPaddingUnitsLeft();
+
+        int themeMd = theme.spacing().md();
+
         return new Insets(
-                ScaleProvider.scale(getPaddingUnitsTop()),
-                ScaleProvider.scale(getPaddingUnitsRight()),
-                ScaleProvider.scale(getPaddingUnitsDown()),
-                ScaleProvider.scale(getPaddingUnitsLeft())
+                top >= 0 ? ScaleProvider.scale(top) : themeMd,
+                right >= 0 ? ScaleProvider.scale(right) : themeMd,
+                down >= 0 ? ScaleProvider.scale(down) : themeMd,
+                left >= 0 ? ScaleProvider.scale(left) : themeMd
         );
     }
 }

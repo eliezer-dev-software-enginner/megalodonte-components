@@ -3,6 +3,7 @@ package megalodonte.props;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import megalodonte.base.scale.ScaleProvider;
+import megalodonte.base.theme.ThemeInterface;
 
 public abstract class LayoutProps<T extends LayoutProps<T>> extends Props implements Paddable<T> {
     protected double minWidth = -1;
@@ -11,10 +12,10 @@ public abstract class LayoutProps<T extends LayoutProps<T>> extends Props implem
     protected double maxHeight = -1;
     protected double height = -1;
     protected int spacingUnits = 0;
-    protected int paddingUnitsTop = 0;
-    protected int paddingUnitsRight = 0;
-    protected int paddingUnitsDown = 0;
-    protected int paddingUnitsLeft = 0;
+    protected int paddingUnitsTop = UNSET;
+    protected int paddingUnitsRight = UNSET;
+    protected int paddingUnitsDown = UNSET;
+    protected int paddingUnitsLeft = UNSET;
     protected Runnable onClick;
 
     @SuppressWarnings("unchecked")
@@ -83,7 +84,7 @@ public abstract class LayoutProps<T extends LayoutProps<T>> extends Props implem
         return (T) this;
     }
 
-    protected void applyBaseLayout(Node node) {
+    protected void applyBaseLayout(Node node, ThemeInterface theme) {
         if (!(node instanceof Region region)) return;
 
         if (minWidth > 0) {
@@ -105,7 +106,7 @@ public abstract class LayoutProps<T extends LayoutProps<T>> extends Props implem
             region.setMaxHeight(scaled);
         }
 
-        region.setPadding(toInsets());
+        region.setPadding(resolvePadding(theme));
 
         if (onClick != null) {
             region.setOnMouseClicked(ev -> onClick.run());

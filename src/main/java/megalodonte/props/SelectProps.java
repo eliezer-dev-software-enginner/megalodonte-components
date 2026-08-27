@@ -11,10 +11,10 @@ public class SelectProps extends TextComponentProps<SelectProps> implements Padd
     private double minWidth;
     private double maxWidth;
     private double maxHeight;
-    private int paddingUnitsDown;
-    private int paddingUnitsTop;
-    private int paddingUnitsLeft;
-    private int paddingUnitsRight;
+    private int paddingUnitsDown = UNSET;
+    private int paddingUnitsTop = UNSET;
+    private int paddingUnitsLeft = UNSET;
+    private int paddingUnitsRight = UNSET;
 
     private int height;
 
@@ -121,7 +121,7 @@ public class SelectProps extends TextComponentProps<SelectProps> implements Padd
             cBox.setMaxHeight(scaled);
         }
 
-        cBox.setPadding(toInsets());
+        cBox.setPadding(resolvePadding(theme));
 
         if (disabled) {
             cBox.setDisable(true);

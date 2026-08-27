@@ -18,10 +18,10 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
     protected int borderRadius;
     protected boolean iconOnRight;
 
-    protected int paddingUnitsTop;
-    protected int paddingUnitsRight;
-    protected int paddingUnitsDown;
-    protected int paddingUnitsLeft;
+    protected int paddingUnitsTop = UNSET;
+    protected int paddingUnitsRight = UNSET;
+    protected int paddingUnitsDown = UNSET;
+    protected int paddingUnitsLeft = UNSET;
 
     //----------------States
     private ReadableState<String> bgColorState;
@@ -237,7 +237,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
         applyBorderStyling(button, theme);
 
-        button.setPadding(toInsets());
+        button.setPadding(resolvePadding(theme));
     }
 
     @Override
