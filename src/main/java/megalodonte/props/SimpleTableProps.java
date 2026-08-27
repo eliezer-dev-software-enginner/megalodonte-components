@@ -76,8 +76,13 @@ public class SimpleTableProps extends Props {
     private void applySelectedRowTextColor(TableView<?> tableView, ThemeInterface theme) {
         String textColor = rowTextColor != null
                 ? rowTextColor : theme.colors().textPrimary();
-        tableView.getStylesheets().add(
-                "data:text/css,.table-row-cell:selected .label { -fx-text-fill: " + textColor + "; }");
+        try {
+            var tempFile = java.nio.file.Files.createTempFile("simple-table-selected-", ".css");
+            java.nio.file.Files.writeString(tempFile,
+                    ".table-row-cell:selected .label { -fx-text-fill: " + textColor + "; }");
+            tempFile.toFile().deleteOnExit();
+            tableView.getStylesheets().add(tempFile.toUri().toString());
+        } catch (Exception ignored) {}
     }
 
     private void applyContainerStyling(TableView<?> tableView, ThemeInterface theme) {
