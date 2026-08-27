@@ -1,5 +1,6 @@
 package megalodonte.props;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -18,12 +19,46 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
     protected int borderRadius;
     protected boolean iconOnRight;
 
+    protected int paddingUnitsTop;
+    protected int paddingUnitsRight;
+    protected int paddingUnitsDown;
+    protected int paddingUnitsLeft;
+
     //----------------States
     private ReadableState<String> bgColorState;
     private ReadableState<String> textColorState;
 
 
     // Fluent API methods
+
+    public ButtonProps paddingAll(int units) {
+        this.paddingUnitsTop = units;
+        this.paddingUnitsRight = units;
+        this.paddingUnitsDown = units;
+        this.paddingUnitsLeft = units;
+        return this;
+    }
+
+    public ButtonProps paddingTop(int units) {
+        this.paddingUnitsTop = units;
+        return this;
+    }
+
+    public ButtonProps paddingRight(int units) {
+        this.paddingUnitsRight = units;
+        return this;
+    }
+
+    public ButtonProps paddingDown(int units) {
+        this.paddingUnitsDown = units;
+        return this;
+    }
+
+    public ButtonProps paddingLeft(int units) {
+        this.paddingUnitsLeft = units;
+        return this;
+    }
+
     public ButtonProps bgColor(String bgColor) {
         this.bgColor = bgColor;
         return this;
@@ -206,6 +241,13 @@ public class ButtonProps extends TextComponentProps<ButtonProps> {
         }
 
         applyBorderStyling(button, theme);
+
+        button.setPadding(new Insets(
+                ScaleProvider.scale(paddingUnitsTop),
+                ScaleProvider.scale(paddingUnitsRight),
+                ScaleProvider.scale(paddingUnitsDown),
+                ScaleProvider.scale(paddingUnitsLeft)
+        ));
     }
 
     @Override
