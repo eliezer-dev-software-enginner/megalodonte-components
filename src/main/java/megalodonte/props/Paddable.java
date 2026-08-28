@@ -61,7 +61,7 @@ public interface Paddable<T extends Paddable<T>> {
      * Resolves the final {@code Insets} padding for each side independently:
      * <ul>
      *   <li>If the value was set (>= 0), scales with {@link ScaleProvider#scale(int)}.</li>
-     *   <li>If the value is {@code UNSET} (-1), uses {@code theme.padding().md()}
+     *   <li>If the value is {@code UNSET} (-1), uses {@code theme.padding().sm()}
      *       (already scaled internally by {@code ThemePadding}).</li>
      * </ul>
      * Each scaling source is applied exactly once — never twice.
@@ -72,13 +72,13 @@ public interface Paddable<T extends Paddable<T>> {
         int down = getPaddingUnitsDown();
         int left = getPaddingUnitsLeft();
 
-        int themeMd = theme.padding().md();
+        int paddingTheme = theme.padding().sm();
 
         return new Insets(
-                top >= 0 ? ScaleProvider.scale(top) : themeMd,
-                right >= 0 ? ScaleProvider.scale(right) : themeMd,
-                down >= 0 ? ScaleProvider.scale(down) : themeMd,
-                left >= 0 ? ScaleProvider.scale(left) : themeMd
+                top >= 0 ? ScaleProvider.scale(top) : paddingTheme,
+                right >= 0 ? ScaleProvider.scale(right) : paddingTheme,
+                down >= 0 ? ScaleProvider.scale(down) : paddingTheme,
+                left >= 0 ? ScaleProvider.scale(left) : paddingTheme
         );
     }
 }
