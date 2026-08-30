@@ -37,6 +37,7 @@ public class Scroll extends Component  {
         transparentizeViewport(scrollPane);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         this.scrollPane.setFitToWidth(true);
+        //this.scrollPane.setFitToHeight(true);
         this.scrollPane.setContent(component.getJavaFxNode());
         confineScrollEvents(scrollPane);
     }
@@ -44,6 +45,14 @@ public class Scroll extends Component  {
     private static void transparentizeViewport(ScrollPane scrollPane) {
         scrollPane.skinProperty().addListener((obs, oldSkin, newSkin) -> applyViewportBackground(scrollPane));
         applyViewportBackground(scrollPane);
+
+        //Quando aparecem as duas barras de rolagem (horizontal + vertical) ao mesmo tempo, o JavaFX
+        // desenha um pequeno quadrado .corner no canto onde elas se encontram, que também tem background próprio do Modena.
+        // É bem mais raro de notar (só aparece com scroll nos dois eixos simultaneamente)
+        Node corner = scrollPane.lookup(".corner");
+        if (corner != null) {
+            applyStyleProperty(corner, "transparent", "-fx-background-color");
+        }
     }
 
     private static void applyViewportBackground(ScrollPane scrollPane) {
