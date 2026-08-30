@@ -75,6 +75,20 @@ public class Menu {
         return addItem(new MenuItem(title, action));
     }
 
+    public Menu itemIf(boolean condition, String title, Runnable action) {
+        if (condition) {
+            item(title, action);
+        }
+        return this;
+    }
+
+    public Menu itemIf(boolean condition, IconInterface icon, String title, Runnable action) {
+        if (condition) {
+            item(icon, title, action);
+        }
+        return this;
+    }
+
     public List<MenuItem> getItems() {
         return new ArrayList<>(items);
     }
