@@ -23,6 +23,7 @@ public class InputProps extends TextComponentProps<InputProps> {
     private String placeholder;
     private int height;
     private int width;
+    private boolean fillWidth;
     private int maxWidth;
     private TextTone tone = TextTone.PRIMARY;
     private boolean disabled;
@@ -44,6 +45,11 @@ public class InputProps extends TextComponentProps<InputProps> {
 
     public InputProps height(int height) {
         this.height = height;
+        return this;
+    }
+
+    public InputProps fillWidth() {
+        this.fillWidth = true;
         return this;
     }
 
@@ -121,7 +127,21 @@ public class InputProps extends TextComponentProps<InputProps> {
             outer.setMaxHeight(Region.USE_PREF_SIZE);
         }
 
-        if (width > 0) {
+        if (fillWidth) {
+            // Estica na largura disponível do pai — mesmo padrão de ButtonProps.fillWidth().
+            // width(int), se setado junto, vira só um piso (minWidth) em vez de trava fixa,
+            // já que setMaxWidth(scaled) logo abaixo (bloco width>0) sobrescreveria o
+            // MAX_VALUE de novo se fosse executado depois — por isso os dois blocos são
+            // mutuamente exclusivos (else if), não sequenciais.
+            outer.setMaxWidth(Double.MAX_VALUE);
+            if (width > 0) {
+                double scaled = ScaleProvider.scale(width);
+                outer.setPrefWidth(scaled);
+                outer.setMinWidth(scaled);
+            } else {
+                outer.setMinWidth(Region.USE_PREF_SIZE);
+            }
+        } else if (width > 0) {
             double scaled = ScaleProvider.scale(width);
             outer.setPrefWidth(scaled);
             outer.setMinWidth(scaled);
