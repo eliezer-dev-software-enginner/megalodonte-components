@@ -15,6 +15,11 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         FILLED, OUTLINED, TEXT
     }
 
+    /** Cor semântica do botão — eixo independente do estilo visual (ButtonStyle). */
+    public enum ButtonVariant {
+        PRIMARY, SECONDARY, SUCCESS, WARNING, DANGER, GHOST, DISABLED
+    }
+
     private int height;
     private boolean fillWidth;
     protected String bgColor;
@@ -27,6 +32,9 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
     protected int paddingUnitsRight = UNSET;
     protected int paddingUnitsDown = UNSET;
     protected int paddingUnitsLeft = UNSET;
+
+    private ButtonStyle style = ButtonStyle.FILLED;
+    private ButtonVariant variant = ButtonVariant.PRIMARY;
 
     //----------------States
     private ReadableState<String> bgColorState;
@@ -101,8 +109,6 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         return this;
     }
 
-    private String variant = "primary";
-
     public ButtonProps fillWidth() {
         this.fillWidth = true;
         return this;
@@ -113,87 +119,97 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         return this;
     }
 
-    //TODO: criar enum ButtonVariant e usá-la
-    public ButtonProps variant(String variant) {
+
+    public ButtonProps outlined() {
+        this.style = ButtonStyle.OUTLINED;
+        return this;
+    }
+
+    public ButtonProps text() {
+        this.style = ButtonStyle.TEXT;
+        return this;
+    }
+
+    public ButtonProps filled() {
+        this.style = ButtonStyle.FILLED;
+        return this;
+    }
+
+    public ButtonProps style(ButtonStyle style) {
+        this.style = style;
+        return this;
+    }
+
+    public ButtonStyle getStyle() {
+        return style;
+    }
+
+    public ButtonProps variant(ButtonVariant variant) {
         this.variant = variant;
         return this;
     }
 
+    /** @deprecated use {@link #variant(ButtonVariant)}. Mantido para compatibilidade. */
+    @Deprecated(forRemoval = true)
+    public ButtonProps variant(String variant) {
+        this.variant = ButtonVariant.valueOf(variant.toUpperCase());
+        return this;
+    }
+
     public ButtonProps primary() {
-        this.variant = "primary";
+        this.variant = ButtonVariant.PRIMARY;
         return this;
     }
 
     public ButtonProps secondary() {
-        this.variant = "secondary";
+        this.variant = ButtonVariant.SECONDARY;
         return this;
     }
 
     public ButtonProps success() {
-        this.variant = "success";
+        this.variant = ButtonVariant.SUCCESS;
         return this;
     }
 
     public ButtonProps warning() {
-        this.variant = "warning";
+        this.variant = ButtonVariant.WARNING;
         return this;
     }
 
     public ButtonProps danger() {
-        this.variant = "danger";
+        this.variant = ButtonVariant.DANGER;
         return this;
     }
 
     public ButtonProps ghost() {
-        this.variant = "ghost";
+        this.variant = ButtonVariant.GHOST;
         return this;
     }
 
     public ButtonProps disabled() {
-        this.variant = "disabled";
+        this.variant = ButtonVariant.DISABLED;
         return this;
     }
 
-    public String getVariant() {
+    public ButtonVariant getVariant() {
         return variant;
     }
 
-//    private static final String
-//            BTN_PRIMARY = "#2563eb",
-//            BTN_SECONDARY = "#6b7280",
-//            BTN_SUCCESS = "#10b981",
-//            BTN_WARNING = "#f59e0b",
-//            BTN_DANGER = "#ef4444",
-//            BTN_GHOST = "transparent",
-//            BTN_DISABLED = "#94a3b8";
-
-//    private String getButtonColorFromVariant(ButtonProps props) {
-//        return switch (props.getVariant()) {
-//            case "secondary" -> BTN_SECONDARY;
-//            case "success" -> BTN_SUCCESS;
-//            case "warning" -> BTN_WARNING;
-//            case "danger" -> BTN_DANGER;
-//            case "ghost" -> BTN_GHOST;
-//            case "disabled" -> BTN_DISABLED;
-//            default -> BTN_PRIMARY;
-//        };
-//    }
-
     private String getButtonColorFromVariant(ButtonProps props, ThemeInterface theme) {
         return switch (props.getVariant()) {
-            case "secondary" -> theme.colors().secondary();
-            case "success" -> theme.colors().success();
-            case "warning" -> theme.colors().warning();
-            case "danger" -> theme.colors().danger();
-            case "ghost" -> "transparent";
-            case "disabled" -> theme.colors().textSecondary(); // ou um tom neutro do tema, se preferir
-            default -> theme.colors().primary();
+            case SECONDARY -> theme.colors().secondary();
+            case SUCCESS -> theme.colors().success();
+            case WARNING -> theme.colors().warning();
+            case DANGER -> theme.colors().danger();
+            case GHOST -> "transparent";
+            case DISABLED -> theme.colors().textSecondary();
+            case PRIMARY -> theme.colors().primary();
         };
     }
 
     private String getButtonTextColor(ButtonProps props, ThemeInterface theme) {
         return switch (props.getVariant()) {
-            case "ghost", "disabled" -> theme.colors().textSecondary();
+            case GHOST, DISABLED -> theme.colors().textSecondary();
             default -> "white";
         };
     }
@@ -237,20 +253,38 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
             button.setMaxHeight(scaled);
         }
 
-        // textColor só aplica estaticamente se não há state reativo controlando
-        if (textColorState == null) {
-            String finalTextColor = getButtonTextColor((ButtonProps) props, theme);
-            applyColor(node, textColor != null ? textColor : finalTextColor, FX_TEXT_FILL);
+        // Cor semântica resolvida uma vez, reaproveitada nos 3 estilos abaixo.
+        String accentColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props, theme);
+
+        // bgColor/textColor explícitos continuam tendo prioridade total — só entram
+        // aqui quando NÃO há state reativo controlando (mesmo guard de antes).
+        if (bgColorState == null) {
+            String finalBg = switch (style) {
+                case FILLED -> accentColor;
+                case OUTLINED, TEXT -> "transparent";
+            };
+            applyColor(node, finalBg, FX_BG_COLOR);
         }
 
-        // bgColor só aplica se não há state reativo controlando
-        if (bgColorState == null) {
-            //String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props);
-            String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props, theme);
-            applyColor(node, finalBgColor, FX_BG_COLOR);
+        // textColor só aplica estaticamente se não há state reativo controlando
+        if (textColorState == null) {
+            String finalTextColor = textColor != null ? textColor : switch (style) {
+                case FILLED -> getButtonTextColor((ButtonProps) props, theme);
+                case OUTLINED, TEXT -> accentColor;
+            };
+            applyColor(node, finalTextColor, FX_TEXT_FILL);
         }
+
         if(iconOnRight){
             button.setContentDisplay(ContentDisplay.RIGHT);
+        }
+
+        // Borda: OUTLINED usa a cor semântica como borda por padrão, a menos que
+        // borderColor/borderWidth tenham sido setados manualmente (prioridade
+        // já tratada dentro de applyBorderStyling via borderWidth>0).
+        if (style == ButtonStyle.OUTLINED && borderWidth == 0) {
+            borderWidth = theme.border().width();
+            if (borderColor == null) borderColor = accentColor;
         }
 
         applyBorderStyling(button, theme);
@@ -260,11 +294,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
     @Override
     protected void bindStates(Node node) {
-        bind(node, bgColorState, color ->
-                applyColor(node, color, FX_BG_COLOR)
-        );
-        bind(node, textColorState, color ->
-                applyColor(node, color, FX_TEXT_FILL)
-        );
+        bind(node, bgColorState, color -> applyColor(node, color, FX_BG_COLOR));
+        bind(node, textColorState, color -> applyColor(node, color, FX_TEXT_FILL));
     }
 }
