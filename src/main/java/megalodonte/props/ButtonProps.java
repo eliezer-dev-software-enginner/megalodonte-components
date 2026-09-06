@@ -10,15 +10,7 @@ import megalodonte.base.theme.ThemeInterface;
 import static megalodonte.styles.util.StyleUtils.*;
 
 public class ButtonProps extends TextComponentProps<ButtonProps> implements Paddable<ButtonProps> {
-    /** Estilo visual do botão, ortogonal à cor semântica (variant). */
-    public enum ButtonStyle {
-        FILLED, OUTLINED, TEXT
-    }
 
-    /** Cor semântica do botão — eixo independente do estilo visual (ButtonStyle). */
-    public enum ButtonVariant {
-        PRIMARY, SECONDARY, SUCCESS, WARNING, DANGER, GHOST, DISABLED
-    }
 
     private int height;
     private boolean fillWidth;
