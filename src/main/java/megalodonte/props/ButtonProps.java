@@ -10,6 +10,11 @@ import megalodonte.base.theme.ThemeInterface;
 import static megalodonte.styles.util.StyleUtils.*;
 
 public class ButtonProps extends TextComponentProps<ButtonProps> implements Paddable<ButtonProps> {
+    /** Estilo visual do botão, ortogonal à cor semântica (variant). */
+    public enum ButtonStyle {
+        FILLED, OUTLINED, TEXT
+    }
+
     private int height;
     private boolean fillWidth;
     protected String bgColor;
@@ -153,24 +158,36 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         return variant;
     }
 
-    private static final String
-            BTN_PRIMARY = "#2563eb",
-            BTN_SECONDARY = "#6b7280",
-            BTN_SUCCESS = "#10b981",
-            BTN_WARNING = "#f59e0b",
-            BTN_DANGER = "#ef4444",
-            BTN_GHOST = "transparent",
-            BTN_DISABLED = "#94a3b8";
+//    private static final String
+//            BTN_PRIMARY = "#2563eb",
+//            BTN_SECONDARY = "#6b7280",
+//            BTN_SUCCESS = "#10b981",
+//            BTN_WARNING = "#f59e0b",
+//            BTN_DANGER = "#ef4444",
+//            BTN_GHOST = "transparent",
+//            BTN_DISABLED = "#94a3b8";
 
-    private String getButtonColorFromVariant(ButtonProps props) {
+//    private String getButtonColorFromVariant(ButtonProps props) {
+//        return switch (props.getVariant()) {
+//            case "secondary" -> BTN_SECONDARY;
+//            case "success" -> BTN_SUCCESS;
+//            case "warning" -> BTN_WARNING;
+//            case "danger" -> BTN_DANGER;
+//            case "ghost" -> BTN_GHOST;
+//            case "disabled" -> BTN_DISABLED;
+//            default -> BTN_PRIMARY;
+//        };
+//    }
+
+    private String getButtonColorFromVariant(ButtonProps props, ThemeInterface theme) {
         return switch (props.getVariant()) {
-            case "secondary" -> BTN_SECONDARY;
-            case "success" -> BTN_SUCCESS;
-            case "warning" -> BTN_WARNING;
-            case "danger" -> BTN_DANGER;
-            case "ghost" -> BTN_GHOST;
-            case "disabled" -> BTN_DISABLED;
-            default -> BTN_PRIMARY;
+            case "secondary" -> theme.colors().secondary();
+            case "success" -> theme.colors().success();
+            case "warning" -> theme.colors().warning();
+            case "danger" -> theme.colors().danger();
+            case "ghost" -> "transparent";
+            case "disabled" -> theme.colors().textSecondary(); // ou um tom neutro do tema, se preferir
+            default -> theme.colors().primary();
         };
     }
 
@@ -228,7 +245,8 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
         // bgColor só aplica se não há state reativo controlando
         if (bgColorState == null) {
-            String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props);
+            //String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props);
+            String finalBgColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props, theme);
             applyColor(node, finalBgColor, FX_BG_COLOR);
         }
         if(iconOnRight){
