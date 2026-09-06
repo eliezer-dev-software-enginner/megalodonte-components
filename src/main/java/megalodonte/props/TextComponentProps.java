@@ -62,14 +62,13 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
         }
     }
 
-    public T color(String color) {
+    public T textColor(String color) {
         this.textColor = color;
         return (T) this;
     }
 
-    public T textColor(String color) {
-        this.textColor = color;
-        return (T) this;
+    public String getTextColor() {
+        return textColor;
     }
 
     protected void applyColor(Node node, String color, String fxField) {

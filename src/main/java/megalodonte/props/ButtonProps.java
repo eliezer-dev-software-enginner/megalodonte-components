@@ -10,8 +10,6 @@ import megalodonte.base.theme.ThemeInterface;
 import static megalodonte.styles.util.StyleUtils.*;
 
 public class ButtonProps extends TextComponentProps<ButtonProps> implements Paddable<ButtonProps> {
-
-
     private int height;
     private boolean fillWidth;
     protected String bgColor;
