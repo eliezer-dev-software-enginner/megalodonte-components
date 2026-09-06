@@ -7,6 +7,8 @@ import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
 
+import static megalodonte.props.ButtonVariant.DISABLED;
+import static megalodonte.props.ButtonVariant.GHOST;
 import static megalodonte.styles.util.StyleUtils.*;
 
 public class ButtonProps extends TextComponentProps<ButtonProps> implements Paddable<ButtonProps> {
@@ -32,6 +34,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
 
     // Fluent API methods — padding inherited from Paddable<ButtonProps>
+
 
     @Override
     public int getPaddingUnitsTop() { return paddingUnitsTop; }
@@ -87,11 +90,6 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
     public ButtonProps borderRadius(int borderRadius) {
         this.borderRadius = borderRadius;
         return this;
-    }
-
-    @Override
-    public ButtonProps textColor(String color) {
-        return super.textColor(color);
     }
 
     public ButtonProps textColor(ReadableState<String> textColorState) {
@@ -172,12 +170,12 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
     }
 
     public ButtonProps ghost() {
-        this.variant = ButtonVariant.GHOST;
+        this.variant = GHOST;
         return this;
     }
 
     public ButtonProps disabled() {
-        this.variant = ButtonVariant.DISABLED;
+        this.variant = DISABLED;
         return this;
     }
 
@@ -222,6 +220,17 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         updateBorderRadius(node, finalRadius);
     }
 
+    // Adicione este método dentro de ButtonProps.java
+    public String resolveTextColor(ThemeInterface theme) {
+        if (this.textColor != null) {
+            return this.textColor;
+        }
+        // Caso use o estilo padrão, aplica a mesma regra do applyTheme
+        return switch (this.style) {
+            case FILLED -> getButtonTextColor(this, theme);
+            case OUTLINED, TEXT -> bgColor != null ? bgColor : getButtonColorFromVariant(this, theme);
+        };
+    }
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Button button)) return;

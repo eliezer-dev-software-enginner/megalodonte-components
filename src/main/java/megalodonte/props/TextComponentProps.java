@@ -73,6 +73,13 @@ public abstract class TextComponentProps<T extends TextComponentProps<T>> extend
 
     protected void applyColor(Node node, String color, String fxField) {
         applyStyleProperty(node, color, fxField);
+        // Só grava em textColor quando a propriedade aplicada é de fato o texto —
+        // chamadas pra outras propriedades (ex.: FX_BG_COLOR) não podem sobrescrever
+        // esse campo, senão getTextColor()/resolveTextColor() passam a refletir a
+        // última cor aplicada a QUALQUER propriedade, não a cor real do texto.
+        if (StyleUtils.FX_TEXT_FILL.equals(fxField)) {
+            this.textColor = color;
+        }
     }
 
     protected void applyFontStyling(Node node) {
