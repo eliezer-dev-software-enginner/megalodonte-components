@@ -220,11 +220,14 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
         // Apply border styling without custom radius
         applyInputBorderStyling(stackPane, theme);
 
-        input.setPadding(resolvePadding(theme));
+        //input.setPadding(resolvePadding(theme));
+        applyStyleProperty(input, toCssInsets(resolvePadding(theme)), "-fx-padding");
 
         // Apply text styling to input
         applyInputTextStyling(input, theme, (InputProps) props);
     }
+
+
 
     private void applyTextAreaTheme(TextArea textArea, ThemeInterface theme, InputProps props) {
         int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
@@ -239,7 +242,9 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
         updateBorderRadius(textArea, finalRadius); // seta -fx-border-radius e -fx-background-radius
         updateBorderColor(textArea, finalBorderColor);
         updateBorderWidth(textArea, finalBorderWidth);
-        textArea.setPadding(resolvePadding(theme));
+        //textArea.setPadding(resolvePadding(theme));
+        applyStyleProperty(textArea, toCssInsets(resolvePadding(theme)), "-fx-padding");
+
         // O bevel de 3 camadas do Modena em .text-area é achatado via
         // text-area.css (author stylesheet), não aqui — inline setStyle() não
         // sobrescreve as 3 camadas de -fx-background-color/-fx-background-insets

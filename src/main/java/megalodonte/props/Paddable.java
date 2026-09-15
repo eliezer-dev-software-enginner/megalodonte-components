@@ -81,4 +81,19 @@ public interface Paddable<T extends Paddable<T>> {
                 left >= 0 ? ScaleProvider.scale(left) : paddingTheme
         );
     }
+
+    /**
+     * Formata o Insets resolvido como valor CSS pronto pra "-fx-padding" via
+     * applyStyleProperty. Necessário em vez de node.setPadding() sempre que o node
+     * tiver um stylesheet (user-agent OU author) que também declare -fx-padding —
+     * toda passada de CSS (troca de pseudo-classe como :focused, troca de tema,
+     * etc.) reaplica o valor resolvido pela stylesheet por cima do que foi setado
+     * via Java. Estilo inline (setStyle/applyStyleProperty) tem prioridade máxima
+     * no cascade e sobrevive a esses recálculos. Locale.ROOT evita separador
+     * decimal errado (vírgula) em locales pt-BR.
+     */
+    default String toCssInsets(Insets insets) {
+        return String.format(java.util.Locale.ROOT, "%.1fpx %.1fpx %.1fpx %.1fpx",
+                insets.getTop(), insets.getRight(), insets.getBottom(), insets.getLeft());
+    }
 }

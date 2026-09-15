@@ -27,10 +27,26 @@ public abstract class InputBase extends Component {
     protected Function<String, OnChangeResult> onChange;
     protected Function<String, OnChangeResult> onInitialize;
 
+//    protected InputBase(TextInputControl field, InputProps props) {
+//        super(new StackPane());
+//        this.container = (StackPane) node;
+//        this.field = field;
+//
+//        container.getChildren().add(field);
+//
+//        if (props != null) props.apply(node);
+//        field.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
+//            if (lockCursorToEnd && !internalChange && newPos.intValue() < field.getText().length()) {
+//                field.positionCaret(field.getText().length());
+//            }
+//        });
+//    }
+
     protected InputBase(TextInputControl field, InputProps props) {
         super(new StackPane());
         this.container = (StackPane) node;
         this.field = field;
+        this.props = props;
 
         container.getChildren().add(field);
 
@@ -152,10 +168,53 @@ public abstract class InputBase extends Component {
         return this;
     }
 
+//    protected void adjustPadding() {
+//        double leftPad = left != null ? 32 : 8;
+//        double rightPad = right != null ? 32 : 8;
+//        field.setPadding(new Insets(0, rightPad, 0, leftPad));
+//    }
+
+//    protected void adjustPadding() {
+//        // Força a resolução síncrona do CSS pra garantir que field.getPadding()
+//        // reflita o -fx-padding inline que InputProps.applyTheme já escreveu
+//        // (resolvePadding do tema) — sem isso poderia ler um valor ainda não
+//        // processado pela passada de CSS.
+//        field.applyCss();
+//        var current = field.getPadding();
+//
+//        double leftPad = left != null ? 32 : 8;
+//        double rightPad = right != null ? 32 : 8;
+//
+//        // Preserva o padding vertical (top/bottom) já resolvido pelo tema — só o
+//        // horizontal muda pra abrir espaço pro ícone. Sobrescrever top/bottom aqui
+//        // de novo zeraria a altura efetiva do campo (mesmo bug que resolvePadding()
+//        // via inline style já corrigiu antes).
+//        String cssPadding = String.format(java.util.Locale.ROOT,
+//                "%.1fpx %.1fpx %.1fpx %.1fpx",
+//                current.getTop(), rightPad, current.getBottom(), leftPad);
+//
+//        megalodonte.styles.util.StyleUtils.applyStyleProperty(field, cssPadding, "-fx-padding");
+//    }
+
     protected void adjustPadding() {
         double leftPad = left != null ? 32 : 8;
         double rightPad = right != null ? 32 : 8;
-        field.setPadding(new Insets(0, rightPad, 0, leftPad));
+
+        // Não lê o padding de volta do node (field.getPadding()/applyCss()) porque,
+        // nesse ponto da construção, o Input normalmente ainda não está anexado a
+        // uma Scene — CSS só resolve de forma confiável com o node já na árvore
+        // visual. Em vez disso, recalcula o padding vertical direto da mesma fonte
+        // de verdade que InputProps.applyTheme usa (Paddable.resolvePadding), e só
+        // sobrescreve o horizontal pra abrir espaço pro ícone.
+        var theme = megalodonte.base.theme.ThemeManager.theme();
+        var inputprops = (InputProps) props;
+        var themePadding = inputprops != null ? inputprops.resolvePadding(theme) : new Insets(0);
+
+        String cssPadding = String.format(java.util.Locale.ROOT,
+                "%.1fpx %.1fpx %.1fpx %.1fpx",
+                themePadding.getTop(), rightPad, themePadding.getBottom(), leftPad);
+
+        megalodonte.styles.util.StyleUtils.applyStyleProperty(field, cssPadding, "-fx-padding");
     }
 
     public InputBase onChangeFocus(Consumer<Boolean> eventHandler) {

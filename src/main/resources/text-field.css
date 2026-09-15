@@ -17,6 +17,7 @@
     -fx-border-width: 0;
     -fx-border-insets: 0;
     -fx-effect: null;
+    -fx-padding: 0;
 }
 
 .text-field:focused {
@@ -26,4 +27,5 @@
     -fx-border-width: 0;
     -fx-border-insets: 0;
     -fx-effect: null;
+    -fx-padding: 0;
 }

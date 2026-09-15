@@ -11,7 +11,6 @@ import megalodonte.base.state.State;
  * {@link megalodonte.components.v2.Input} (construído do zero, sem nenhum
  * Control nativo, zero disputa de CSS possível) pra código novo.
  */
-@Deprecated(forRemoval = true)
 public class Input extends InputBase {
 
     public Input(State<String> state) {
