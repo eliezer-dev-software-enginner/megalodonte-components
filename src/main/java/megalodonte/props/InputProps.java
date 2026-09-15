@@ -389,7 +389,8 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
      * (ícones) passam por aqui, pra o campo com ícone não perder a compensação.
      */
     public static Insets compensateBorderForStackPane(Insets themePadding, ThemeInterface theme) {
-        double bw = theme.border().width();
+       //double bw = theme.border().width();
+        double bw = 5;
         if (bw <= 0) return themePadding;
         return new Insets(themePadding.getTop() + bw, themePadding.getRight(),
                 themePadding.getBottom() + bw, themePadding.getLeft());

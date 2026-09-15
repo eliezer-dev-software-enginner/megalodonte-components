@@ -5,7 +5,7 @@ import megalodonte.props.InputProps;
 import megalodonte.base.state.State;
 
 /**
- * @deprecated usa {@code javafx.scene.control.TextField} por baixo, então herda
+ * usa {@code javafx.scene.control.TextField} por baixo, então herda
  * a skin do Modena (ver DECISIONS.md, 2026-08-03) — o fix de `text-field.css`
  * funciona, mas ainda depende de neutralizar CSS nativo. Use
  * {@link megalodonte.components.v2.Input} (construído do zero, sem nenhum
