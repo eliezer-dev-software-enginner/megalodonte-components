@@ -345,35 +345,34 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
     }
 
     /**
-     * Apply border styling for inputs without custom radius, using only theme defaults.
+     * A borda do campo vive SÓ no StackPane (o node externo, o que entra no layout
+     * do pai) — o TextInputControl interno não recebe borda. Bordas no field eram a
+     * origem da "borda interna": quando o field não preenche exatamente o StackPane
+     * (ex.: ícone mais alto), a borda do field fica recuada em relação à caixa externa.
+     * Com a borda no StackPane ela fica sempre alinhada à borda externa — e de quebra
+     * resolve o caso do PasswordInput, em que o field trocado (PasswordField↔TextField)
+     * nunca recebia o tema (nem borda) ao alternar o 👁.
+     * <p>
+     * Modena define .text-field com 3 camadas de background empilhadas pra simular um
+     * bevel; o achatamento fica em text-field.css (author stylesheet, anexado ao próprio
+     * TextField) — é isso que deixa o field sem borda (border transparente/0) e com
+     * fundo flat. Aqui só complementamos: -fx-background-radius do field no mesmo raio
+     * e mesma cor de fundo do StackPane, pra não aparecer canto quadrado sobre o raio.
      */
     private void applyInputBorderStyling(StackPane stackPane, ThemeInterface theme) {
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        updateBorderColor(input, finalBorderColor);
-
         int finalBorderWidth = theme.border().width();
-        if (finalBorderWidth > 0) {
-            updateBorderWidth(input, finalBorderWidth);
-        }
-
         int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
+
         updateBorderRadius(input, finalRadius);
 
-        // StackPane também precisa do mesmo radius para não clipar as bordas do filho
         updateBorderRadius(stackPane, finalRadius);
-        updateBorderColor(stackPane, "transparent");
-
-        // Modena define .text-field com 3 camadas de background empilhadas
-        // (-fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background,
-        // cada uma com seu próprio -fx-background-insets) pra simular um bevel.
-        // setStyle() aqui não sobrescreve essas 3 camadas de forma confiável — é uma
-        // limitação documentada do JavaFX CSS pra propriedades multi-camada (o valor
-        // inline não "cicla" pelas 3 camadas do jeito que cicla numa regra de
-        // stylesheet). Por isso o fix real está em text-field.css (author stylesheet,
-        // achata pra 1 camada só), anexado ao próprio TextField em Input — aqui só
-        // a borda visível (cor/largura/raio) mesmo, que ele complementa.
+        updateBorderColor(stackPane, finalBorderColor);
+        if (finalBorderWidth > 0) {
+            updateBorderWidth(stackPane, finalBorderWidth);
+        }
     }
 
     /**
