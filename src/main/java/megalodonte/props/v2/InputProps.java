@@ -1,5 +1,6 @@
 package megalodonte.props.v2;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -223,7 +224,22 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
         updateBorderRadius(outer, finalRadius);
         updateBorderColor(outer, "transparent");
 
-        surface.setPadding(resolvePadding(theme));
+        surface.setPadding(v2ContentCompensatedPadding(theme));
+    }
+
+    /**
+     * Padding da surface pra igualar a altura TOTAL do v2 à do input nativo.
+     * A TextFieldSkin (v1) reserva ~1px a mais que a altura do {@code Text} cru
+     * do v2 pra mesma fonte (métrica interna da skin, não reproduzível via
+     * Text), então o padding vertical da surface ganha 0.5 por lado — somado,
+     * fecha o outer do v2 no mesmo valor do outer do v1 medido com a mesma
+     * fonte. Sem isso o v2 renderiza ~1px menor/“mais baixo” que o nativo na
+     * mesma grade.
+     */
+    private Insets v2ContentCompensatedPadding(ThemeInterface theme) {
+        Insets pad = resolvePadding(theme);
+        return new Insets(pad.getTop() + 0.5, pad.getRight(),
+                pad.getBottom() + 0.5, pad.getLeft());
     }
 
     private String getFinalInputTextColor(ThemeInterface theme) {
