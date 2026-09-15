@@ -192,10 +192,13 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
             // Same reasoning as the width branch below: without a cap, a fitToHeight
             // ScrollPane (e.g. Components.ScrollPaneDefault, used by every CRUD screen)
             // asks this input's wrapping StackPane to grow to the viewport height, and
-            // an uncapped TextInputControl inside it can drive JavaFX's layout pass into
+            // an uncapped control inside it can drive JavaFX's layout pass into
             // unbounded recursion — StackOverflowError — instead of just hugging its
-            // natural single-line height.
-            input.setMaxHeight(Region.USE_PREF_SIZE);
+            // natural single-line height. Capping the StackPane (the node that goes into
+            // the parent's layout) is enough for that; the inner field must NOT be capped,
+            // or it can't fill the StackPane when a taller child (e.g. the 👁 button of
+            // PasswordInput) makes the StackPane exceed the field's prefHeight — which
+            // would leave the field's border visibly inset from the outer box.
             stackPane.setMaxHeight(Region.USE_PREF_SIZE);
         }
 
