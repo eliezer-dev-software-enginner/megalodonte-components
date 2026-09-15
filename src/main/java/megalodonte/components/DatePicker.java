@@ -76,26 +76,6 @@ public class DatePicker extends Component  {
         }
     }
 
-    @Deprecated(forRemoval = true)
-    // Brazilian Portuguese constructor
-    public static DatePicker brazilian() {
-        return new DatePicker(new DatePickerProps()
-            .locale(new Locale("pt", "BR"))
-            .pattern("dd/MM/yyyy")
-            .editable(false)
-            .placeHolder("dd/MM/yyyy"));
-    }
-
-    @Deprecated(forRemoval = true)
-    // Brazilian Portuguese constructor with state
-    public static DatePicker brazilian(State<LocalDate> state) {
-        return new DatePicker(state, new DatePickerProps()
-            .locale(new Locale("pt", "BR"))
-            .pattern("dd/MM/yyyy")
-            .editable(false)
-            .placeHolder("dd/MM/yyyy"));
-    }
-
     private void bind(State<LocalDate> state) {
         if (state == null) return;
 
