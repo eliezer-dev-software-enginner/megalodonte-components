@@ -70,6 +70,10 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         return this;
     }
 
+    public boolean isIconOnRight() {
+        return iconOnRight;
+    }
+
     public ButtonProps bgColor(ReadableState<String> bgColorState) {
         this.bgColorState = bgColorState;
 

@@ -3,6 +3,7 @@ package megalodonte.components;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.scene.control.ContentDisplay;
 import javafx.util.Duration;
 import megalodonte.application.ErrorReporter;
 import megalodonte.base.async.RunnableThrowing;
@@ -88,6 +89,12 @@ public class Button extends Component  {
         Objects.requireNonNull(icon);
         btn.setGraphic(icon.getJavaFxNode());
         btn.setContentDisplay(javafx.scene.control.ContentDisplay.LEFT); // default
+
+        ButtonProps btnProps = (ButtonProps) this.props;
+        if(btnProps!=null && btnProps.isIconOnRight()){
+            btn.setContentDisplay(ContentDisplay.RIGHT);
+        }
+
         btn.setGraphicTextGap(6);
         return this;
     }
