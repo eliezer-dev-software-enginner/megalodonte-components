@@ -25,6 +25,7 @@ public class DatePickerProps extends Props implements Paddable<DatePickerProps> 
     private Boolean editable;
     private ReadableState<LocalDate> valueState;
     private String color;
+    private Integer fontSize;
 
     public DatePickerProps formatter(DateTimeFormatter formatter) {
         this.formatter = formatter;
@@ -67,7 +68,7 @@ public class DatePickerProps extends Props implements Paddable<DatePickerProps> 
         return this;
     }
 
-    private Integer fontSize = 14;
+
     public DatePickerProps fontSize(int fontSize){
         this.fontSize = fontSize;
         return this;
@@ -206,9 +207,8 @@ public class DatePickerProps extends Props implements Paddable<DatePickerProps> 
             });
         }
 
-        if (fontSize != null) {
-            updateFontSize(datePicker, ScaleProvider.scale(fontSize));
-        }
+        int finalFontSize = fontSize != null ? ScaleProvider.scale(fontSize) : theme.typography().body();
+        updateFontSize(datePicker, finalFontSize);
 
         if (color != null) {
             updateTextColor_Input(datePicker, color);
@@ -231,6 +231,7 @@ public class DatePickerProps extends Props implements Paddable<DatePickerProps> 
 
         // Apply background styling
         applyBackgroundStyling(datePicker, theme, bgColor);
+        applyInnerTransparency(datePicker);
 
         datePicker.setPadding(resolvePadding(theme));
 
@@ -270,6 +271,33 @@ public class DatePickerProps extends Props implements Paddable<DatePickerProps> 
                 Platform.runLater(() -> styleCalendarPopup(theme));
             }
         });
+    }
+
+    /**
+     * O DatePicker não é um node único — por baixo, o editor (.text-field) e o
+     * arrow-button carregam seus próprios backgrounds opacos do Modena, cada um
+     * pintado independentemente do node externo. Sem isso, mesmo com a cor certa
+     * aplicada no datePicker via applyBackgroundStyling, esses filhos internos
+     * continuam visíveis por cima, aparecendo como um artefato cinza dentro do
+     * campo. Torná-los transparentes deixa a cor do node externo aparecer por trás.
+     */
+    private void applyInnerTransparency(DatePicker datePicker) {
+        applyStyleProperty(datePicker.getEditor(), "transparent", "-fx-background-color");
+
+        Runnable apply = () -> {
+            var arrowButton = datePicker.lookup(".arrow-button");
+            if (arrowButton != null) {
+                applyStyleProperty(arrowButton, "transparent", "-fx-background-color");
+            }
+        };
+
+        if (datePicker.getSkin() != null) {
+            Platform.runLater(apply);
+        } else {
+            datePicker.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+                if (newSkin != null) Platform.runLater(apply);
+            });
+        }
     }
 
     private void styleCalendarPopup(ThemeInterface theme) {
