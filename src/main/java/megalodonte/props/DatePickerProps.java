@@ -207,7 +207,7 @@ public class DatePickerProps extends Props implements Paddable<DatePickerProps> 
             });
         }
 
-        int finalFontSize = fontSize != null ? ScaleProvider.scale(fontSize) : theme.typography().body();
+        int finalFontSize = fontSize != null ? ScaleProvider.scale(fontSize) : theme.typography().small();
         updateFontSize(datePicker, finalFontSize);
 
         if (color != null) {
