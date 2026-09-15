@@ -204,11 +204,14 @@ public abstract class InputBase extends Component {
         // nesse ponto da construção, o Input normalmente ainda não está anexado a
         // uma Scene — CSS só resolve de forma confiável com o node já na árvore
         // visual. Em vez disso, recalcula o padding vertical direto da mesma fonte
-        // de verdade que InputProps.applyTheme usa (Paddable.resolvePadding), e só
-        // sobrescreve o horizontal pra abrir espaço pro ícone.
+        // de verdade que InputProps.applyTheme usa (Paddable.resolvePadding +
+        // compensateBorderForStackPane, pra repor a área que a borda do StackPane
+        // consome), e só sobrescreve o horizontal pra abrir espaço pro ícone.
         var theme = megalodonte.base.theme.ThemeManager.theme();
         var inputprops = (InputProps) props;
-        var themePadding = inputprops != null ? inputprops.resolvePadding(theme) : new Insets(0);
+        var themePadding = inputprops != null
+                ? megalodonte.props.InputProps.compensateBorderForStackPane(inputprops.resolvePadding(theme), theme)
+                : new Insets(0);
 
         String cssPadding = String.format(java.util.Locale.ROOT,
                 "%.1fpx %.1fpx %.1fpx %.1fpx",

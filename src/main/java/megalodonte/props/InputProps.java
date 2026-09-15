@@ -1,5 +1,6 @@
 package megalodonte.props;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
@@ -224,7 +225,7 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
         applyInputBorderStyling(stackPane, theme);
 
         //input.setPadding(resolvePadding(theme));
-        applyStyleProperty(input, toCssInsets(resolvePadding(theme)), "-fx-padding");
+        applyStyleProperty(input, toCssInsets(compensateBorderForStackPane(resolvePadding(theme), theme)), "-fx-padding");
 
         // Apply text styling to input
         applyInputTextStyling(input, theme, (InputProps) props);
@@ -373,6 +374,25 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
         if (finalBorderWidth > 0) {
             updateBorderWidth(stackPane, finalBorderWidth);
         }
+    }
+
+    /**
+     * Compensa a largura da borda no padding vertical do TextInputControl. Como a
+     * borda do input agora vive SÓ no StackPane ({@link #applyInputBorderStyling}),
+     * o field interno perde {@code borderWidth} de área pintada em cada lado — sem
+     * compensar, a caixa do field fica mais baixa do que era quando a borda vivia
+     * no próprio field. Somar a borda no padding top/bottom devolve a mesma altura
+     * de caixa visível. Horizontal NÃO compensa, pra não afastar o texto da borda
+     * externa (que continua igual: borda + padding).
+     * <p>
+     * Tanto {@code InputProps.applyTheme} quanto {@code InputBase.adjustPadding()}
+     * (ícones) passam por aqui, pra o campo com ícone não perder a compensação.
+     */
+    public static Insets compensateBorderForStackPane(Insets themePadding, ThemeInterface theme) {
+        double bw = theme.border().width();
+        if (bw <= 0) return themePadding;
+        return new Insets(themePadding.getTop() + bw, themePadding.getRight(),
+                themePadding.getBottom() + bw, themePadding.getLeft());
     }
 
     /**
