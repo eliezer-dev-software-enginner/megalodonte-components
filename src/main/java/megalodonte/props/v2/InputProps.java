@@ -11,6 +11,7 @@ import megalodonte.props.TextComponentProps;
 import megalodonte.props.TextTone;
 
 import static megalodonte.styles.util.StyleUtils.*;
+import megalodonte.props.Paddable;
 
 /**
  * Props para {@link megalodonte.components.v2.Input} — separado de
@@ -18,7 +19,7 @@ import static megalodonte.styles.util.StyleUtils.*;
  * {@code TextInputControl} (não existe nenhum Control nativo por baixo), então
  * não faz sentido reaproveitar uma classe cuja API pressupõe isso.
  */
-public class InputProps extends TextComponentProps<InputProps> {
+public class InputProps extends TextComponentProps<InputProps> implements Paddable<InputProps> {
 
     private String placeholder;
     private int height;
@@ -33,6 +34,11 @@ public class InputProps extends TextComponentProps<InputProps> {
     protected int borderWidth;
     protected int borderRadius;
     protected String placeholderColor;
+
+    protected int paddingUnitsTop = UNSET;
+    protected int paddingUnitsRight = UNSET;
+    protected int paddingUnitsDown = UNSET;
+    protected int paddingUnitsLeft = UNSET;
 
     public InputProps tone(TextTone tone) {
         this.tone = tone;
@@ -92,6 +98,30 @@ public class InputProps extends TextComponentProps<InputProps> {
         this.borderRadius = borderRadius;
         return this;
     }
+
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
+
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
+
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
+
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
+
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     public boolean isDisabled() {
         return disabled;
@@ -192,6 +222,8 @@ public class InputProps extends TextComponentProps<InputProps> {
         updateBorderRadius(surface, finalRadius);
         updateBorderRadius(outer, finalRadius);
         updateBorderColor(outer, "transparent");
+
+        surface.setPadding(resolvePadding(theme));
     }
 
     private String getFinalInputTextColor(ThemeInterface theme) {

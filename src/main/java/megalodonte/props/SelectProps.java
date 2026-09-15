@@ -121,8 +121,6 @@ public class SelectProps extends TextComponentProps<SelectProps> implements Padd
             cBox.setMaxHeight(scaled);
         }
 
-        cBox.setPadding(resolvePadding(theme));
-
         if (disabled) {
             cBox.setDisable(true);
         }
@@ -171,6 +169,8 @@ public class SelectProps extends TextComponentProps<SelectProps> implements Padd
         // Select.displayText() é sempre chamado depois disso na prática e sobrescreve
         // o cellFactory inteiro. Por isso quem estiliza as células é o próprio Select
         // (default cellFactory + displayText compartilham o mesmo helper themado).
+
+        cBox.setPadding(resolvePadding(theme));
     }
 
     private String getFinalSelectTextColor(ThemeInterface theme) {

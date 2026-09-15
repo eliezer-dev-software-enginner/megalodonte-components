@@ -129,6 +129,7 @@ public class Input extends Component implements FocusableFieldInterface<Input> {
         surface.widthProperty().addListener((obs, old, w) -> layoutContent());
 
         if (props != null) props.apply(node);
+        updatePads();
 
         textNode.fontProperty().addListener((obs, old, font) -> {
             measurer.setFont(font);
@@ -403,10 +404,15 @@ public class Input extends Component implements FocusableFieldInterface<Input> {
         return this;
     }
 
-    private void adjustPadding() {
-        leftPad = left != null ? 32 : 8;
-        rightPad = right != null ? 32 : 8;
+    private void updatePads() {
+        Insets pad = surface.getInsets();
+        leftPad = left != null ? Math.max(32, pad.getLeft()) : Math.max(8, pad.getLeft());
+        rightPad = right != null ? Math.max(32, pad.getRight()) : Math.max(8, pad.getRight());
         layoutContent();
+    }
+
+    private void adjustPadding() {
+        updatePads();
     }
 
     @Override

@@ -13,7 +13,7 @@ import megalodonte.base.theme.ThemeInterface;
 import static megalodonte.styles.util.StyleUtils.*;
 
 //TODO: criar placeholderSize
-public class InputProps extends TextComponentProps<InputProps> {
+public class InputProps extends TextComponentProps<InputProps> implements Paddable<InputProps> {
 
     //TODO: mover para InputProps
     @Deprecated(forRemoval = true)
@@ -100,7 +100,12 @@ public class InputProps extends TextComponentProps<InputProps> {
     protected int borderWidth;
     protected int borderRadius;
 
-    // Fluent API methods
+    protected int paddingUnitsTop = UNSET;
+    protected int paddingUnitsRight = UNSET;
+    protected int paddingUnitsDown = UNSET;
+    protected int paddingUnitsLeft = UNSET;
+
+    // Fluent API methods — padding inherited from Paddable<InputProps>
     public InputProps bgColor(String bgColor) {
         this.bgColor = bgColor;
         return  this;
@@ -120,6 +125,30 @@ public class InputProps extends TextComponentProps<InputProps> {
         this.borderRadius = borderRadius;
         return this;
     }
+
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
+
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
+
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
+
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
+
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     protected String placeholderColor;
 
@@ -191,6 +220,8 @@ public class InputProps extends TextComponentProps<InputProps> {
         // Apply border styling without custom radius
         applyInputBorderStyling(stackPane, theme);
 
+        input.setPadding(resolvePadding(theme));
+
         // Apply text styling to input
         applyInputTextStyling(input, theme, (InputProps) props);
     }
@@ -208,7 +239,7 @@ public class InputProps extends TextComponentProps<InputProps> {
         updateBorderRadius(textArea, finalRadius); // seta -fx-border-radius e -fx-background-radius
         updateBorderColor(textArea, finalBorderColor);
         updateBorderWidth(textArea, finalBorderWidth);
-        applyStyleProperty(textArea, "4px", "-fx-padding");
+        textArea.setPadding(resolvePadding(theme));
         // O bevel de 3 camadas do Modena em .text-area é achatado via
         // text-area.css (author stylesheet), não aqui — inline setStyle() não
         // sobrescreve as 3 camadas de -fx-background-color/-fx-background-insets

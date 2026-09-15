@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import static megalodonte.styles.util.StyleUtils.*;
 
-public class DatePickerProps extends Props {
+public class DatePickerProps extends Props implements Paddable<DatePickerProps> {
     private DateTimeFormatter formatter;
     private Locale locale;
     private String promptText;
@@ -110,6 +110,11 @@ public class DatePickerProps extends Props {
     protected int borderWidth;
     protected int borderRadius;
 
+    protected int paddingUnitsTop = UNSET;
+    protected int paddingUnitsRight = UNSET;
+    protected int paddingUnitsDown = UNSET;
+    protected int paddingUnitsLeft = UNSET;
+
     // Fluent API methods
     @SuppressWarnings("unchecked")
     public DatePickerProps  bgColor(String bgColor) {
@@ -134,6 +139,30 @@ public class DatePickerProps extends Props {
         this.borderRadius = borderRadius;
         return this;
     }
+
+    @Override
+    public int getPaddingUnitsTop() { return paddingUnitsTop; }
+
+    @Override
+    public int getPaddingUnitsRight() { return paddingUnitsRight; }
+
+    @Override
+    public int getPaddingUnitsDown() { return paddingUnitsDown; }
+
+    @Override
+    public int getPaddingUnitsLeft() { return paddingUnitsLeft; }
+
+    @Override
+    public void setPaddingUnitsTop(int units) { this.paddingUnitsTop = units; }
+
+    @Override
+    public void setPaddingUnitsRight(int units) { this.paddingUnitsRight = units; }
+
+    @Override
+    public void setPaddingUnitsDown(int units) { this.paddingUnitsDown = units; }
+
+    @Override
+    public void setPaddingUnitsLeft(int units) { this.paddingUnitsLeft = units; }
 
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
@@ -202,6 +231,8 @@ public class DatePickerProps extends Props {
 
         // Apply background styling
         applyBackgroundStyling(datePicker, theme, bgColor);
+
+        datePicker.setPadding(resolvePadding(theme));
 
         // Apply border styling
         applyBorderStyling(datePicker, theme);

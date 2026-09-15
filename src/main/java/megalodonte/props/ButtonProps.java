@@ -277,7 +277,6 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
         if(iconOnRight){
             button.setContentDisplay(ContentDisplay.RIGHT);
         }
-
         // Borda: OUTLINED usa a cor semântica como borda por padrão, a menos que
         // borderColor/borderWidth tenham sido setados manualmente (prioridade
         // já tratada dentro de applyBorderStyling via borderWidth>0).
