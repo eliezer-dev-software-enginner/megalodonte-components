@@ -36,8 +36,18 @@ public class MenuBar extends Component {
         return this;
     }
 
+    public MenuBar addComponent(Component component) {
+        //this.menus.add(menu);
+        this.bar.getChildren().add(component.getJavaFxNode());
+        return this;
+    }
+
     public MenuBar menu(Menu menu) {
         return addMenu(menu);
+    }
+
+    public MenuBar menu(Component component) {
+        return addComponent(component);
     }
 
     /** Sobrescreve o fundo padrão ({@code theme.colors().surface()}) — útil pra combinar com outra área da UI (ex.: sidebar escura). */
