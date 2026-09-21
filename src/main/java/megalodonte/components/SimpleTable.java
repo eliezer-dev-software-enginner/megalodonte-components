@@ -27,6 +27,14 @@ public class SimpleTable<T> extends Component  {
     // vezes conforme o usuário rola pra cima/baixo). Uma entrada com valor null (falha
     // ao carregar) não fica em cache — tenta de novo na próxima vez, de propósito.
     private final java.util.Map<String, javafx.scene.image.Image> imageCache = new java.util.HashMap<>();
+
+
+    //pagination
+
+    private List<T> fullData = List.of();
+    private int pageSize = -1; // -1 = paginação desabilitada (comportamento atual, sem mudança)
+    private final State<Integer> currentPage = State.of(0); // 0-indexed
+    private final State<String> pageLabel = State.of("");
     
     public SimpleTable() {
         this(new SimpleTableProps());
@@ -126,6 +134,13 @@ public class SimpleTable<T> extends Component  {
             return row;
         });
     }
+
+    /** Habilita paginação client-side sobre a lista completa já vinculada via fromData. */
+    public SimpleTable<T> paginate(int pageSize) {
+        this.pageSize = pageSize;
+        refreshPage();
+        return this;
+    }
     
     /**
      * Vincula os dados da tabela a um State<List<T>> reativo.
@@ -136,12 +151,49 @@ public class SimpleTable<T> extends Component  {
      */
     public SimpleTable<T> fromData(ReadableState<List<T>> state) {
         state.subscribe(newItems -> {
-            items.clear();
-            if (newItems != null) {
-                items.addAll(newItems);
-            }
+            fullData = newItems != null ? newItems : List.of();
+            int maxPage = Math.max(0, totalPages() - 1);
+            if (currentPage.get() > maxPage) currentPage.set(maxPage); // dispara refreshPage via listener abaixo
+            else refreshPage();
         });
+        currentPage.subscribe(p -> refreshPage());
         return this;
+    }
+
+    private void refreshPage() {
+        items.clear();
+        if (pageSize <= 0) {
+            items.addAll(fullData);
+            pageLabel.set("");
+            return;
+        }
+        int from = currentPage.get() * pageSize;
+        if (from < fullData.size()) {
+            items.addAll(fullData.subList(from, Math.min(from + pageSize, fullData.size())));
+        }
+        pageLabel.set("Página " + (currentPage.get() + 1) + " de " + Math.max(1, totalPages()));
+    }
+
+    private int totalPages() {
+        return pageSize <= 0 ? 1 : (int) Math.ceil(fullData.size() / (double) pageSize);
+    }
+
+    public void nextPage() {
+        if (currentPage.get() + 1 < totalPages()) currentPage.set(currentPage.get() + 1);
+    }
+
+    public void previousPage() {
+        if (currentPage.get() > 0) currentPage.set(currentPage.get() - 1);
+    }
+
+    /** Row pronta com Anterior/Próxima + rótulo "Página X de Y" — adicione ao lado da tabela. */
+    public Component paginationControls() {
+        return new megalodonte.components.layout_components.Row(
+                new megalodonte.props.RowProps().spacingOf(10).bottomVertically())
+                .r_child(new megalodonte.components.Button("< Anterior").onClick(this::previousPage))
+                .r_child(new megalodonte.components.Text(pageLabel,
+                        new megalodonte.props.TextProps().fontSize(megalodonte.base.theme.ThemeManager.theme().typography().small())))
+                .r_child(new megalodonte.components.Button("Próxima >").onClick(this::nextPage));
     }
     
     /**
