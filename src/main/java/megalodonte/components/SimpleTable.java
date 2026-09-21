@@ -259,17 +259,15 @@ public class SimpleTable<T> extends Component  {
          * 
          * @param title título da coluna
          * @param valueExtractor função para extrair o valor do objeto
-         * @param maxWidth largura máxima da coluna (null para sem limite)
          * @return ColumnsBuilder para method chaining
          */
-        public ColumnsBuilder column(String title, Function<T, Object> valueExtractor, Double maxWidth) {
+        public ColumnsBuilder column(String title, Function<T, Object> valueExtractor, Double width) {
             TableColumn<T, String> col = new TableColumn<>(title);
             col.setCellValueFactory(data -> {
                 T item = data.getValue();
                 if (item == null) {
                     return new javafx.beans.property.SimpleStringProperty("");
                 }
-                
                 try {
                     Object value = valueExtractor.apply(item);
                     String displayValue = value != null ? value.toString() : "";
@@ -278,14 +276,21 @@ public class SimpleTable<T> extends Component  {
                     return new javafx.beans.property.SimpleStringProperty("");
                 }
             });
-            
-            // Aplicar largura máxima se especificada
-            if (maxWidth != null) {
-                col.setMaxWidth(maxWidth);
-            }
-            
+
+            // Sem largura explícita, TableColumn ficaria travada em 80px (default do
+            // JavaFX), curto demais pra headers como "Data de criação" — mede o texto
+            // do título (mesma técnica de medição já usada em v2.Input pro caret) e
+            // define uma largura mínima confortável a partir dele.
+            col.setPrefWidth(width != null ? width : defaultColumnWidth(title));
+
             tableView.getColumns().add(col);
             return this;
+        }
+
+        private double defaultColumnWidth(String title) {
+            var measurer = new javafx.scene.text.Text(title);
+            double headerWidth = measurer.getLayoutBounds().getWidth();
+            return Math.max(100, headerWidth + 40); // folga pra padding do header + ícone de ordenação
         }
 
         /**
