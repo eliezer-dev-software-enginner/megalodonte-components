@@ -32,11 +32,14 @@ public class SimpleTable<T> extends Component  {
         this(new SimpleTableProps());
     }
 
+    private boolean horizontalScrollEnabled = false;
+
+
     public SimpleTable(SimpleTableProps props) {
         super(new TableView<>(), props);
         this.tableView = (TableView<T>) this.node;
         this.items = FXCollections.observableArrayList();
-        this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // default
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
 
@@ -61,6 +64,13 @@ public class SimpleTable<T> extends Component  {
         loadStyleSheet();
         setupDefaultBehavior();
     }
+
+    public SimpleTable<T> horizontalScroll() {
+        this.horizontalScrollEnabled = true;
+        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        return this;
+    }
+
 
     private javafx.scene.image.Image loadImage(String path, double size) {
         return imageCache.computeIfAbsent(path, p -> {
