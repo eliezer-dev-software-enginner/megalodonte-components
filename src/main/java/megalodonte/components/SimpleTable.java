@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.SelectionMode;
 import megalodonte.base.state.State;
 import megalodonte.base.state.ReadableState;
@@ -24,7 +23,7 @@ public class SimpleTable<T> extends Component  {
     private Consumer<T> onItemDoubleClick;
     private Consumer<Boolean> onChangeFocus;
     private Consumer<List<T>> onItemsSelectChange;
-    private CheckBox selectAllCheckBox;
+    private javafx.scene.control.CheckBox selectAllCheckBox;
 
     // Cache por tabela — evita reler/redecodificar do disco a cada recycle de célula
     // enquanto rola (TableView virtualiza: a mesma imagem passa por updateItem() várias
@@ -244,7 +243,8 @@ public class SimpleTable<T> extends Component  {
 
         if (selectAllCheckBox != null) return this;
 
-        selectAllCheckBox = new CheckBox();
+        var selectAllState = State.of(false);
+        selectAllCheckBox = (javafx.scene.control.CheckBox) new Checkbox("", selectAllState).getJavaFxNode();
         selectAllCheckBox.setOnAction(event -> {
             if (selectAllCheckBox.isSelected()) {
                 tableView.getSelectionModel().selectAll();
@@ -263,7 +263,9 @@ public class SimpleTable<T> extends Component  {
         selectionColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleBooleanProperty(
                 tableView.getSelectionModel().getSelectedItems().contains(data.getValue())));
         selectionColumn.setCellFactory(column -> new TableCell<>() {
-            private final CheckBox checkBox = new CheckBox();
+            private final State<Boolean> selectedState = State.of(false);
+            private final javafx.scene.control.CheckBox checkBox = (javafx.scene.control.CheckBox)
+                    new Checkbox("", selectedState).getJavaFxNode();
 
             {
                 checkBox.setOnAction(event -> {
@@ -282,7 +284,7 @@ public class SimpleTable<T> extends Component  {
                 super.updateItem(ignored, empty);
                 checkBox.setVisible(!empty);
                 checkBox.setManaged(!empty);
-                checkBox.setSelected(!empty && tableView.getSelectionModel().isSelected(getIndex()));
+                selectedState.set(!empty && tableView.getSelectionModel().isSelected(getIndex()));
             }
         });
         tableView.getColumns().add(0, selectionColumn);
