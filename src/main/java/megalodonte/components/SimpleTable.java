@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.SelectionMode;
 import megalodonte.base.state.State;
 import megalodonte.base.state.ReadableState;
 import megalodonte.props.SimpleTableProps;
@@ -21,6 +23,8 @@ public class SimpleTable<T> extends Component  {
     private Consumer<T> onItemSelectChange;
     private Consumer<T> onItemDoubleClick;
     private Consumer<Boolean> onChangeFocus;
+    private Consumer<List<T>> onItemsSelectChange;
+    private CheckBox selectAllCheckBox;
 
     // Cache por tabela — evita reler/redecodificar do disco a cada recycle de célula
     // enquanto rola (TableView virtualiza: a mesma imagem passa por updateItem() várias
@@ -108,6 +112,14 @@ public class SimpleTable<T> extends Component  {
                 onItemSelectChange.accept(newVal);
             }
         });
+
+        tableView.getSelectionModel().getSelectedItems().addListener(
+                (javafx.collections.ListChangeListener<T>) change -> {
+                    if (onItemsSelectChange != null) {
+                        onItemsSelectChange.accept(List.copyOf(tableView.getSelectionModel().getSelectedItems()));
+                    }
+                    refreshSelectionColumn();
+                });
 
         tableView.focusedProperty().addListener((obs, oldVal, newVal) -> {
            //IO.println("Table view focused: " + newVal);
@@ -220,6 +232,72 @@ public class SimpleTable<T> extends Component  {
     public SimpleTable<T> onItemSelectChange(Consumer<T> callback) {
         this.onItemSelectChange = callback;
         return this;
+    }
+
+    /**
+     * Exibe checkboxes para seleção de várias linhas. O checkbox do cabeçalho seleciona
+     * ou limpa os itens da página atualmente exibida.
+     */
+    public SimpleTable<T> enableMultipleSelection(Consumer<List<T>> callback) {
+        this.onItemsSelectChange = callback;
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        if (selectAllCheckBox != null) return this;
+
+        selectAllCheckBox = new CheckBox();
+        selectAllCheckBox.setOnAction(event -> {
+            if (selectAllCheckBox.isSelected()) {
+                tableView.getSelectionModel().selectAll();
+            } else {
+                tableView.getSelectionModel().clearSelection();
+            }
+        });
+
+        TableColumn<T, Boolean> selectionColumn = new TableColumn<>();
+        selectionColumn.setGraphic(selectAllCheckBox);
+        selectionColumn.setSortable(false);
+        selectionColumn.setResizable(false);
+        selectionColumn.setPrefWidth(42);
+        selectionColumn.setMinWidth(42);
+        selectionColumn.setMaxWidth(42);
+        selectionColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleBooleanProperty(
+                tableView.getSelectionModel().getSelectedItems().contains(data.getValue())));
+        selectionColumn.setCellFactory(column -> new TableCell<>() {
+            private final CheckBox checkBox = new CheckBox();
+
+            {
+                checkBox.setOnAction(event -> {
+                    if (getIndex() < 0 || getIndex() >= tableView.getItems().size()) return;
+                    if (checkBox.isSelected()) {
+                        tableView.getSelectionModel().select(getIndex());
+                    } else {
+                        tableView.getSelectionModel().clearSelection(getIndex());
+                    }
+                });
+                setGraphic(checkBox);
+            }
+
+            @Override
+            protected void updateItem(Boolean ignored, boolean empty) {
+                super.updateItem(ignored, empty);
+                checkBox.setVisible(!empty);
+                checkBox.setManaged(!empty);
+                checkBox.setSelected(!empty && tableView.getSelectionModel().isSelected(getIndex()));
+            }
+        });
+        tableView.getColumns().add(0, selectionColumn);
+        return this;
+    }
+
+    public List<T> getSelectedItems() {
+        return List.copyOf(tableView.getSelectionModel().getSelectedItems());
+    }
+
+    private void refreshSelectionColumn() {
+        if (selectAllCheckBox == null) return;
+        var selectedItems = tableView.getSelectionModel().getSelectedItems();
+        selectAllCheckBox.setSelected(!items.isEmpty() && selectedItems.containsAll(items));
+        tableView.refresh();
     }
     
     /**
