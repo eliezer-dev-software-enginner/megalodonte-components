@@ -32,6 +32,7 @@ public class SimpleTable<T> extends Component  {
     // ao carregar) não fica em cache — tenta de novo na próxima vez, de propósito.
     private final java.util.Map<String, javafx.scene.image.Image> imageCache = new java.util.HashMap<>();
     private final List<AutoSizedColumn<T>> autoSizedColumns = new java.util.ArrayList<>();
+    private final List<ExportableColumn<T>> exportableColumns = new java.util.ArrayList<>();
 
 
     //pagination
@@ -224,6 +225,40 @@ public class SimpleTable<T> extends Component  {
 
     private record AutoSizedColumn<T>(TableColumn<T, String> column, String title,
                                       Function<T, Object> valueExtractor) {
+    }
+
+    private record ExportableColumn<T>(String title, Function<T, Object> valueExtractor) {
+    }
+
+    /**
+     * Snapshot independente de JavaFX com todas as linhas atualmente filtradas.
+     * A paginação e a coluna de seleção não alteram a saída.
+     */
+    public record ExportData(List<String> headers, List<List<String>> rows) {
+        public ExportData {
+            headers = List.copyOf(headers);
+            rows = rows.stream().map(List::copyOf).toList();
+        }
+    }
+
+    public ExportData exportData() {
+        var headers = exportableColumns.stream().map(ExportableColumn::title).toList();
+        var source = fullData.isEmpty() && !items.isEmpty() ? List.copyOf(items) : fullData;
+        var rows = source.stream()
+                .map(item -> exportableColumns.stream()
+                        .map(column -> exportValue(column.valueExtractor(), item))
+                        .toList())
+                .toList();
+        return new ExportData(headers, rows);
+    }
+
+    private String exportValue(Function<T, Object> valueExtractor, T item) {
+        try {
+            Object value = valueExtractor.apply(item);
+            return value != null ? value.toString() : "";
+        } catch (Exception ignored) {
+            return "";
+        }
     }
 
     private int totalPages() {
@@ -490,6 +525,7 @@ public class SimpleTable<T> extends Component  {
             }
 
             tableView.getColumns().add(col);
+            exportableColumns.add(new ExportableColumn<>(title, valueExtractor));
             if (width == null) adjustAutoSizedColumns();
             return this;
         }
@@ -539,6 +575,7 @@ public class SimpleTable<T> extends Component  {
 
             col.setPrefWidth(Math.max(size + 16, textWidth(title) + 40));
             tableView.getColumns().add(col);
+            exportableColumns.add(new ExportableColumn<>(title, item -> pathExtractor.apply(item)));
             return this;
         }
 
@@ -581,6 +618,7 @@ public class SimpleTable<T> extends Component  {
 
             autoSizedColumns.add(new AutoSizedColumn<>(col, title, valueExtractor));
             tableView.getColumns().add(col);
+            exportableColumns.add(new ExportableColumn<>(title, valueExtractor));
             adjustAutoSizedColumns();
             return this;
         }
