@@ -38,6 +38,8 @@ public class SimpleTable<T> extends Component  {
     private int pageSize = -1; // -1 = paginação desabilitada (comportamento atual, sem mudança)
     private final State<Integer> currentPage = State.of(0); // 0-indexed
     private final State<String> pageLabel = State.of("");
+    private final State<Boolean> hasPreviousPage = State.of(false);
+    private final State<Boolean> hasNextPage = State.of(false);
     
     public SimpleTable() {
         this(new SimpleTableProps());
@@ -176,6 +178,8 @@ public class SimpleTable<T> extends Component  {
         if (pageSize <= 0) {
             items.addAll(fullData);
             pageLabel.set("");
+            hasPreviousPage.set(false);
+            hasNextPage.set(false);
             return;
         }
         int from = currentPage.get() * pageSize;
@@ -183,6 +187,8 @@ public class SimpleTable<T> extends Component  {
             items.addAll(fullData.subList(from, Math.min(from + pageSize, fullData.size())));
         }
         pageLabel.set("Página " + (currentPage.get() + 1) + " de " + Math.max(1, totalPages()));
+        hasPreviousPage.set(currentPage.get() > 0);
+        hasNextPage.set(currentPage.get() + 1 < totalPages());
     }
 
     private int totalPages() {
@@ -199,12 +205,17 @@ public class SimpleTable<T> extends Component  {
 
     /** Row pronta com Anterior/Próxima + rótulo "Página X de Y" — adicione ao lado da tabela. */
     public Component paginationControls() {
+        var previousButton = new megalodonte.components.Button("< Anterior").onClick(this::previousPage);
+        var nextButton = new megalodonte.components.Button("Próxima >").onClick(this::nextPage);
+        hasPreviousPage.subscribe(hasPage -> previousButton.getJavaFxNode().setDisable(!hasPage));
+        hasNextPage.subscribe(hasPage -> nextButton.getJavaFxNode().setDisable(!hasPage));
+
         return new megalodonte.components.layout_components.Row(
                 new megalodonte.props.RowProps().spacingOf(10).bottomVertically())
-                .r_child(new megalodonte.components.Button("< Anterior").onClick(this::previousPage))
+                .r_child(previousButton)
                 .r_child(new megalodonte.components.Text(pageLabel,
                         new megalodonte.props.TextProps().fontSize(megalodonte.base.theme.ThemeManager.theme().typography().small())))
-                .r_child(new megalodonte.components.Button("Próxima >").onClick(this::nextPage));
+                .r_child(nextButton);
     }
     
     /**
