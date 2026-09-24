@@ -38,6 +38,7 @@ public class SimpleTable<T> extends Component  {
     private int pageSize = -1; // -1 = paginação desabilitada (comportamento atual, sem mudança)
     private final State<Integer> currentPage = State.of(0); // 0-indexed
     private final State<String> pageLabel = State.of("");
+    private final State<String> pageInput = State.of("1");
     private final State<Boolean> hasPreviousPage = State.of(false);
     private final State<Boolean> hasNextPage = State.of(false);
     
@@ -178,6 +179,7 @@ public class SimpleTable<T> extends Component  {
         if (pageSize <= 0) {
             items.addAll(fullData);
             pageLabel.set("");
+            pageInput.set("1");
             hasPreviousPage.set(false);
             hasNextPage.set(false);
             return;
@@ -187,6 +189,7 @@ public class SimpleTable<T> extends Component  {
             items.addAll(fullData.subList(from, Math.min(from + pageSize, fullData.size())));
         }
         pageLabel.set("Página " + (currentPage.get() + 1) + " de " + Math.max(1, totalPages()));
+        pageInput.set(String.valueOf(currentPage.get() + 1));
         hasPreviousPage.set(currentPage.get() > 0);
         hasNextPage.set(currentPage.get() + 1 < totalPages());
     }
@@ -203,16 +206,32 @@ public class SimpleTable<T> extends Component  {
         if (currentPage.get() > 0) currentPage.set(currentPage.get() - 1);
     }
 
+    private void goToPage() {
+        try {
+            int requestedPage = Integer.parseInt(pageInput.get().trim());
+            int targetPage = Math.clamp(requestedPage, 1, Math.max(1, totalPages())) - 1;
+            if (targetPage == currentPage.get()) refreshPage();
+            else currentPage.set(targetPage);
+        } catch (NumberFormatException ignored) {
+            pageInput.set(String.valueOf(currentPage.get() + 1));
+        }
+    }
+
     /** Row pronta com Anterior/Próxima + rótulo "Página X de Y" — adicione ao lado da tabela. */
     public Component paginationControls() {
         var previousButton = new megalodonte.components.Button("< Anterior").onClick(this::previousPage);
         var nextButton = new megalodonte.components.Button("Próxima >").onClick(this::nextPage);
+        var pageField = new megalodonte.components.v2.Input(pageInput,
+                new megalodonte.props.v2.InputProps().width(52).height(32).placeHolder("Pág."))
+                .onEnter(this::goToPage);
         hasPreviousPage.subscribe(hasPage -> previousButton.getJavaFxNode().setDisable(!hasPage));
         hasNextPage.subscribe(hasPage -> nextButton.getJavaFxNode().setDisable(!hasPage));
 
         return new megalodonte.components.layout_components.Row(
                 new megalodonte.props.RowProps().spacingOf(10).bottomVertically())
                 .r_child(previousButton)
+                .r_child(new megalodonte.components.Text("Página"))
+                .r_child(pageField)
                 .r_child(new megalodonte.components.Text(pageLabel,
                         new megalodonte.props.TextProps().fontSize(megalodonte.base.theme.ThemeManager.theme().typography().small())))
                 .r_child(nextButton);
