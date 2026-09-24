@@ -19,6 +19,7 @@ public class SimpleTable<T> extends Component  {
 
     private final TableView<T> tableView;
     private final ObservableList<T> items;
+    private final ObservableList<T> checkedItems;
     private Consumer<T> onItemSelectChange;
     private Consumer<T> onItemDoubleClick;
     private Consumer<Boolean> onChangeFocus;
@@ -54,6 +55,7 @@ public class SimpleTable<T> extends Component  {
         super(new TableView<>(), props);
         this.tableView = (TableView<T>) this.node;
         this.items = FXCollections.observableArrayList();
+        this.checkedItems = FXCollections.observableArrayList();
         this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // default
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
@@ -117,10 +119,10 @@ public class SimpleTable<T> extends Component  {
             }
         });
 
-        tableView.getSelectionModel().getSelectedItems().addListener(
+        checkedItems.addListener(
                 (javafx.collections.ListChangeListener<T>) change -> {
                     if (onItemsSelectChange != null) {
-                        onItemsSelectChange.accept(List.copyOf(tableView.getSelectionModel().getSelectedItems()));
+                        onItemsSelectChange.accept(List.copyOf(checkedItems));
                     }
                     refreshSelectionColumn();
                 });
@@ -168,6 +170,7 @@ public class SimpleTable<T> extends Component  {
     public SimpleTable<T> fromData(ReadableState<List<T>> state) {
         state.subscribe(newItems -> {
             fullData = newItems != null ? newItems : List.of();
+            checkedItems.retainAll(fullData);
             int maxPage = Math.max(0, totalPages() - 1);
             if (currentPage.get() > maxPage) currentPage.set(maxPage); // dispara refreshPage via listener abaixo
             else refreshPage();
@@ -185,6 +188,7 @@ public class SimpleTable<T> extends Component  {
             hasPreviousPage.set(false);
             hasNextPage.set(false);
             adjustAutoSizedColumns();
+            refreshSelectionColumn();
             return;
         }
         int from = currentPage.get() * pageSize;
@@ -196,6 +200,7 @@ public class SimpleTable<T> extends Component  {
         hasPreviousPage.set(currentPage.get() > 0);
         hasNextPage.set(currentPage.get() + 1 < totalPages());
         adjustAutoSizedColumns();
+        refreshSelectionColumn();
     }
 
     private void adjustAutoSizedColumns() {
@@ -296,17 +301,22 @@ public class SimpleTable<T> extends Component  {
      */
     public SimpleTable<T> enableMultipleSelection(Consumer<List<T>> callback) {
         this.onItemsSelectChange = callback;
-        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         if (selectAllCheckBox != null) return this;
 
         var selectAllState = State.of(false);
         selectAllCheckBox = (javafx.scene.control.CheckBox) new Checkbox("", selectAllState).getJavaFxNode();
         selectAllCheckBox.setOnAction(event -> {
+            if (items.isEmpty()) {
+                selectAllCheckBox.setSelected(false);
+                return;
+            }
             if (selectAllCheckBox.isSelected()) {
-                tableView.getSelectionModel().selectAll();
+                var missingItems = items.stream().filter(item -> !checkedItems.contains(item)).toList();
+                checkedItems.addAll(missingItems);
             } else {
-                tableView.getSelectionModel().clearSelection();
+                checkedItems.removeAll(items);
             }
         });
 
@@ -318,7 +328,7 @@ public class SimpleTable<T> extends Component  {
         selectionColumn.setMinWidth(42);
         selectionColumn.setMaxWidth(42);
         selectionColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleBooleanProperty(
-                tableView.getSelectionModel().getSelectedItems().contains(data.getValue())));
+                checkedItems.contains(data.getValue())));
         selectionColumn.setCellFactory(column -> new TableCell<>() {
             private final State<Boolean> selectedState = State.of(false);
             private final javafx.scene.control.CheckBox checkBox = (javafx.scene.control.CheckBox)
@@ -327,10 +337,11 @@ public class SimpleTable<T> extends Component  {
             {
                 checkBox.setOnAction(event -> {
                     if (getIndex() < 0 || getIndex() >= tableView.getItems().size()) return;
+                    var item = tableView.getItems().get(getIndex());
                     if (checkBox.isSelected()) {
-                        tableView.getSelectionModel().select(getIndex());
+                        if (!checkedItems.contains(item)) checkedItems.add(item);
                     } else {
-                        tableView.getSelectionModel().clearSelection(getIndex());
+                        checkedItems.remove(item);
                     }
                 });
                 setGraphic(checkBox);
@@ -341,7 +352,12 @@ public class SimpleTable<T> extends Component  {
                 super.updateItem(ignored, empty);
                 checkBox.setVisible(!empty);
                 checkBox.setManaged(!empty);
-                selectedState.set(!empty && tableView.getSelectionModel().isSelected(getIndex()));
+                selectedState.set(!empty && checkedItems.contains(getItemForRow()));
+            }
+
+            private T getItemForRow() {
+                return getIndex() >= 0 && getIndex() < tableView.getItems().size()
+                        ? tableView.getItems().get(getIndex()) : null;
             }
         });
         tableView.getColumns().add(0, selectionColumn);
@@ -349,13 +365,14 @@ public class SimpleTable<T> extends Component  {
     }
 
     public List<T> getSelectedItems() {
-        return List.copyOf(tableView.getSelectionModel().getSelectedItems());
+        return List.copyOf(checkedItems);
     }
 
     private void refreshSelectionColumn() {
         if (selectAllCheckBox == null) return;
-        var selectedItems = tableView.getSelectionModel().getSelectedItems();
-        selectAllCheckBox.setSelected(!items.isEmpty() && selectedItems.containsAll(items));
+        long checkedOnPage = items.stream().filter(checkedItems::contains).count();
+        selectAllCheckBox.setIndeterminate(checkedOnPage > 0 && checkedOnPage < items.size());
+        selectAllCheckBox.setSelected(!items.isEmpty() && checkedOnPage == items.size());
         tableView.refresh();
     }
     
@@ -609,6 +626,7 @@ public class SimpleTable<T> extends Component  {
      * Limpa todos os itens da tabela.
      */
     public void clear() {
+        checkedItems.clear();
         items.clear();
     }
     
@@ -628,6 +646,7 @@ public class SimpleTable<T> extends Component  {
      * @return true se o item foi removido
      */
     public boolean removeItem(T item) {
+        checkedItems.remove(item);
         return items.remove(item);
     }
 }
