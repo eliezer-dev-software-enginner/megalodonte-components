@@ -30,6 +30,7 @@ public class SimpleTable<T> extends Component  {
     // vezes conforme o usuário rola pra cima/baixo). Uma entrada com valor null (falha
     // ao carregar) não fica em cache — tenta de novo na próxima vez, de propósito.
     private final java.util.Map<String, javafx.scene.image.Image> imageCache = new java.util.HashMap<>();
+    private final List<AutoSizedColumn<T>> autoSizedColumns = new java.util.ArrayList<>();
 
 
     //pagination
@@ -182,6 +183,7 @@ public class SimpleTable<T> extends Component  {
             pageInput.set("1");
             hasPreviousPage.set(false);
             hasNextPage.set(false);
+            adjustAutoSizedColumns();
             return;
         }
         int from = currentPage.get() * pageSize;
@@ -192,6 +194,30 @@ public class SimpleTable<T> extends Component  {
         pageInput.set(String.valueOf(currentPage.get() + 1));
         hasPreviousPage.set(currentPage.get() > 0);
         hasNextPage.set(currentPage.get() + 1 < totalPages());
+        adjustAutoSizedColumns();
+    }
+
+    private void adjustAutoSizedColumns() {
+        for (var autoSizedColumn : autoSizedColumns) {
+            double width = textWidth(autoSizedColumn.title()) + 40;
+            for (var item : items) {
+                try {
+                    Object value = autoSizedColumn.valueExtractor().apply(item);
+                    width = Math.max(width, textWidth(value != null ? value.toString() : "") + 16);
+                } catch (Exception ignored) {
+                    // Uma célula inválida já é exibida vazia; não deve impedir o ajuste das demais.
+                }
+            }
+            autoSizedColumn.column().setPrefWidth(width);
+        }
+    }
+
+    private double textWidth(String value) {
+        return new javafx.scene.text.Text(value).getLayoutBounds().getWidth();
+    }
+
+    private record AutoSizedColumn<T>(TableColumn<T, String> column, String title,
+                                      Function<T, Object> valueExtractor) {
     }
 
     private int totalPages() {
@@ -439,20 +465,15 @@ public class SimpleTable<T> extends Component  {
                 }
             });
 
-            // Sem largura explícita, TableColumn ficaria travada em 80px (default do
-            // JavaFX), curto demais pra headers como "Data de criação" — mede o texto
-            // do título (mesma técnica de medição já usada em v2.Input pro caret) e
-            // define uma largura mínima confortável a partir dele.
-            col.setPrefWidth(width != null ? width : defaultColumnWidth(title));
+            if (width != null) {
+                col.setPrefWidth(width);
+            } else {
+                autoSizedColumns.add(new AutoSizedColumn<>(col, title, valueExtractor));
+                adjustAutoSizedColumns();
+            }
 
             tableView.getColumns().add(col);
             return this;
-        }
-
-        private double defaultColumnWidth(String title) {
-            var measurer = new javafx.scene.text.Text(title);
-            double headerWidth = measurer.getLayoutBounds().getWidth();
-            return Math.max(100, headerWidth + 40); // folga pra padding do header + ícone de ordenação
         }
 
         /**
