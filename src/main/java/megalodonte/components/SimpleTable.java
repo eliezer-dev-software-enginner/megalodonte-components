@@ -83,6 +83,7 @@ public class SimpleTable<T> extends Component  {
     public SimpleTable<T> horizontalScroll() {
         this.horizontalScrollEnabled = true;
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        adjustAutoSizedColumns();
         return this;
     }
 
@@ -469,10 +470,10 @@ public class SimpleTable<T> extends Component  {
                 col.setPrefWidth(width);
             } else {
                 autoSizedColumns.add(new AutoSizedColumn<>(col, title, valueExtractor));
-                adjustAutoSizedColumns();
             }
 
             tableView.getColumns().add(col);
+            if (width == null) adjustAutoSizedColumns();
             return this;
         }
 
@@ -519,6 +520,7 @@ public class SimpleTable<T> extends Component  {
                 }
             });
 
+            col.setPrefWidth(Math.max(size + 16, textWidth(title) + 40));
             tableView.getColumns().add(col);
             return this;
         }
@@ -560,7 +562,9 @@ public class SimpleTable<T> extends Component  {
                 });
             }
 
+            autoSizedColumns.add(new AutoSizedColumn<>(col, title, valueExtractor));
             tableView.getColumns().add(col);
+            adjustAutoSizedColumns();
             return this;
         }
         
