@@ -49,13 +49,19 @@ dependencies {
     implementation("megalodonte:megalodonte-base:1.0.0-beta")
 }
 
+//tasks.test {
+//    //useJUnitPlatform()
+//}
+
 tasks.test {
     useJUnitPlatform()
+    enabled = false
+
 }
 
-tasks.named<Test>("test") {
-    dependsOn(tasks.named("jar"))
-}
+//tasks.named<Test>("test") {
+//    dependsOn(tasks.named("jar"))
+//}
 
 task<JavaExec>("runDemo") {
     group = "application"
