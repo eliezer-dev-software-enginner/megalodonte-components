@@ -46,6 +46,14 @@ public class MenuBar extends Component {
         return addMenu(menu);
     }
 
+    /**
+     * Adiciona o menu somente quando a condição for verdadeira, preservando a API fluida.
+     * Quando falsa, o menu não entra na lista interna nem é renderizado na barra.
+     */
+    public MenuBar menuIf(boolean condition, Menu menu) {
+        return condition ? addMenu(menu) : this;
+    }
+
     public MenuBar menu(Component component) {
         return addComponent(component);
     }

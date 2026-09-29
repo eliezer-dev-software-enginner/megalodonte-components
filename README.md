@@ -444,6 +444,8 @@ return new MenuBar()
         .menu(new Menu("Cadastros")
                 .item("Fornecedores", () -> ctx.router().spawnWindow(AppRoutes.Screens.FORNECEDORES.name(), e -> {}))
                 .item("Clientes", () -> ctx.router().spawnWindow(AppRoutes.Screens.CLIENTES.name(), e -> {})))
+        .menuIf(isAdmin, new Menu("Administração")
+                .item("Usuários", () -> ctx.router().spawnWindow(AppRoutes.Screens.USUARIOS.name(), e -> {})))
         .menu(suporteMenu);
 ```
 
@@ -451,7 +453,8 @@ return new MenuBar()
 click) — it only becomes visible once added to a `MenuBar`, which renders each
 menu's title as its trigger in an `HBox`. `MenuItem(String, Runnable)` — title +
 action; `MenuBar`'s `.menu(String title, MenuItem... items)` overload builds the
-`Menu` for you inline.
+`Menu` for you inline. Use `.menuIf(condition, menu)` when the complete menu,
+including its title, must be omitted when a permission or feature flag is false.
 
 ## Media & feedback
 

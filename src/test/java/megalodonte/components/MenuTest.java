@@ -44,7 +44,13 @@ public class MenuTest {
         MenuBar menuBar = new MenuBar()
             .menu(menuPreferencias)
             .menu(menuCadastros)
-            .menu(menuGerencial);
+            .menu(menuGerencial)
+            .menuIf(false, new Menu("Oculto"))
+            .menuIf(true, new Menu("Visível"));
+
+        if (menuBar.getMenus().size() != 4) {
+            throw new AssertionError("menuIf deve adicionar somente o menu cuja condição é verdadeira");
+        }
         
         // Ou usando o método direto
         MenuBar menuBar2 = MenuBar.of()
