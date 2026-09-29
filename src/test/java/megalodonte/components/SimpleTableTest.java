@@ -42,7 +42,7 @@ class SimpleTableTest extends ApplicationTest {
     
     @Override
     public void start(Stage stage) {
-        table = new SimpleTable<>();
+        table = new SimpleTable<TestModel>().horizontalScroll();
         testData = State.of(Arrays.asList(
             new TestModel(1L, "Empresa A", "123456789", "contato@empresaA.com", "11999999999", LocalDateTime.now()),
             new TestModel(2L, "Empresa B", "987654321", "contato@empresaB.com", "11888888888", LocalDateTime.now()),
@@ -162,6 +162,30 @@ class SimpleTableTest extends ApplicationTest {
         assertNotNull(configuredTable);
         assertEquals(3, configuredTable.getItems().size());
         assertEquals(3, ((javafx.scene.control.TableView<?>) configuredTable.getJavaFxNode()).getColumns().size());
+    }
+
+    @Test
+    void horizontalScrollDistribuiEspacoSobrandoSemEncolherCabecalhos() {
+        table.fromData(testData)
+                .header()
+                .columns()
+                .column("Razão social", item -> item.nome)
+                .column("CPF/CNPJ", item -> item.cpfCnpj)
+                .column("Data de criação", item -> formatDateTime(item.dataCriacao))
+                .build();
+
+        waitForFx(100);
+
+        var tableView = table.getTableView();
+        double totalColumnsWidth = tableView.getColumns().stream()
+                .mapToDouble(javafx.scene.control.TableColumnBase::getWidth)
+                .sum();
+        assertTrue(totalColumnsWidth >= tableView.getWidth() - 20,
+                "As colunas devem aproveitar a largura disponível da tabela");
+        assertTrue(tableView.getColumns().get(0).getWidth() > 120,
+                "Cabeçalho Razão social não deve ser truncado quando há espaço");
+        assertTrue(tableView.getColumns().get(2).getWidth() > 140,
+                "Cabeçalho Data de criação não deve ser truncado quando há espaço");
     }
     
     // Métodos utilitários para formatação (simulando Utils)

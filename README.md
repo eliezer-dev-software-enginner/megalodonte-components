@@ -27,6 +27,14 @@ dependencies {
 }
 ```
 
+## Tests
+
+The JUnit 5 and TestFX suite is enabled in the standard Gradle lifecycle:
+
+```bash
+./gradlew test
+```
+
 ## Core pattern: `Component` + `Props`
 
 Every component wraps a JavaFX `Node` and takes an optional `*Props` object in its
@@ -426,6 +434,11 @@ new SimpleTable<ItemVenda>()
 `borderColor`/`borderWidth`/`borderRadius`, `striped(boolean)`,
 `rowEvenColor`/`rowOddColor`/`rowHoverColor`/`selectionColor`/`rowTextColor`/`separatorColor`,
 `headerHeight(int)`, `maxWidth(double)`.
+
+Com `.horizontalScroll()`, as colunas preservam como largura mínima o maior valor entre o
+cabeçalho e o conteúdo visível. Quando a tabela é mais larga que essa soma, o espaço excedente
+é distribuído proporcionalmente entre as colunas; quando é menor, as larguras mínimas são
+mantidas e a rolagem horizontal é exibida.
 
 ## Menus: `Menu` / `MenuBar` / `MenuItem`
 

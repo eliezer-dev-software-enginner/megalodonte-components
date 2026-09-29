@@ -6,8 +6,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import megalodonte.base.state.State;
 import megalodonte.base.state.ReadableState;
+import megalodonte.base.theme.ThemeManager;
 import megalodonte.props.SimpleTableProps;
 
 import java.util.List;
@@ -33,6 +36,9 @@ public class SimpleTable<T> extends Component  {
     private final java.util.Map<String, javafx.scene.image.Image> imageCache = new java.util.HashMap<>();
     private final List<AutoSizedColumn<T>> autoSizedColumns = new java.util.ArrayList<>();
     private final List<ExportableColumn<T>> exportableColumns = new java.util.ArrayList<>();
+    private static final double HEADER_PADDING_AND_SORT_ICON = 40;
+    private static final double CELL_HORIZONTAL_PADDING = 16;
+    private static final double TABLE_CHROME_WIDTH = 2;
 
 
     //pagination
@@ -60,6 +66,11 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // default
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
+        this.tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            if (horizontalScrollEnabled && !newWidth.equals(oldWidth)) {
+                adjustAutoSizedColumns();
+            }
+        });
 
         // maxHeight (livre por padrão, ou o teto de SimpleTableProps.maxHeight) já foi
         // aplicado por props.apply(node) dentro do super(...) acima — ver
@@ -205,22 +216,66 @@ public class SimpleTable<T> extends Component  {
     }
 
     private void adjustAutoSizedColumns() {
+        if (autoSizedColumns.isEmpty()) return;
+
+        var calculatedWidths = new java.util.LinkedHashMap<AutoSizedColumn<T>, Double>();
         for (var autoSizedColumn : autoSizedColumns) {
-            double width = textWidth(autoSizedColumn.title()) + 40;
+            double width = textWidth(autoSizedColumn.title(), true) + HEADER_PADDING_AND_SORT_ICON;
             for (var item : items) {
                 try {
                     Object value = autoSizedColumn.valueExtractor().apply(item);
-                    width = Math.max(width, textWidth(value != null ? value.toString() : "") + 16);
+                    width = Math.max(width,
+                            textWidth(value != null ? value.toString() : "", false) + CELL_HORIZONTAL_PADDING);
                 } catch (Exception ignored) {
                     // Uma célula inválida já é exibida vazia; não deve impedir o ajuste das demais.
                 }
             }
-            autoSizedColumn.column().setPrefWidth(width);
+            calculatedWidths.put(autoSizedColumn, width);
         }
+
+        if (horizontalScrollEnabled && tableView.getWidth() > 0) {
+            double fixedColumnsWidth = tableView.getColumns().stream()
+                    .filter(column -> autoSizedColumns.stream().noneMatch(auto -> auto.column() == column))
+                    .mapToDouble(column -> column.getPrefWidth() > 0 ? column.getPrefWidth() : column.getWidth())
+                    .sum();
+            double calculatedTotal = calculatedWidths.values().stream().mapToDouble(Double::doubleValue).sum();
+            double availableWidth = availableColumnWidth() - fixedColumnsWidth;
+            double surplus = availableWidth - calculatedTotal;
+
+            // Quando há espaço livre, todas as colunas automáticas crescem proporcionalmente.
+            // Se não há, preserva os mínimos calculados e o TableView oferece scroll horizontal.
+            if (surplus > 0 && calculatedTotal > 0) {
+                calculatedWidths.replaceAll((column, width) ->
+                        width + surplus * (width / calculatedTotal));
+            }
+        }
+
+        calculatedWidths.forEach((autoSizedColumn, width) ->
+                autoSizedColumn.column().setPrefWidth(width));
+    }
+
+    private double availableColumnWidth() {
+        double verticalScrollbarWidth = tableView.lookupAll(".scroll-bar").stream()
+                .filter(node -> node instanceof javafx.scene.control.ScrollBar scrollBar
+                        && scrollBar.getOrientation() == javafx.geometry.Orientation.VERTICAL
+                        && scrollBar.isVisible())
+                .mapToDouble(node -> node.getLayoutBounds().getWidth())
+                .findFirst()
+                .orElse(0);
+        return Math.max(0, tableView.getWidth() - verticalScrollbarWidth - TABLE_CHROME_WIDTH);
+    }
+
+    private double textWidth(String value, boolean bold) {
+        var text = new javafx.scene.text.Text(value);
+        var theme = ThemeManager.theme();
+        double fontSize = theme != null ? theme.typography().body() : Font.getDefault().getSize();
+        text.setFont(Font.font(Font.getDefault().getFamily(),
+                bold ? FontWeight.BOLD : FontWeight.NORMAL, fontSize));
+        return Math.ceil(text.getLayoutBounds().getWidth());
     }
 
     private double textWidth(String value) {
-        return new javafx.scene.text.Text(value).getLayoutBounds().getWidth();
+        return textWidth(value, false);
     }
 
     private record AutoSizedColumn<T>(TableColumn<T, String> column, String title,
@@ -396,6 +451,7 @@ public class SimpleTable<T> extends Component  {
             }
         });
         tableView.getColumns().add(0, selectionColumn);
+        adjustAutoSizedColumns();
         return this;
     }
 

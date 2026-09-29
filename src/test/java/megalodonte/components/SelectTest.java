@@ -70,21 +70,25 @@ class SelectTest {
         assertEquals(3, itemsState.get().size());
         
         // When - add item
-        //itemsState.add("Option 4");
+        var withNewOption = new ArrayList<>(itemsState.get());
+        withNewOption.add("Option 4");
+        itemsState.set(List.copyOf(withNewOption));
         
         // Then
         assertEquals(4, itemsState.get().size());
         assertTrue(itemsState.get().contains("Option 4"));
         
         // When - remove item
-       // itemsState.remove("Option 2");
+        var withoutSecondOption = new ArrayList<>(itemsState.get());
+        withoutSecondOption.remove("Option 2");
+        itemsState.set(List.copyOf(withoutSecondOption));
         
         // Then
         assertEquals(3, itemsState.get().size());
         assertFalse(itemsState.get().contains("Option 2"));
         
         // When - clear list
-       // itemsState.clear();
+        itemsState.set(List.of());
         
         // Then
         assertEquals(0, itemsState.get().size());
