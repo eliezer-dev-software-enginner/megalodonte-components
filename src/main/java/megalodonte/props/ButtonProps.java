@@ -1,5 +1,6 @@
 package megalodonte.props;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -235,6 +236,43 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
             case OUTLINED, TEXT -> bgColor != null ? bgColor : getButtonColorFromVariant(this, theme);
         };
     }
+
+    private ButtonSize size = ButtonSize.MEDIUM;
+
+    public ButtonProps size(ButtonSize size) {
+        this.size = size;
+        return this;
+    }
+
+    public ButtonProps small() {
+        this.size = ButtonSize.SMALL;
+        return this;
+    }
+
+    public ButtonProps medium() {
+        this.size = ButtonSize.MEDIUM;
+        return this;
+    }
+
+    public ButtonProps large() {
+        this.size = ButtonSize.LARGE;
+        return this;
+    }
+
+    public ButtonSize getSize() {
+        return size;
+    }
+
+    private record SizePreset(int fontSize, int paddingH, int paddingV) {}
+
+    private SizePreset resolveSizePreset() {
+        return switch (size) {
+            case SMALL -> new SizePreset(13, 10, 4);
+            case MEDIUM -> new SizePreset(14, 16, 8);
+            case LARGE -> new SizePreset(16, 22, 11);
+        };
+    }
+
     @Override
     protected void applyTheme(Node node, Props props, ThemeInterface theme) {
         if (!(node instanceof Button button)) return;
@@ -243,11 +281,7 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
             button.setMaxWidth(Double.MAX_VALUE);
         }
 
-        if (getFontSize() != null) {
-            updateFontSize(button, ScaleProvider.scale(getFontSize()));
-        }
-
-        applyFontStyling(button);
+        var preset = resolveSizePreset();
 
         if (height > 0) {
             double scaled = ScaleProvider.scale(height);
@@ -255,6 +289,15 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
             button.setMinHeight(scaled);
             button.setMaxHeight(scaled);
         }
+
+        // sem height(int) explícito: altura nasce naturalmente do padding (abaixo) + fonte,
+// não é mais fixada por ButtonSize — evita texto cortado/sobrando quando a fonte
+// não bate exatamente com uma altura fixa por tamanho.
+
+        int finalFontSize = getFontSize() != null ? getFontSize() : preset.fontSize();
+        updateFontSize(button, ScaleProvider.scale(finalFontSize));
+
+        applyFontStyling(button);
 
         // Cor semântica resolvida uma vez, reaproveitada nos 3 estilos abaixo.
         String accentColor = bgColor != null ? bgColor : getButtonColorFromVariant((ButtonProps) props, theme);
@@ -291,7 +334,21 @@ public class ButtonProps extends TextComponentProps<ButtonProps> implements Padd
 
         applyBorderStyling(button, theme);
 
-        button.setPadding(resolvePadding(theme));
+        //button.setPadding(resolvePadding(theme));
+
+        boolean anyPaddingSet = getPaddingUnitsTop() != UNSET || getPaddingUnitsRight() != UNSET
+                || getPaddingUnitsDown() != UNSET || getPaddingUnitsLeft() != UNSET;
+
+        if (anyPaddingSet) {
+            button.setPadding(resolvePadding(theme));
+        } else {
+            button.setPadding(new Insets(
+                    ScaleProvider.scale(preset.paddingV()),
+                    ScaleProvider.scale(preset.paddingH()),
+                    ScaleProvider.scale(preset.paddingV()),
+                    ScaleProvider.scale(preset.paddingH())
+            ));
+        }
     }
 
     @Override
