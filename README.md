@@ -506,3 +506,13 @@ MIT License
 ## Author
 
 Developed by **Eliezer**.
+
+
+### Scroll v2 horizontal
+
+`new megalodonte.components.v2.HorizontalScroll(content)` oferece rolagem
+horizontal com panes recortados e barra própria, sem ScrollPane. Aceita roda,
+gesto horizontal, arraste da barra e teclas esquerda/direita/Home/End. A API
+`scrollTo`, `getScrollX`, `reveal`, `getContent` e `refresh` permite controlar
+posição, revelar um filho e atualizar dimensões após uma mudança de conteúdo.
+O scroll vertical v2 expõe `scrollTo`, `getScrollY` e `getContent`.

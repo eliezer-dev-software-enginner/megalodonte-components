@@ -78,6 +78,7 @@ public class Scroll extends Component {
         super(new Pane());
         this.outer = (Pane) node;
         this.content = component.getJavaFxNode();
+        this.content.setManaged(false);
 
         var theme = ThemeManager.theme();
         this.thumbColor = Color.web(theme.colors().secondary());
@@ -215,6 +216,10 @@ public class Scroll extends Component {
         thumb.setOnMouseEntered(e -> thumb.setBackground(solid(thumbActiveColor, 6)));
         thumb.setOnMouseExited(e -> thumb.setBackground(solid(thumbColor, 6)));
     }
+
+    public Node getContent() { return content; }
+    public double getScrollY() { return scrollY; }
+    public void scrollTo(double value) { setScroll(value); }
 
     private void scrollBy(double delta) {
         setScroll(scrollY + delta);
