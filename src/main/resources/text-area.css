@@ -18,6 +18,8 @@
     -fx-border-width: 0;
     -fx-border-insets: 0;
     -fx-effect: null;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .text-area .scroll-pane {
@@ -32,4 +34,10 @@
 .text-area .scroll-pane .content {
     -fx-background-color: -fx-control-inner-background;
     -fx-background-radius: inherit;
+}
+.text-area:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-effect: null;
 }

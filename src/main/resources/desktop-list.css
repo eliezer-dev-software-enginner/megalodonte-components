@@ -1,0 +1,7 @@
+.megalodonte-data-list:focused,
+.megalodonte-diff-view:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}

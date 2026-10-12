@@ -20,7 +20,12 @@ public class Column extends Component implements LayoutComponent {
     }
 
     public Column(ColumnProps props){
-        super(new VBox(), props);
+        this(props, true);
+    }
+
+    public Column(ColumnProps props, boolean applyImmediately){
+        super(new VBox(), applyImmediately ? props : null);
+        this.props = props;
         this.vBox = (VBox) this.node;
         this.columnProps = props;
     }

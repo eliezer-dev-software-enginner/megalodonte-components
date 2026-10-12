@@ -17,7 +17,12 @@ public class Container extends Component {
     }
 
     public Container(ContainerProps props){
-        super(new VBox(), props);
+        this(props, true);
+    }
+
+    public Container(ContainerProps props, boolean applyImmediately){
+        super(new VBox(), applyImmediately ? props : null);
+        this.props = props;
         this.container = (VBox) this.node;
         this.containerProps = props;
 

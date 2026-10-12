@@ -22,7 +22,12 @@ public class Row extends Component  implements LayoutComponent {
     }
 
     public Row(RowProps props){
-        super(new HBox(), props);
+        this(props, true);
+    }
+
+    public Row(RowProps props, boolean applyImmediately){
+        super(new HBox(), applyImmediately ? props : null);
+        this.props = props;
         this.nodeInternal = (HBox) this.node;
         this.rowProps = props;
 

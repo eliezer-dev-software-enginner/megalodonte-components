@@ -33,6 +33,8 @@ public class TextAreaInput extends Component implements FocusableFieldInterface<
         // o evento aqui pra travar a propagação, sem reimplementar rolagem nenhuma.
         Scroll.confineScrollEvents(textArea);
 
+        if (state == null) return;
+
         // Bind bidirecional
         state.subscribe(v -> {
             if (!textArea.getText().equals(v)) {
@@ -46,6 +48,10 @@ public class TextAreaInput extends Component implements FocusableFieldInterface<
             }
         });
     }
+
+    public TextAreaInput(InputProps props) { this(null, props); }
+
+    public TextArea control() { return textArea; }
 
     @Override
     public void requestFocus() {
