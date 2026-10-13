@@ -150,6 +150,10 @@ public abstract class InputBase extends Component {
         return this;
     }
 
+    public boolean isCursorLockedToEnd() {
+        return lockCursorToEnd;
+    }
+
     public InputBase left(Node node) {
         this.left = node;
         StackPane.setMargin(node, new Insets(0, 0, 0, 8));

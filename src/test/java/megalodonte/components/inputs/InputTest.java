@@ -71,7 +71,6 @@ class InputTest {
         // Verifica se é a mesma instância (chain pattern)
         assertSame(input, lockedInput);
         
-        // TODO: Implementar método isCursorLockedToEnd() no Input
-        // assertTrue(input.isCursorLockedToEnd());
+        assertTrue(input.isCursorLockedToEnd());
     }
 }
