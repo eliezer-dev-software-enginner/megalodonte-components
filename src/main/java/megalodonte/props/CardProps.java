@@ -166,7 +166,7 @@ public class CardProps extends Props implements Paddable<CardProps> {
             updateBorderWidth(node, finalBorderWidth);
         }
 
-        updateBorderRadius(node, 0);
+        updateBorderRadius(node, borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd());
     }
 
     public boolean hasFixedWidth() { return width > 0 && !fillWidth; }
