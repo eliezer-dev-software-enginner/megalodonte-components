@@ -166,20 +166,23 @@ Without an explicit `fontSize`, text falls back to `theme.typography().body()`.
 
 ## Inputs
 
-`TextAreaInput`/`PasswordInput` extend `InputBase`, which wraps the real JavaFX
-control (`TextArea`/`PasswordField`) in a `StackPane`. **`megalodonte.components.inputs.Input`
+`PasswordInput` and the legacy single-line `Input` extend `InputBase`, which wraps
+their JavaFX text controls in a `StackPane`. `TextAreaInput` extends `Component`
+and owns a styled JavaFX `TextArea` directly. **`megalodonte.components.inputs.Input`
 is deprecated** (still works — `text-field.css` neutralizes Modena's border/bevel —
 but it's still a real `TextField` underneath, so it's still exposed to whatever
 Modena does). Use **`megalodonte.components.v2.Input`** for any new single-line
 text field: built from scratch on a plain `Pane` (`Text` for content, `Rectangle`
 for caret/selection, manual key/mouse handling) — no `Control`/`TextInputControl`
 at all underneath, so there's no Modena skin to fight, by construction rather than
-by override. All four (`Input` v1/v2, `TextAreaInput`, `PasswordInput`) share the
-same fluent API: `.onChange(Function<String, OnChangeResult>)`, `.onInitialize(...)`
+by override. The single-line inputs and `PasswordInput` share the
+fluent API: `.onChange(Function<String, OnChangeResult>)`, `.onInitialize(...)`
 (same shape, runs once when the bound state's initial value is applied — e.g. to
 format a raw stored value for display), `.onEnter(Runnable)`, `.left(Node)`/`.right(Node)`
 (icon/adornment inside the field), `.lockCursorToEnd()`, `.onChangeFocus(Consumer<Boolean>)`,
-`.requestFocus()`.
+`.requestFocus()`. `TextAreaInput` binds a `State<String>` bidirectionally and
+exposes `.requestFocus()`, `.onChangeFocus(...)` and `.control()`; it does not
+implement the single-line input formatting or Enter handlers.
 
 `OnChangeResult.of(displayValue, stateValue)` lets you show a formatted string
 (currency, masked input, ...) while storing a different raw value in the bound
@@ -508,11 +511,29 @@ MIT License
 Developed by **Eliezer**.
 
 
-### Scroll v2 horizontal
+### Horizontal Scroll v2
 
-`new megalodonte.components.v2.HorizontalScroll(content)` oferece rolagem
-horizontal com panes recortados e barra própria, sem ScrollPane. Aceita roda,
-gesto horizontal, arraste da barra e teclas esquerda/direita/Home/End. A API
-`scrollTo`, `getScrollX`, `reveal`, `getContent` e `refresh` permite controlar
-posição, revelar um filho e atualizar dimensões após uma mudança de conteúdo.
-O scroll vertical v2 expõe `scrollTo`, `getScrollY` e `getContent`.
+`new megalodonte.components.v2.HorizontalScroll(content)` clips content inside
+native panes and draws its own scrollbar rather than using `ScrollPane`. It
+handles wheel and horizontal gestures, dragging, and Left/Right/Home/End keys.
+`scrollTo`, `getScrollX`, `reveal`, `getContent` and `refresh` control position,
+reveal a child and update dimensions after content changes. Vertical Scroll v2
+provides `scrollTo`, `getScrollY` and `getContent`.
+
+## Data-driven desktop controls
+
+`DataList` is a virtualized, keyboard-accessible list of `Item(label, detail,
+badge)`. Use `setItems` to replace rows, `select` to synchronize a selection,
+and `onSelect` for user selection. `setItems` and `select` do not invoke the
+business callback. Call `close` when the owning view is disposed.
+
+`DiffView` renders a unified diff in a virtualized list. `setText` replaces the
+diff; `kind` classifies header, hunk, added, removed and context lines. Users can
+select lines and copy either the selection or the complete diff. Call `close`
+when the view is disposed.
+
+`ImageSequence` accepts ordered `Item(duration, source, label)` values and
+reports selected indices through `onSelect`. `SoundSequence` accepts timed
+`Item(start, duration, volume, label)` clips and places overlapping clips in
+separate lanes. Both are framework components; callers supply data and handle
+domain actions. Both expose `select` and `close`.
