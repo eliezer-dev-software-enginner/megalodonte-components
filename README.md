@@ -311,6 +311,29 @@ declared but currently no-ops (reserved for a future mobile target).
 
 ## Selection controls
 
+### Native state-bound controls
+
+`Switch` binds a boolean state to an accessible on/off toggle; `Slider` binds a
+finite numeric range to `State<Double>`. `Accordion` exposes a collapsible
+section whose body is another Megalodonte component. `Tabs` renders a list of
+named Megalodonte pages and synchronizes the selected index with
+`State<Integer>`. All four controls use the active Megalodonte theme and keep
+JavaFX nodes behind the framework API.
+
+```java
+var enabled = State.of(false);
+var volume = State.of(25.0);
+var selected = State.of(0);
+new Switch("Notifications", enabled);
+new Slider(0, 100, volume);
+new Accordion("Advanced settings", new Text("Details"), State.of(false));
+new Tabs(List.of(new Tabs.Page("General", new Text("Overview"))), selected);
+```
+
+Set a theme through `ThemeManager` before constructing these controls. The
+state subscriptions belong to the view lifecycle, so discard the controls when
+the owning screen closes.
+
 ### `Select<T>`
 
 Themed `ComboBox<T>` wrapper — including the dropdown popup's cells, which plain
