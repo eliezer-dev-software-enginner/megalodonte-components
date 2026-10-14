@@ -49,7 +49,6 @@ public class Button extends Component  {
 
         setupMouseHandlers();
 
-        btn.setOnMouseClicked(e -> {});
     }
 
     private void setupMouseHandlers() {
@@ -74,7 +73,7 @@ public class Button extends Component  {
 
     public Button onClick(RunnableThrowing handler) {
         if (handler != null) {
-            btn.setOnMouseClicked(e -> {
+            btn.setOnAction(e -> {
                 try {
                     handler.run();
                 } catch (Exception ex) {

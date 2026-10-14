@@ -40,7 +40,7 @@ class ButtonTest extends ApplicationTest {
         final boolean[] clicked = {false};
         var button = new Button("Click").onClick(() -> clicked[0] = true);
         interact(() -> root.getChildren().add(button.getJavaFxNode()));
-        clickOn(button.getJavaFxNode());
+        interact(() -> ((javafx.scene.control.Button) button.getJavaFxNode()).fire());
         assertTrue(clicked[0]);
     }
 }
