@@ -32,6 +32,9 @@ public final class NativeTextInput extends InputBase {
         revealedField.textProperty().bindBidirectional(field.textProperty());
         revealedField.promptTextProperty().bind(field.promptTextProperty());
         revealedField.styleProperty().bind(field.styleProperty());
+        revealedField.minHeightProperty().bind(field.minHeightProperty());
+        revealedField.prefHeightProperty().bind(field.prefHeightProperty());
+        revealedField.maxHeightProperty().bind(field.maxHeightProperty());
         revealedField.setVisible(false);
         revealedField.setManaged(false);
         container.getChildren().add(revealedField);
