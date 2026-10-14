@@ -7,12 +7,16 @@ import javafx.scene.Group;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 import megalodonte.props.InputProps;
 
 /** Megalodonte's native single-line field for declarative, session-owned bindings. */
 public final class NativeTextInput extends InputBase {
     private TextField revealedField;
     private Button visibilityButton;
+    private int savedAnchor;
+    private int savedCaret;
+    private boolean hasSavedSelection;
 
     public NativeTextInput(boolean password, InputProps props) {
         super(password ? new PasswordField() : new TextField(), props);
@@ -54,9 +58,21 @@ public final class NativeTextInput extends InputBase {
         visibilityButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 4;");
         visibilityButton.setFocusTraversable(true);
         visibilityButton.setAccessibleText("Mostrar senha");
+        field.focusedProperty().addListener((ignored, wasFocused, focused) -> {
+            if (wasFocused && !focused && field.isVisible() && !hasSavedSelection)
+                rememberSelection((TextField) field);
+        });
+        revealedField.focusedProperty().addListener((ignored, wasFocused, focused) -> {
+            if (wasFocused && !focused && revealedField.isVisible() && !hasSavedSelection)
+                rememberSelection(revealedField);
+        });
+        visibilityButton.addEventFilter(MouseEvent.MOUSE_PRESSED,
+                event -> rememberSelection(revealedField.isVisible() ? revealedField : (TextField) field));
         visibilityButton.setOnAction(event -> {
             boolean show = !revealedField.isVisible();
-            int caret = ((TextField) (show ? field : revealedField)).getCaretPosition();
+            TextField source = show ? (TextField) field : revealedField;
+            int anchor = hasSavedSelection ? savedAnchor : source.getAnchor();
+            int caret = hasSavedSelection ? savedCaret : source.getCaretPosition();
             revealedField.setVisible(show);
             revealedField.setManaged(show);
             field.setVisible(!show);
@@ -65,7 +81,8 @@ public final class NativeTextInput extends InputBase {
             visibilityButton.setAccessibleText(show ? "Ocultar senha" : "Mostrar senha");
             TextField target = show ? revealedField : (TextField) field;
             target.requestFocus();
-            target.positionCaret(Math.min(caret, target.getLength()));
+            target.selectRange(Math.min(anchor, target.getLength()), Math.min(caret, target.getLength()));
+            hasSavedSelection = false;
         });
         right(visibilityButton);
         return this;
@@ -73,4 +90,10 @@ public final class NativeTextInput extends InputBase {
 
     public TextField revealedControl() { return revealedField; }
     public Button visibilityControl() { return visibilityButton; }
+
+    private void rememberSelection(TextField source) {
+        savedAnchor = source.getAnchor();
+        savedCaret = source.getCaretPosition();
+        hasSavedSelection = true;
+    }
 }
