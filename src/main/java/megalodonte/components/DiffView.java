@@ -55,7 +55,7 @@ public final class DiffView extends Component implements AutoCloseable {
     }
     public String text() { return text; }
     public String selectedText() { return String.join("\n", list.getSelectionModel().getSelectedItems()); }
-    private static void copy(String value) { var content = new ClipboardContent(); content.putString(value); Clipboard.getSystemClipboard().setContent(content); }
+    private static void copy(String value) { var content = new ClipboardContent(); content.putString(value); javafx.scene.input.Clipboard.getSystemClipboard().setContent(content); }
     @Override public void close() {
         menu.hide(); menu.getItems().forEach(item -> item.setOnAction(null));
         list.setContextMenu(null); list.setOnKeyPressed(null); list.setCellFactory(null); list.getItems().clear(); text = "";
