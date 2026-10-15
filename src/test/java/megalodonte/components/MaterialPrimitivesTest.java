@@ -1,6 +1,8 @@
 package megalodonte.components;
 
 import javafx.scene.control.TabPane;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.RadioButton;
@@ -55,6 +57,24 @@ class MaterialPrimitivesTest extends ApplicationTest {
         assertTrue(weekly.isSelected());
         assertThrows(IllegalArgumentException.class, () -> new RadioGroup("Invalid", List.of(
                 new RadioGroup.Option("same", "One"), new RadioGroup.Option("same", "Two")), selected));
+    }
+
+    @Test void chartsFollowFrameworkState() {
+        var bars = State.of(List.of(new BarChartView.Bar("Revenue", 10, "#10b981")));
+        var barChart = new BarChartView("Comparison", bars);
+        var barNode = (BarChart<?, ?>) barChart.getJavaFxNode();
+        assertEquals(1, barNode.getData().getFirst().getData().size());
+        interact(() -> bars.set(List.of(new BarChartView.Bar("Revenue", 20, "#10b981"),
+                new BarChartView.Bar("Cost", 5, "#ef4444"))));
+        assertEquals(2, barNode.getData().getFirst().getData().size());
+
+        var slices = State.of(List.of(new PieChartView.Slice("Online", 3)));
+        var pieChart = new PieChartView("Channels", slices);
+        var pieNode = (PieChart) pieChart.getJavaFxNode();
+        interact(() -> slices.set(List.of(new PieChartView.Slice("Online", 4),
+                new PieChartView.Slice("Store", 6))));
+        assertEquals(2, pieNode.getData().size());
+        assertEquals(6, pieNode.getData().getLast().getPieValue());
     }
 
     @Test void accordionAndTabsAcceptFrameworkContent() {

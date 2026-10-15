@@ -344,6 +344,14 @@ the owning screen closes.
 Themed `ComboBox<T>` wrapper — including the dropdown popup's cells, which plain
 JavaFX CSS can't reach (it renders in its own `Scene`).
 
+### Charts
+
+`BarChartView` and `PieChartView` keep JavaFX chart nodes inside the framework.
+Applications supply `State<List<BarChartView.Bar>>` or
+`State<List<PieChartView.Slice>>`; changing the state updates the visible chart.
+Bar labels and colors are data, so application view models do not need JavaFX
+`XYChart.Data` or `PieChart.Data` types.
+
 ```java
 public static <T> Component SelectColumn(String label, State<List<T>> listState, State<T> stateSelected, Function<T, String> display) {
     return new Column()
