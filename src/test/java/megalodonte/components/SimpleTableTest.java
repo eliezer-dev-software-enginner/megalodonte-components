@@ -104,27 +104,18 @@ class SimpleTableTest extends ApplicationTest {
     
     @Test
     void testItemSelection() {
-        table.fromData(testData);
-        
-        // Configurar callback de seleção
         final TestModel[] selected = {null};
-        table.onItemSelectChange(item -> selected[0] = item);
-        
-        // Configurar colunas para permitir seleção
-        table.header()
-            .columns()
-                .column("ID", item -> item.id)
-                .column("Nome", item -> item.nome)
-            .build();
-        
-        // Simular seleção
-        Platform.runLater(() -> {
-            table.getItems().get(0); // Acessar primeiro item
+        interact(() -> {
+            table.fromData(testData);
+            table.onItemSelectChange(item -> selected[0] = item);
+            table.header()
+                .columns()
+                    .column("ID", item -> item.id)
+                    .column("Nome", item -> item.nome)
+                .build();
+            table.getTableView().getSelectionModel().select(0);
         });
-        
-        waitForFx(100);
-        assertNotNull(table.getItems());
-        assertEquals(3, table.getItems().size());
+        assertSame(testData.get().get(0), selected[0]);
     }
     
     @Test
