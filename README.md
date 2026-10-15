@@ -314,10 +314,12 @@ declared but currently no-ops (reserved for a future mobile target).
 ### Native state-bound controls
 
 `Switch` binds a boolean state to an accessible on/off toggle; `Slider` binds a
-finite numeric range to `State<Double>`. `Accordion` exposes a collapsible
+finite numeric range to `State<Double>`. `RadioGroup` binds mutually exclusive
+choices to `State<String>` with stable values separate from visible labels.
+`Accordion` exposes a collapsible
 section whose body is another Megalodonte component. `Tabs` renders a list of
 named Megalodonte pages and synchronizes the selected index with
-`State<Integer>`. All four controls use the active Megalodonte theme and keep
+`State<Integer>`. These controls use the active Megalodonte theme and keep
 JavaFX nodes behind the framework API.
 
 ```java
@@ -326,6 +328,9 @@ var volume = State.of(25.0);
 var selected = State.of(0);
 new Switch("Notifications", enabled);
 new Slider(0, 100, volume);
+new RadioGroup("Billing frequency", List.of(
+        new RadioGroup.Option("monthly", "Monthly"),
+        new RadioGroup.Option("weekly", "Weekly")), State.of("monthly"));
 new Accordion("Advanced settings", new Text("Details"), State.of(false));
 new Tabs(List.of(new Tabs.Page("General", new Text("Overview"))), selected);
 ```

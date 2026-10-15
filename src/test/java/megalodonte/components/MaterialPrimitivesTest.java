@@ -3,6 +3,8 @@ package megalodonte.components;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.RadioButton;
+import javafx.scene.layout.VBox;
 import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeManager;
 import megalodonte.theme.DefaultTheme;
@@ -35,6 +37,24 @@ class MaterialPrimitivesTest extends ApplicationTest {
         assertEquals(100, slider.getValue());
         interact(() -> slider.setValue(25));
         assertEquals(25, value.get());
+    }
+
+    @Test void radioGroupSynchronizesExclusiveChoice() {
+        var selected = State.of("weekly");
+        var group = new RadioGroup("Billing frequency", List.of(
+                new RadioGroup.Option("monthly", "Monthly"),
+                new RadioGroup.Option("weekly", "Weekly")), selected);
+        var buttons = ((VBox) group.getJavaFxNode()).getChildren();
+        var monthly = (RadioButton) buttons.get(0);
+        var weekly = (RadioButton) buttons.get(1);
+        assertTrue(weekly.isSelected());
+        interact(() -> monthly.setSelected(true));
+        assertEquals("monthly", selected.get());
+        assertFalse(weekly.isSelected());
+        interact(() -> selected.set("weekly"));
+        assertTrue(weekly.isSelected());
+        assertThrows(IllegalArgumentException.class, () -> new RadioGroup("Invalid", List.of(
+                new RadioGroup.Option("same", "One"), new RadioGroup.Option("same", "Two")), selected));
     }
 
     @Test void accordionAndTabsAcceptFrameworkContent() {
