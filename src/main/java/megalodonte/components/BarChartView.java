@@ -21,12 +21,17 @@ public final class BarChartView extends Component {
 
     private final BarChart<String, Number> chart;
 
-    public BarChartView(String title, State<List<Bar>> bars) {
+    @SuppressWarnings("unchecked")
+    public BarChartView(String title) {
         super(new BarChart<String, Number>(new CategoryAxis(), new NumberAxis()));
         chart = (BarChart<String, Number>) node;
         chart.setTitle(Objects.requireNonNull(title, "title"));
         chart.setLegendVisible(false);
         chart.setPrefSize(320, 260);
+    }
+
+    public BarChartView(String title, State<List<Bar>> bars) {
+        this(title);
         Objects.requireNonNull(bars, "bars").subscribe(this::setBars);
     }
 

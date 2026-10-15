@@ -18,12 +18,16 @@ public final class PieChartView extends Component {
 
     private final PieChart chart;
 
-    public PieChartView(String title, State<List<Slice>> slices) {
+    public PieChartView(String title) {
         super(new PieChart());
         chart = (PieChart) node;
         chart.setTitle(Objects.requireNonNull(title, "title"));
         chart.setLegendVisible(false);
         chart.setPrefSize(320, 260);
+    }
+
+    public PieChartView(String title, State<List<Slice>> slices) {
+        this(title);
         Objects.requireNonNull(slices, "slices").subscribe(this::setSlices);
     }
 
