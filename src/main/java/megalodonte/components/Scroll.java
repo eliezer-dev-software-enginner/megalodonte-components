@@ -42,6 +42,14 @@ public class Scroll extends Component  {
         confineScrollEvents(scrollPane);
     }
 
+    /** Allow the scroll pane to shrink inside constrained rows and fill available height. */
+    public Scroll fillAvailableHeight() {
+        scrollPane.setMinHeight(0);
+        scrollPane.setMaxHeight(Double.MAX_VALUE);
+        scrollPane.setFitToHeight(true);
+        return this;
+    }
+
     private static void transparentizeViewport(ScrollPane scrollPane) {
         scrollPane.skinProperty().addListener((obs, oldSkin, newSkin) -> applyViewportBackground(scrollPane));
         applyViewportBackground(scrollPane);
