@@ -1,13 +1,11 @@
 package megalodonte.components;
 
 import megalodonte.base.state.State;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDateTime;
@@ -63,43 +61,33 @@ class SimpleTableTest extends ApplicationTest {
     
     @Test
     void testFromDataBinding() {
-        // Vincular dados reativos
-        table.fromData(testData);
-        
-        // Verificar que os itens foram carregados
-        assertEquals(3, table.getItems().size());
-        
-        // Atualizar dados e verificar reatividade
-        Platform.runLater(() -> {
+        interact(() -> {
+            table.fromData(testData);
+            assertEquals(3, table.getItems().size());
             List<TestModel> newItems = Arrays.asList(
                 new TestModel(4L, "Nova Empresa", "111222333", "nova@empresa.com", "11666666666", LocalDateTime.now())
             );
             testData.set(newItems);
+            assertEquals(1, table.getItems().size());
+            assertEquals("Nova Empresa", table.getItems().get(0).nome);
         });
-        
-        // Esperar a atualização e verificar
-        waitForFx(100);
-        assertEquals(1, table.getItems().size());
-        assertEquals("Nova Empresa", table.getItems().get(0).nome);
     }
     
     @Test
     void testHeaderConfiguration() {
-        table.fromData(testData);
-        
-        // Configurar colunas usando API fluente
-        table.header()
-            .columns()
-                .column("ID", item -> item.id, 40.0)
-                .column("Nome", item -> item.nome, 100.0)
-                .column("CNPJ", item -> item.cpfCnpj)
-                .column("Email", item -> item.email)
-                .column("Telefone", item -> formatPhone(item.celular))
-                .column("Data Criação", item -> formatDateTime(item.dataCriacao))
-            .build();
-        
-        // Verificar que as colunas foram criadas
-        assertEquals(6, ((javafx.scene.control.TableView<?>) table.getJavaFxNode()).getColumns().size());
+        interact(() -> {
+            table.fromData(testData);
+            table.header()
+                .columns()
+                    .column("ID", item -> item.id, 40.0)
+                    .column("Nome", item -> item.nome, 100.0)
+                    .column("CNPJ", item -> item.cpfCnpj)
+                    .column("Email", item -> item.email)
+                    .column("Telefone", item -> formatPhone(item.celular))
+                    .column("Data Criação", item -> formatDateTime(item.dataCriacao))
+                .build();
+            assertEquals(6, table.getTableView().getColumns().size());
+        });
     }
     
     @Test
@@ -120,63 +108,59 @@ class SimpleTableTest extends ApplicationTest {
     
     @Test
     void testItemOperations() {
-        table.fromData(testData);
-        
-        // Testar adição de item
-        TestModel newItem = new TestModel(4L, "Teste", "000000000", "teste@teste.com", "11000000000", LocalDateTime.now());
-        table.addItem(newItem);
-        assertEquals(4, table.getItems().size());
-        
-        // Testar remoção de item
-        assertTrue(table.removeItem(newItem));
-        assertEquals(3, table.getItems().size());
-        
-        // Testar limpeza
-        table.clear();
-        assertEquals(0, table.getItems().size());
+        interact(() -> {
+            table.fromData(testData);
+            TestModel newItem = new TestModel(4L, "Teste", "000000000", "teste@teste.com", "11000000000", LocalDateTime.now());
+            table.addItem(newItem);
+            assertEquals(4, table.getItems().size());
+            assertTrue(table.removeItem(newItem));
+            assertEquals(3, table.getItems().size());
+            table.clear();
+            assertEquals(0, table.getItems().size());
+        });
     }
     
     @Test
     void testChainedConfiguration() {
-        // Testar API fluente completa
-        SimpleTable<TestModel> configuredTable = new SimpleTable<TestModel>()
-            .fromData(testData)
-            .onItemSelectChange(item -> System.out.println("Selected: " + item.nome))
-            .onItemDoubleClick(item -> System.out.println("Double clicked: " + item.nome))
-            .header()
-                .columns()
-                    .column("ID", item -> item.id)
-                    .column("Nome", item -> item.nome)
-                    .column("Email", item -> item.email)
-                .build();
-        
-        assertNotNull(configuredTable);
-        assertEquals(3, configuredTable.getItems().size());
-        assertEquals(3, ((javafx.scene.control.TableView<?>) configuredTable.getJavaFxNode()).getColumns().size());
+        interact(() -> {
+            SimpleTable<TestModel> configuredTable = new SimpleTable<TestModel>()
+                .fromData(testData)
+                .onItemSelectChange(item -> { })
+                .onItemDoubleClick(item -> { })
+                .header()
+                    .columns()
+                        .column("ID", item -> item.id)
+                        .column("Nome", item -> item.nome)
+                        .column("Email", item -> item.email)
+                    .build();
+            assertEquals(3, configuredTable.getItems().size());
+            assertEquals(3, configuredTable.getTableView().getColumns().size());
+        });
     }
 
     @Test
     void horizontalScrollDistribuiEspacoSobrandoSemEncolherCabecalhos() {
-        table.fromData(testData)
-                .header()
-                .columns()
+        interact(() -> table.fromData(testData)
+                .header().columns()
                 .column("Razão social", item -> item.nome)
                 .column("CPF/CNPJ", item -> item.cpfCnpj)
                 .column("Data de criação", item -> formatDateTime(item.dataCriacao))
-                .build();
+                .build());
 
         waitForFx(100);
 
-        var tableView = table.getTableView();
-        double totalColumnsWidth = tableView.getColumns().stream()
-                .mapToDouble(javafx.scene.control.TableColumnBase::getWidth)
-                .sum();
-        assertTrue(totalColumnsWidth >= tableView.getWidth() - 20,
-                "As colunas devem aproveitar a largura disponível da tabela");
-        assertTrue(tableView.getColumns().get(0).getWidth() > 120,
-                "Cabeçalho Razão social não deve ser truncado quando há espaço");
-        assertTrue(tableView.getColumns().get(2).getWidth() > 140,
-                "Cabeçalho Data de criação não deve ser truncado quando há espaço");
+        interact(() -> {
+            var tableView = table.getTableView();
+            double totalColumnsWidth = tableView.getColumns().stream()
+                    .mapToDouble(javafx.scene.control.TableColumnBase::getWidth)
+                    .sum();
+            assertTrue(totalColumnsWidth >= tableView.getWidth() - 20,
+                    "As colunas devem aproveitar a largura disponível da tabela");
+            assertTrue(tableView.getColumns().get(0).getWidth() > 120,
+                    "Cabeçalho Razão social não deve ser truncado quando há espaço");
+            assertTrue(tableView.getColumns().get(2).getWidth() > 140,
+                    "Cabeçalho Data de criação não deve ser truncado quando há espaço");
+        });
     }
     
     // Métodos utilitários para formatação (simulando Utils)
