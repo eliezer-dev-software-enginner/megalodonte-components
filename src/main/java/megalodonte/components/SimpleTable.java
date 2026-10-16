@@ -192,9 +192,8 @@ public class SimpleTable<T> extends Component  {
     }
 
     private void refreshPage() {
-        items.clear();
         if (pageSize <= 0) {
-            items.addAll(fullData);
+            items.setAll(fullData);
             pageLabel.set("");
             pageInput.set("1");
             hasPreviousPage.set(false);
@@ -204,9 +203,9 @@ public class SimpleTable<T> extends Component  {
             return;
         }
         int from = currentPage.get() * pageSize;
-        if (from < fullData.size()) {
-            items.addAll(fullData.subList(from, Math.min(from + pageSize, fullData.size())));
-        }
+        items.setAll(from < fullData.size()
+                ? fullData.subList(from, Math.min(from + pageSize, fullData.size()))
+                : List.of());
         pageLabel.set("Página " + (currentPage.get() + 1) + " de " + Math.max(1, totalPages()));
         pageInput.set(String.valueOf(currentPage.get() + 1));
         hasPreviousPage.set(currentPage.get() > 0);
