@@ -166,24 +166,51 @@ class SimpleTableTest extends ApplicationTest {
     }
 
     @Test
-    void resizedTableKeepsAllShortListRowsVisibleAfterWheelScroll() {
+    void fullViewportDoesNotScrollPastFirstRow(@org.junit.jupiter.api.io.TempDir java.nio.file.Path directory) throws Exception {
+        var image = new java.awt.image.BufferedImage(40, 40, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < 40; y++) for (int x = 0; x < 40; x++) image.setRGB(x, y, 0xffffaa00);
+        var imageFile = directory.resolve("thumbnail.png").toFile();
+        javax.imageio.ImageIO.write(image, "png", imageFile);
+        String imageUrl = imageFile.toURI().toString();
         interact(() -> {
             var records = new java.util.ArrayList<TestModel>();
             for (long id = 1; id <= 6; id++)
                 records.add(new TestModel(id, "Empresa " + id, "", "", "", LocalDateTime.now()));
             testData.set(records);
-            table.fromData(testData).header().columns().column("Nome", row -> row.nome).build();
+            var columns = table.fromData(testData).header().columns();
+            columns.column("ID", row -> row.id)
+                    .imageColumn("Imagem", row -> imageUrl, 40)
+                    .column("Nome", row -> row.nome)
+                    .column("CNPJ", row -> row.cpfCnpj)
+                    .column("Email", row -> row.email)
+                    .column("Celular", row -> row.celular)
+                    .column("Criado", row -> row.dataCriacao);
+            for (int index = 0; index < 12; index++) columns.column("Extra " + index, row -> row.nome);
+            columns.build();
+            table.horizontalScroll().paginate(25).enableMultipleSelection(items -> {});
             table.getTableView().setFixedCellSize(62);
-            stage.setHeight(280);
+            var heading = new javafx.scene.layout.Region();
+            heading.setMinHeight(180);
+            ((VBox) stage.getScene().getRoot()).getChildren().addFirst(heading);
+            stage.setHeight(620);
         });
         waitForFx(100);
         interact(() -> table.getTableView().scrollTo(5));
         waitForFx(100);
-        interact(() -> stage.setHeight(700));
-        waitForFx(100);
-        moveTo(table.getTableView()).scroll(3);
+        moveTo(table.getTableView()).scroll(-20);
         waitForFx(100);
         interact(() -> {
+            var flow = table.getTableView().lookup(".virtual-flow");
+            assertNotNull(flow);
+            var deliveredToFlow = new java.util.concurrent.atomic.AtomicInteger();
+            flow.addEventFilter(javafx.scene.input.ScrollEvent.SCROLL, event -> deliveredToFlow.incrementAndGet());
+            var scroll = new javafx.scene.input.ScrollEvent(javafx.scene.input.ScrollEvent.SCROLL,
+                    0, 0, 0, 0, false, false, false, false, false, false,
+                    0, -80, 0, -80,
+                    javafx.scene.input.ScrollEvent.HorizontalTextScrollUnits.NONE, 0,
+                    javafx.scene.input.ScrollEvent.VerticalTextScrollUnits.NONE, 0, 0, null);
+            javafx.event.Event.fireEvent(flow, scroll);
+            assertEquals(0, deliveredToFlow.get(), "Roda vertical não deve atingir o viewport quando todas as linhas cabem");
             var scrollBar = (javafx.scene.control.ScrollBar) table.getTableView().lookup(".scroll-bar:vertical");
             assertNotNull(scrollBar);
             assertEquals(scrollBar.getMin(), scrollBar.getValue(), 0.01,
@@ -195,6 +222,24 @@ class SimpleTableTest extends ApplicationTest {
                     .toList();
             assertTrue(visibleIndexes.containsAll(List.of(0, 1, 2, 3, 4, 5)),
                     "Todos os registros devem permanecer visíveis quando cabem no viewport");
+        });
+        interact(() -> {
+            var records = new java.util.ArrayList<TestModel>();
+            for (long id = 1; id <= 20; id++)
+                records.add(new TestModel(id, "Empresa " + id, "", "", "", LocalDateTime.now()));
+            testData.set(records);
+        });
+        waitForFx(100);
+        interact(() -> {
+            var flow = table.getTableView().lookup(".virtual-flow");
+            var deliveredToFlow = new java.util.concurrent.atomic.AtomicInteger();
+            flow.addEventFilter(javafx.scene.input.ScrollEvent.SCROLL, event -> deliveredToFlow.incrementAndGet());
+            javafx.event.Event.fireEvent(flow, new javafx.scene.input.ScrollEvent(javafx.scene.input.ScrollEvent.SCROLL,
+                    0, 0, 0, 0, false, false, false, false, false, false,
+                    0, -80, 0, -80,
+                    javafx.scene.input.ScrollEvent.HorizontalTextScrollUnits.NONE, 0,
+                    javafx.scene.input.ScrollEvent.VerticalTextScrollUnits.NONE, 0, 0, null));
+            assertEquals(1, deliveredToFlow.get(), "Listas maiores que o viewport devem continuar rolando");
         });
     }
     

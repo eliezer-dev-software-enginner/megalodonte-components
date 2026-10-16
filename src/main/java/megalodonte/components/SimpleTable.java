@@ -89,6 +89,11 @@ public class SimpleTable<T> extends Component  {
         // numa única passada de roda) deixa o resto do scroll vazar pro ScrollPane da
         // página, rolando ela também. Ver Scroll.confineScrollEvents.
         Scroll.confineScrollEvents(this.tableView);
+        this.tableView.addEventFilter(javafx.scene.input.ScrollEvent.SCROLL, event -> {
+            if (event.getDeltaY() == 0 || !allRowsFitInViewport()) return;
+            event.consume();
+            tableView.scrollTo(0);
+        });
 
         loadStyleSheet();
         setupDefaultBehavior();
@@ -99,6 +104,14 @@ public class SimpleTable<T> extends Component  {
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         adjustAutoSizedColumns();
         return this;
+    }
+
+    private boolean allRowsFitInViewport() {
+        double rowHeight = tableView.getFixedCellSize();
+        if (rowHeight <= 0) return false;
+        var viewport = tableView.lookup(".virtual-flow");
+        return viewport != null && viewport.getLayoutBounds().getHeight() > 0
+                && items.size() * rowHeight <= viewport.getLayoutBounds().getHeight() + 1;
     }
 
 
