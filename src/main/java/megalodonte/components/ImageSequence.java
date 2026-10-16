@@ -34,7 +34,23 @@ public final class ImageSequence extends Component implements AutoCloseable {
     }
 
     public void setItems(List<Item> items) {
-        this.items = List.copyOf(items);
+        var nextItems = List.copyOf(items);
+        if (nextItems.size() == this.items.size() && cards.getChildren().size() == nextItems.size()) {
+            boolean sameSources = true;
+            for (int i=0;i<nextItems.size();i++) if (!java.util.Objects.equals(this.items.get(i).source(), nextItems.get(i).source())) { sameSources=false;break; }
+            if (sameSources) {
+                this.items=nextItems;
+                double start=0;
+                for(int i=0;i<nextItems.size();i++) {
+                    var item=nextItems.get(i);var card=(VBox)cards.getChildren().get(i);
+                    ((Label)card.getChildren().getFirst()).setText(String.format(Locale.ROOT,"%.1fs → %.1fs",start,start+item.duration()));
+                    var label=(Label)card.getChildren().getLast();label.setText((i+1)+" · "+item.label());card.setAccessibleText(label.getText());
+                    card.setPrefWidth(Math.max(150,Math.min(280,item.duration()*25)));start+=item.duration();
+                }
+                scroll.refresh();select(selected);return;
+            }
+        }
+        this.items = nextItems;
         cards.getChildren().clear();
         double start = 0;
         for (int i = 0; i < items.size(); i++) {

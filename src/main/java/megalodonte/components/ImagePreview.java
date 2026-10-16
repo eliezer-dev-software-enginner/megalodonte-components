@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import megalodonte.base.components.Component;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +17,7 @@ public final class ImagePreview extends Component implements AutoCloseable {
     private final Canvas particles = new Canvas();
     private final Label placeholder = new Label("Selecione uma cena e importe uma imagem");
     private final StackPane frame = new StackPane(image, placeholder, particles);
+    private final Rectangle viewportClip = new Rectangle();
 
     public ImagePreview() {
         super(new Pane() {
@@ -29,6 +31,9 @@ public final class ImagePreview extends Component implements AutoCloseable {
         });
         Pane pane = (Pane) node;
         frame.setId("videoFrame"); frame.setManaged(false);
+        frame.setClip(viewportClip);
+        viewportClip.widthProperty().bind(frame.widthProperty());
+        viewportClip.heightProperty().bind(frame.heightProperty());
         frame.setStyle("-fx-background-color: #000000;");
         pane.setStyle("-fx-background-color: #151b28; -fx-background-radius: 8;");
         pane.getChildren().add(frame);
@@ -63,11 +68,19 @@ public final class ImagePreview extends Component implements AutoCloseable {
 
     private void paintParticles() {
         double width=particles.getWidth(), height=particles.getHeight();
-        if(visualEffect.equals("shake") && image.getImage()!=null) {
+        if((visualEffect.equals("shake") || visualEffect.equals("smooth")) && image.getImage()!=null) {
             double frame=sceneTime*30;
-            image.setScaleX(1.018);image.setScaleY(1.018);
-            image.setTranslateX(Math.sin(frame*.31)*width/240);
-            image.setTranslateY(Math.cos(frame*.27)*height/240);
+            if(visualEffect.equals("smooth")) {
+                double progress=(1-Math.cos(sceneTime*.22))/2;
+                image.setScaleX(1+.03*progress);
+                image.setScaleY(1+.03*progress);
+                image.setTranslateX(Math.sin(sceneTime*.18)*width*.003*progress);
+                image.setTranslateY((Math.cos(sceneTime*.15)-1)*height*.0015*progress);
+            } else {
+                image.setScaleX(1.018);image.setScaleY(1.018);
+                image.setTranslateX(Math.sin(frame*.31)*width/240);
+                image.setTranslateY(Math.cos(frame*.27)*height/240);
+            }
         } else {
             image.setScaleX(1);image.setScaleY(1);image.setTranslateX(0);image.setTranslateY(0);
         }
@@ -93,6 +106,7 @@ public final class ImagePreview extends Component implements AutoCloseable {
         image.fitWidthProperty().unbind();
         image.fitHeightProperty().unbind();
         particles.widthProperty().unbind();particles.heightProperty().unbind();
+        viewportClip.widthProperty().unbind();viewportClip.heightProperty().unbind();
         image.setImage(null);
     }
 }
