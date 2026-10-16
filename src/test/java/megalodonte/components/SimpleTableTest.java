@@ -18,6 +18,7 @@ class SimpleTableTest extends ApplicationTest {
     
     private SimpleTable<TestModel> table;
     private State<List<TestModel>> testData;
+    private Stage stage;
     
     // Modelo de teste para simular FornecedorModel
     static class TestModel {
@@ -40,6 +41,7 @@ class SimpleTableTest extends ApplicationTest {
     
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
         table = new SimpleTable<TestModel>().horizontalScroll();
         testData = State.of(Arrays.asList(
             new TestModel(1L, "Empresa A", "123456789", "contato@empresaA.com", "11999999999", LocalDateTime.now()),
@@ -160,6 +162,39 @@ class SimpleTableTest extends ApplicationTest {
                     "Cabeçalho Razão social não deve ser truncado quando há espaço");
             assertTrue(tableView.getColumns().get(2).getWidth() > 140,
                     "Cabeçalho Data de criação não deve ser truncado quando há espaço");
+        });
+    }
+
+    @Test
+    void resizedTableKeepsAllShortListRowsVisibleAfterWheelScroll() {
+        interact(() -> {
+            var records = new java.util.ArrayList<TestModel>();
+            for (long id = 1; id <= 6; id++)
+                records.add(new TestModel(id, "Empresa " + id, "", "", "", LocalDateTime.now()));
+            testData.set(records);
+            table.fromData(testData).header().columns().column("Nome", row -> row.nome).build();
+            table.getTableView().setFixedCellSize(62);
+            stage.setHeight(280);
+        });
+        waitForFx(100);
+        interact(() -> table.getTableView().scrollTo(5));
+        waitForFx(100);
+        interact(() -> stage.setHeight(700));
+        waitForFx(100);
+        moveTo(table.getTableView()).scroll(3);
+        waitForFx(100);
+        interact(() -> {
+            var scrollBar = (javafx.scene.control.ScrollBar) table.getTableView().lookup(".scroll-bar:vertical");
+            assertNotNull(scrollBar);
+            assertEquals(scrollBar.getMin(), scrollBar.getValue(), 0.01,
+                    "O viewport maior não deve manter o deslocamento calculado para a janela menor");
+            var visibleIndexes = table.getTableView().lookupAll(".table-row-cell").stream()
+                    .map(node -> (javafx.scene.control.TableRow<?>) node)
+                    .filter(row -> !row.isEmpty() && row.isVisible())
+                    .map(javafx.scene.control.TableRow::getIndex)
+                    .toList();
+            assertTrue(visibleIndexes.containsAll(List.of(0, 1, 2, 3, 4, 5)),
+                    "Todos os registros devem permanecer visíveis quando cabem no viewport");
         });
     }
     
