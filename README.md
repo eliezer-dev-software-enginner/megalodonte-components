@@ -261,6 +261,14 @@ props class, `applyTextAreaTheme` mirrors the same size-capping logic).
 new TextAreaInput(inputState, getInputProps(placeholder, height).width(400))
 ```
 
+### `JavaCodeEditor`
+
+Use `new JavaCodeEditor(sourceState, 260)` for editable Java source. It binds to
+`State<String>`, follows the Megalodonte theme, displays line numbers and Java
+syntax colors, and inserts indentation with Tab and Enter. The component wraps
+RichTextFX 0.11.7, which supports JavaFX 25; applications use only the
+Megalodonte API.
+
 ### `PasswordInput`
 
 Same constructor shape as `Input`/`TextAreaInput`. Adds a 👁 toggle button (via

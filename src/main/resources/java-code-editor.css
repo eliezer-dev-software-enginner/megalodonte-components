@@ -1,0 +1,12 @@
+.megalodonte-java-editor {
+    -fx-background-color: transparent;
+    -fx-padding: 8;
+    -fx-font-family: "Monospace";
+    -fx-font-size: 13px;
+}
+.megalodonte-java-editor .text { -fx-fill: -code-text; }
+.megalodonte-java-editor .keyword { -fx-fill: -code-keyword; -fx-font-weight: bold; }
+.megalodonte-java-editor .string { -fx-fill: -code-string; }
+.megalodonte-java-editor .number { -fx-fill: -code-number; }
+.megalodonte-java-editor .comment { -fx-fill: -code-muted; -fx-font-style: italic; }
+.megalodonte-java-editor .lineno { -fx-background-color: transparent; -fx-text-fill: -code-muted; }

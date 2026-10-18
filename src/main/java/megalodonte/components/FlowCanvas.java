@@ -21,6 +21,7 @@ public final class FlowCanvas extends Component {
     private Consumer<String> onSelect = ignored -> { };
     private Consumer<Move> onMove = ignored -> { };
     private List<Node> nodes = List.of();
+    private String selectedId;
 
     public FlowCanvas() {
         super(new Pane(), null);
@@ -42,6 +43,11 @@ public final class FlowCanvas extends Component {
         return this;
     }
 
+    public void select(String id) {
+        selectedId = id;
+        show(nodes);
+    }
+
     public void show(List<Node> nodes) {
         this.nodes = List.copyOf(nodes);
         surface.getChildren().clear();
@@ -52,31 +58,41 @@ public final class FlowCanvas extends Component {
             double x = Math.max(8, node.x());
             double y = Math.max(8, node.y());
             Pane group = new Pane();
+            group.setId("flow-" + node.id());
             group.setPrefSize(294, 88);
             group.setLayoutX(x);
             group.setLayoutY(y);
             Line edge = new Line(112, 44, 154, 44);
             edge.setStyle("-fx-stroke: " + theme.colors().border() + "; -fx-stroke-width: 2;");
             group.getChildren().addAll(edge,
-                    card("GATILHO", node.trigger(), 0, theme.colors().primary(), theme),
-                    card("AÇÃO JAVA", node.title(), 154, theme.colors().secondary(), theme));
+                    card("GATILHO", node.trigger(), 0, theme.colors().primary(), theme, node.id().equals(selectedId)),
+                    card("AÇÃO JAVA", node.title(), 154, theme.colors().secondary(), theme, node.id().equals(selectedId)));
             group.setCursor(Cursor.HAND);
-            group.setOnMouseClicked(event -> onSelect.accept(node.id()));
             final double[] anchor = new double[2];
+            final double[] start = new double[2];
             group.setOnMousePressed(event -> {
                 anchor[0] = event.getSceneX() - group.getLayoutX();
                 anchor[1] = event.getSceneY() - group.getLayoutY();
+                start[0] = group.getLayoutX();
+                start[1] = group.getLayoutY();
             });
             group.setOnMouseDragged(event -> {
                 group.setLayoutX(Math.max(8, event.getSceneX() - anchor[0]));
                 group.setLayoutY(Math.max(8, event.getSceneY() - anchor[1]));
             });
-            group.setOnMouseReleased(event -> onMove.accept(new Move(node.id(), group.getLayoutX(), group.getLayoutY())));
+            group.setOnMouseReleased(event -> {
+                if (Math.abs(group.getLayoutX() - start[0]) > 1 || Math.abs(group.getLayoutY() - start[1]) > 1) {
+                    onMove.accept(new Move(node.id(), group.getLayoutX(), group.getLayoutY()));
+                } else {
+                    select(node.id());
+                    onSelect.accept(node.id());
+                }
+            });
             surface.getChildren().add(group);
         }
     }
 
-    private VBox card(String caption, String title, double x, String accent, ThemeInterface theme) {
+    private VBox card(String caption, String title, double x, String accent, ThemeInterface theme, boolean selected) {
         Label heading = new Label(caption);
         heading.setStyle("-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: "
                 + theme.colors().textSecondary() + ";");
@@ -90,7 +106,7 @@ public final class FlowCanvas extends Component {
         card.setLayoutX(x);
         card.setLayoutY(0);
         card.setStyle("-fx-background-color: " + theme.colors().surface() + "; -fx-background-radius: 10;"
-                + " -fx-border-color: " + accent + "; -fx-border-width: 2;"
+                + " -fx-border-color: " + (selected ? theme.colors().primary() : accent) + "; -fx-border-width: " + (selected ? 3 : 2) + ";"
                 + " -fx-border-radius: 10; -fx-padding: 12;");
         return card;
     }

@@ -4,6 +4,8 @@ module megalodonte.components {
     requires transitive javafx.base;
     requires transitive javafx.graphics;
     requires transitive javafx.controls;
+    requires org.fxmisc.richtext;
+    requires org.fxmisc.flowless;
 
     exports megalodonte.components;
     exports megalodonte.components.inputs;

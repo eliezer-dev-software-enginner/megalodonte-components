@@ -32,6 +32,7 @@ javafx {
 }
 
 dependencies {
+    implementation("org.fxmisc.richtext:richtextfx:0.11.7")
     // Dependências de teste (mantidas)
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
