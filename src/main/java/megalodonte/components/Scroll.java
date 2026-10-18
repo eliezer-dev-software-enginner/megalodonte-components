@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
 
@@ -49,6 +50,15 @@ public class Scroll extends Component  {
         scrollPane.setMinHeight(0);
         scrollPane.setMaxHeight(Double.MAX_VALUE);
         scrollPane.setFitToHeight(true);
+        return this;
+    }
+
+    /** Keep a wide scrollable child from expanding a horizontal layout. */
+    public Scroll fillAvailableWidth() {
+        scrollPane.setMinWidth(0);
+        scrollPane.setPrefWidth(0);
+        scrollPane.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(scrollPane, Priority.ALWAYS);
         return this;
     }
 
