@@ -27,7 +27,7 @@ public final class FlowCanvas extends Component {
         super(new Pane(), null);
         surface = (Pane) getJavaFxNode();
         surface.setMinSize(640, 440);
-        surface.setPrefSize(1000, 700);
+        surface.setPrefSize(1600, 1100);
         ThemeManager.state().subscribe(theme -> {
             if (theme != null) show(nodes);
         });
@@ -51,8 +51,8 @@ public final class FlowCanvas extends Component {
     public void show(List<Node> nodes) {
         this.nodes = List.copyOf(nodes);
         surface.getChildren().clear();
-        surface.setPrefHeight(Math.max(700, nodes.stream().mapToDouble(item -> item.y() + 120).max().orElse(700)));
-        surface.setPrefWidth(Math.max(1000, nodes.stream().mapToDouble(item -> item.x() + 320).max().orElse(1000)));
+        surface.setPrefHeight(Math.max(1100, nodes.stream().mapToDouble(item -> item.y() + 320).max().orElse(1100)));
+        surface.setPrefWidth(Math.max(1600, nodes.stream().mapToDouble(item -> item.x() + 520).max().orElse(1600)));
         ThemeInterface theme = ThemeManager.theme();
         if (theme == null) return;
         surface.setStyle("-fx-background-color: " + theme.colors().background() + ";");
@@ -61,6 +61,7 @@ public final class FlowCanvas extends Component {
             double y = Math.max(8, node.y());
             Pane group = new Pane();
             group.setId("flow-" + node.id());
+            group.setPickOnBounds(true);
             group.setPrefSize(294, 88);
             group.setLayoutX(x);
             group.setLayoutY(y);

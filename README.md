@@ -274,6 +274,8 @@ Megalodonte API.
 `FlowCanvas` displays draggable trigger/action pairs and exposes `onSelect` and
 `onMove` callbacks. Clicking a card selects it without firing a move event; the
 selected pair gets a visible border. The canvas expands with the project graph.
+Wrap it in `new Scroll(canvas).pannableCanvas()` to pan by dragging empty space
+without changing card positions.
 
 `FilePicker.chooseFile(...)` and `FilePicker.chooseDirectory(...)` expose native
 pickers through the framework. `FilePicker.openDirectory(path)` opens a project

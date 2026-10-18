@@ -1,8 +1,10 @@
 package megalodonte.components;
 
 import javafx.event.Event;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -47,6 +49,36 @@ public class Scroll extends Component  {
         scrollPane.setMinHeight(0);
         scrollPane.setMaxHeight(Double.MAX_VALUE);
         scrollPane.setFitToHeight(true);
+        return this;
+    }
+
+    /** Drag empty canvas space to scroll its content in both directions. */
+    public Scroll pannableCanvas() {
+        scrollPane.setFitToWidth(false);
+        scrollPane.setFitToHeight(false);
+        Node content = scrollPane.getContent();
+        content.setCursor(Cursor.OPEN_HAND);
+        double[] start = new double[4];
+        content.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
+            if (event.getTarget() != content || !event.isPrimaryButtonDown()) return;
+            start[0] = event.getSceneX(); start[1] = event.getSceneY();
+            start[2] = scrollPane.getHvalue(); start[3] = scrollPane.getVvalue();
+            content.setCursor(Cursor.CLOSED_HAND);
+            event.consume();
+        });
+        content.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+            if (event.getTarget() != content || !event.isPrimaryButtonDown()) return;
+            double width = Math.max(1, content.getLayoutBounds().getWidth() - scrollPane.getViewportBounds().getWidth());
+            double height = Math.max(1, content.getLayoutBounds().getHeight() - scrollPane.getViewportBounds().getHeight());
+            scrollPane.setHvalue(start[2] - (event.getSceneX() - start[0]) / width);
+            scrollPane.setVvalue(start[3] - (event.getSceneY() - start[1]) / height);
+            event.consume();
+        });
+        content.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
+            if (event.getTarget() != content) return;
+            content.setCursor(Cursor.OPEN_HAND);
+            event.consume();
+        });
         return this;
     }
 
