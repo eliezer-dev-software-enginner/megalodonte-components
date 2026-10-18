@@ -269,6 +269,17 @@ syntax colors, and inserts indentation with Tab and Enter. The component wraps
 RichTextFX 0.11.7, which supports JavaFX 25; applications use only the
 Megalodonte API.
 
+### Project-oriented desktop helpers
+
+`FlowCanvas` displays draggable trigger/action pairs and exposes `onSelect` and
+`onMove` callbacks. Clicking a card selects it without firing a move event; the
+selected pair gets a visible border. The canvas expands with the project graph.
+
+`FilePicker.chooseFile(...)` and `FilePicker.chooseDirectory(...)` expose native
+pickers through the framework. `FilePicker.openDirectory(path)` opens a project
+folder in the platform file manager; applications do not need to create JavaFX
+chooser controls themselves.
+
 ### `PasswordInput`
 
 Same constructor shape as `Input`/`TextAreaInput`. Adds a 👁 toggle button (via

@@ -51,6 +51,8 @@ public final class FlowCanvas extends Component {
     public void show(List<Node> nodes) {
         this.nodes = List.copyOf(nodes);
         surface.getChildren().clear();
+        surface.setPrefHeight(Math.max(700, nodes.stream().mapToDouble(item -> item.y() + 120).max().orElse(700)));
+        surface.setPrefWidth(Math.max(1000, nodes.stream().mapToDouble(item -> item.x() + 320).max().orElse(1000)));
         ThemeInterface theme = ThemeManager.theme();
         if (theme == null) return;
         surface.setStyle("-fx-background-color: " + theme.colors().background() + ";");
