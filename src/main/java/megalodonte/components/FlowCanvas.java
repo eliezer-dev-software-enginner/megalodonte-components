@@ -3,8 +3,11 @@ package megalodonte.components;
 import javafx.scene.Cursor;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import megalodonte.base.components.Component;
 import megalodonte.base.theme.ThemeManager;
 import megalodonte.base.theme.ThemeInterface;
@@ -22,12 +25,46 @@ public final class FlowCanvas extends Component {
     private Consumer<Move> onMove = ignored -> { };
     private List<Node> nodes = List.of();
     private String selectedId;
+    private double panX;
+    private double panY;
+    private double lastSceneX;
+    private double lastSceneY;
 
     public FlowCanvas() {
         super(new Pane(), null);
         surface = (Pane) getJavaFxNode();
-        surface.setMinSize(640, 440);
-        surface.setPrefSize(1600, 1100);
+        surface.setMinSize(0, 0);
+        surface.setPrefSize(640, 440);
+        surface.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        Rectangle viewportClip = new Rectangle();
+        viewportClip.widthProperty().bind(surface.widthProperty());
+        viewportClip.heightProperty().bind(surface.heightProperty());
+        surface.setClip(viewportClip);
+        surface.setPickOnBounds(true);
+        surface.setCursor(Cursor.OPEN_HAND);
+        HBox.setHgrow(surface, Priority.ALWAYS);
+        surface.setOnMousePressed(event -> {
+            if (event.getTarget() != surface || !event.isPrimaryButtonDown()) return;
+            lastSceneX = event.getSceneX();
+            lastSceneY = event.getSceneY();
+            surface.setCursor(Cursor.CLOSED_HAND);
+        });
+        surface.setOnMouseDragged(event -> {
+            if (event.getTarget() != surface || !event.isPrimaryButtonDown()) return;
+            double dx = event.getSceneX() - lastSceneX;
+            double dy = event.getSceneY() - lastSceneY;
+            panX += dx;
+            panY += dy;
+            for (var child : surface.getChildren()) {
+                child.setLayoutX(child.getLayoutX() + dx);
+                child.setLayoutY(child.getLayoutY() + dy);
+            }
+            lastSceneX = event.getSceneX();
+            lastSceneY = event.getSceneY();
+        });
+        surface.setOnMouseReleased(event -> {
+            if (event.getTarget() == surface) surface.setCursor(Cursor.OPEN_HAND);
+        });
         ThemeManager.state().subscribe(theme -> {
             if (theme != null) show(nodes);
         });
@@ -48,17 +85,24 @@ public final class FlowCanvas extends Component {
         show(nodes);
     }
 
+    public void resetView() {
+        panX = 0;
+        panY = 0;
+        show(nodes);
+    }
+
+    public double viewToModelX(double x) { return x - panX; }
+    public double viewToModelY(double y) { return y - panY; }
+
     public void show(List<Node> nodes) {
         this.nodes = List.copyOf(nodes);
         surface.getChildren().clear();
-        surface.setPrefHeight(Math.max(1100, nodes.stream().mapToDouble(item -> item.y() + 320).max().orElse(1100)));
-        surface.setPrefWidth(Math.max(1600, nodes.stream().mapToDouble(item -> item.x() + 520).max().orElse(1600)));
         ThemeInterface theme = ThemeManager.theme();
         if (theme == null) return;
         surface.setStyle("-fx-background-color: " + theme.colors().background() + ";");
         for (Node node : nodes) {
-            double x = Math.max(8, node.x());
-            double y = Math.max(8, node.y());
+            double x = node.x() + panX;
+            double y = node.y() + panY;
             Pane group = new Pane();
             group.setId("flow-" + node.id());
             group.setPickOnBounds(true);
@@ -80,12 +124,12 @@ public final class FlowCanvas extends Component {
                 start[1] = group.getLayoutY();
             });
             group.setOnMouseDragged(event -> {
-                group.setLayoutX(Math.max(8, event.getSceneX() - anchor[0]));
-                group.setLayoutY(Math.max(8, event.getSceneY() - anchor[1]));
+                group.setLayoutX(event.getSceneX() - anchor[0]);
+                group.setLayoutY(event.getSceneY() - anchor[1]);
             });
             group.setOnMouseReleased(event -> {
                 if (Math.abs(group.getLayoutX() - start[0]) > 1 || Math.abs(group.getLayoutY() - start[1]) > 1) {
-                    onMove.accept(new Move(node.id(), group.getLayoutX(), group.getLayoutY()));
+                    onMove.accept(new Move(node.id(), group.getLayoutX() - panX, group.getLayoutY() - panY));
                 } else {
                     select(node.id());
                     onSelect.accept(node.id());
