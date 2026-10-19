@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -20,6 +21,7 @@ public class Clickable extends Component {
     private final StackPane container;
     private Timeline opacityAnimation;
     private Runnable onClick;
+    private boolean mousePressed;
 
     /**
      * @deprecated pass {@code onClick} via the fluent {@link #onClick(Runnable)}
@@ -67,7 +69,12 @@ public class Clickable extends Component {
     private void setupMouseHandlers() {
         container.setOnMouseEntered(e -> animateOpacityTo(HOVER_OPACITY, Duration.millis(150)));
         container.setOnMouseExited(e -> animateOpacityTo(NORMAL_OPACITY, Duration.millis(150)));
-        container.setOnMousePressed(e -> animateOpacityTo(PRESS_OPACITY, Duration.millis(100)));
+        container.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                mousePressed = true;
+                animateOpacityTo(PRESS_OPACITY, Duration.millis(100));
+            }
+        });
         container.setOnMouseReleased(this::handleMouseReleased);
         container.setOnKeyPressed(event -> {
             if (event.getTarget() == container
@@ -83,7 +90,9 @@ public class Clickable extends Component {
         animateOpacityTo(stillInside ? HOVER_OPACITY : NORMAL_OPACITY, Duration.millis(150));
 
         // Disparar onClick apenas se o mouse ainda estiver dentro do componente
-        if (stillInside && onClick != null) {
+        boolean activate = mousePressed && event.getButton() == MouseButton.PRIMARY && stillInside;
+        mousePressed = false;
+        if (activate && onClick != null) {
             onClick.run();
         }
     }
