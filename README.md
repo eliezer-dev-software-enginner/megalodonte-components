@@ -5,10 +5,20 @@ form controls, a data table, menus, and the `Props`/theme system that styles all
 them. Builds on `megalodonte-base` (`Component`, `State`/`ReadableState`,
 `ThemeManager`) and `megalodonte-reactivity` (`ListState`, `ForEachState`, `Show`).
 
-Every example below is real code, mostly from `plics-sw`'s `Components.java` and
-its screens — not invented for this README.
+Several examples below are adapted from a separate application, `plics-sw`.
+Its `Components`, screens, view models, and routes are not part of this repository;
+replace those references with your own application code.
 
-## Installation (Maven Local)
+## Requirements and installation (Maven Local)
+
+Use JDK 25 and the included Gradle wrapper. The build declares JavaFX 25.0.1 and
+depends on `megalodonte-base:1.0.0-beta`. By default, `settings.gradle.kts`
+includes sibling directories `../megalodonte-base` and `../megalodonte-core` as
+composite builds when they exist. Without those sources, the required artifacts
+must be resolvable from the configured Maven repositories. Set
+`-PuseLocalSources=false` to disable the sibling source builds.
+
+From this repository's root, publish the library to your local Maven repository:
 
 ```bash
 ./gradlew publishToMavenLocal
@@ -22,10 +32,12 @@ repositories {
 
 dependencies {
     implementation("megalodonte:megalodonte-components:1.0.0-beta")
-    implementation("megalodonte:megalodonte-reactivity:1.0.0-beta")
-    implementation("megalodonte:megalodonte-base:1.0.0-beta")
 }
 ```
+
+The published module declares `megalodonte-base` as a dependency. Applications
+using `megalodonte-reactivity` or `megalodonte-theme` must resolve those modules
+separately; they are not declared as runtime dependencies of this library.
 
 ## Tests
 
@@ -52,7 +64,7 @@ was never called), that subscription fires with `theme == null` and every
 a theme once, early in `main()`, before any screen renders:
 
 ```java
-ThemeManager.setTheme(new DefaultTheme()); // from megalodonte-theme
+ThemeManager.setTheme(new DefaultTheme()); // requires megalodonte-theme
 ```
 
 Most `*Props` classes are fluent (`.fontSize(14).bold().borderRadius(6)`, ...) and
@@ -556,12 +568,13 @@ yourself if you build a custom `ScrollPane`.
 
 - Java 25
 - JavaFX
-- JUnit 5 + Mockito (tests)
+- JUnit 5 + Mockito + TestFX (tests)
 - Gradle with Kotlin DSL
 
 ## License
 
-MIT License
+No license file is present in this repository. The licensing terms need to be
+confirmed by the project owner before reuse or redistribution.
 
 ## Author
 

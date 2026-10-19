@@ -51,6 +51,7 @@ public class Menu {
         addHoverHighlight(triggerContainer.getJavaFxNode(), theme);
 
         this.trigger = new Clickable(triggerContainer).onClick(this::toggle);
+        this.trigger.getJavaFxNode().setAccessibleText(title);
 
         popup.setAutoHide(true);
         popup.setOnAutoHide(e -> {
@@ -99,6 +100,7 @@ public class Menu {
 
     public void setTitle(String title) {
         triggerLabel.setText(title);
+        trigger.getJavaFxNode().setAccessibleText(title);
     }
 
     /**
@@ -177,6 +179,7 @@ public class Menu {
             popup.hide();
             item.run();
         });
+        clickable.getJavaFxNode().setAccessibleText(item.getTitle());
         // Clickable trava o próprio node em USE_PREF_SIZE (pra não crescer sem
         // querer em outros usos) — aqui a gente quer o oposto: a linha precisa
         // esticar até a largura da Column, senão o fundo do hover só cobre o
