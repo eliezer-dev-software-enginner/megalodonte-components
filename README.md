@@ -155,7 +155,6 @@ specifically need `TilePane`'s equal-size-cell layout.
 ```java
 new Text("Hello world", new TextProps().fontSize(90))
 new Text(someReadableState)                 // reactive: re-renders on change
-new Text("Error", new TextProps().variant... // ⚠ removed, see below
 ```
 
 Constructors: `Text(String)`, `Text(String, TextProps)`,
@@ -507,10 +506,10 @@ new SimpleTable<ItemVenda>()
 `rowEvenColor`/`rowOddColor`/`rowHoverColor`/`selectionColor`/`rowTextColor`/`separatorColor`,
 `headerHeight(int)`, `maxWidth(double)`.
 
-Com `.horizontalScroll()`, as colunas preservam como largura mínima o maior valor entre o
-cabeçalho e o conteúdo visível. Quando a tabela é mais larga que essa soma, o espaço excedente
-é distribuído proporcionalmente entre as colunas; quando é menor, as larguras mínimas são
-mantidas e a rolagem horizontal é exibida.
+With `.horizontalScroll()`, each column's minimum width is the greater of its
+header width and visible content width. Extra table width is distributed across
+the columns; when the table is narrower than their combined minimum widths,
+horizontal scrolling appears.
 
 ## Menus: `Menu` / `MenuBar` / `MenuItem`
 
@@ -571,17 +570,7 @@ yourself if you build a custom `ScrollPane`.
 - JUnit 5 + Mockito + TestFX (tests)
 - Gradle with Kotlin DSL
 
-## License
-
-No license file is present in this repository. The licensing terms need to be
-confirmed by the project owner before reuse or redistribution.
-
-## Author
-
-Developed by **Eliezer**.
-
-
-### Horizontal Scroll v2
+## Horizontal Scroll v2
 
 `new megalodonte.components.v2.HorizontalScroll(content)` clips content inside
 native panes and draws its own scrollbar rather than using `ScrollPane`. It
@@ -607,3 +596,12 @@ reports selected indices through `onSelect`. `SoundSequence` accepts timed
 `Item(start, duration, volume, label)` clips and places overlapping clips in
 separate lanes. Both are framework components; callers supply data and handle
 domain actions. Both expose `select` and `close`.
+
+## License
+
+No license file is present in this repository. The licensing terms need to be
+confirmed by the project owner before reuse or redistribution.
+
+## Author
+
+Developed by **Eliezer**.
