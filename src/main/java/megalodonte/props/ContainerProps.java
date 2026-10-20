@@ -16,6 +16,8 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
 
     protected String bgColor;
     protected String bgImage;
+    private boolean themeBackground;
+    private boolean themeSurface;
 
     private boolean fillHeight = false;
 
@@ -33,6 +35,20 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
     public ContainerProps bgColor(String bgColor) {
         Objects.requireNonNull(bgColor);
         this.bgColor = bgColor;
+        return this;
+    }
+
+    /** Follow the active theme's main background when it changes at runtime. */
+    public ContainerProps themeBackground() {
+        this.themeBackground = true;
+        this.themeSurface = false;
+        return this;
+    }
+
+    /** Follow the active theme's elevated surface when it changes at runtime. */
+    public ContainerProps themeSurface() {
+        this.themeSurface = true;
+        this.themeBackground = false;
         return this;
     }
 
@@ -82,6 +98,10 @@ public class ContainerProps extends LayoutProps<ContainerProps> {
                     );
                     node_.setBackground(new javafx.scene.layout.Background(bgImg));
                 }
+            } else if (themeBackground) {
+                applyBackgroundStyling(node, theme, theme.colors().background());
+            } else if (themeSurface) {
+                applyBackgroundStyling(node, theme, theme.colors().surface());
             } else if (bgColor != null) {
                 applyBackgroundStyling(node, theme, bgColor);
             }

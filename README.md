@@ -88,8 +88,9 @@ new Container(new ContainerProps().paddingAll(10).bgColor("#fff")).children(
 
 `ContainerProps`: `paddingAll/Top/Right/Down/Left(int)`, `spacingOf(int)` (inherited
 from `LayoutProps`, see below), `width/minWidth/maxWidth/height/maxHeight(double)`,
-`bgColor(String)`, `bgImage(String)` (classpath resource, takes priority over
-`bgColor`, stretched to cover/centered), `fillHeight()` (opt in to growing inside a
+`bgColor(String)`, `themeBackground()` and `themeSurface()` (follow the active
+theme when it changes), `bgImage(String)` (classpath resource, takes priority over
+background colors, stretched to cover/centered), `fillHeight()` (opt in to growing inside a
 parent `VBox`), `onClick(Runnable)`.
 
 ### `Column` / `Row`
