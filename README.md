@@ -3,7 +3,7 @@
 Reactive JavaFX component library for the Megalodonte framework: layout containers,
 form controls, a data table, menus, and the `Props`/theme system that styles all of
 them. Builds on `megalodonte-base` (`Component`, `State`/`ReadableState`,
-`ThemeManager`) and `megalodonte-reactivity` (`ListState`, `ForEachState`, `Show`).
+`ThemeManager`, `ForEachState`).
 
 Several examples below are adapted from a separate application, `plics-sw`.
 Its `Components`, screens, view models, and routes are not part of this repository;
@@ -35,9 +35,10 @@ dependencies {
 }
 ```
 
-The published module declares `megalodonte-base` as a dependency. Applications
-using `megalodonte-reactivity` or `megalodonte-theme` must resolve those modules
-separately; they are not declared as runtime dependencies of this library.
+The published module declares `megalodonte-base` and RichTextFX as dependencies.
+The `ForEachState` used by this library comes from `megalodonte-base`. Applications
+using `megalodonte-theme` must resolve it separately; it is only a test dependency
+here. `DefaultTheme` in the example below comes from that separate module.
 
 ## Tests
 
@@ -46,6 +47,9 @@ The JUnit 5 and TestFX suite is enabled in the standard Gradle lifecycle:
 ```bash
 ./gradlew test
 ```
+
+For a console demonstration of the menu API, run `./gradlew runDemo`.
+`MenuDemo` prints example menu actions; it does not open a JavaFX window.
 
 ## Core pattern: `Component` + `Props`
 
@@ -561,8 +565,7 @@ including its title, must be omitted when a permission or feature flag is false.
 ancestor `ScrollPane`/`TableView` once the inner one has nothing left to scroll —
 without it, scrolling fast to the bottom of a nested table/list also scrolls the
 outer page. `SimpleTable`, `Column`/`Row`/`FlowRow`'s scrollable `.items(...)`
-overloads, and `Components.ScrollPaneDefault` all call it internally; call it
-yourself if you build a custom `ScrollPane`.
+overloads call it internally; call it yourself if you build a custom `ScrollPane`.
 
 ## Technologies
 
