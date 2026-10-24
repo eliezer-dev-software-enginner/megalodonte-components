@@ -57,12 +57,20 @@ public final class ImagePreview extends Component implements AutoCloseable {
     private String visualEffect = "";
     private int sceneIndex;
     private double sceneTime;
+    private double visualEffectStrength = 1.0;
 
     /** Draw the same sparse, deterministic drifting-light cue used by the exporter. */
     public void setVisualEffect(String effect, int sceneIndex, double sceneTime) {
+        setVisualEffect(effect,sceneIndex,sceneTime,1.0);
+    }
+
+    public void setVisualEffect(String effect, int sceneIndex, double sceneTime, double strength) {
         this.visualEffect = effect == null ? "" : effect;
         this.sceneIndex = sceneIndex;
         this.sceneTime = Math.max(0, sceneTime);
+        if(!Double.isFinite(strength) || strength<.25 || strength>3)
+            throw new IllegalArgumentException("Intensidade visual deve ficar entre 0,25 e 3.");
+        this.visualEffectStrength = strength;
         paintParticles();
     }
 
@@ -72,14 +80,14 @@ public final class ImagePreview extends Component implements AutoCloseable {
             double frame=sceneTime*30;
             if(visualEffect.equals("smooth")) {
                 double progress=(1-Math.cos(sceneTime*.22))/2;
-                image.setScaleX(1+.03*progress);
-                image.setScaleY(1+.03*progress);
-                image.setTranslateX(Math.sin(sceneTime*.18)*width*.003*progress);
-                image.setTranslateY((Math.cos(sceneTime*.15)-1)*height*.0015*progress);
+                image.setScaleX(1+.03*visualEffectStrength*progress);
+                image.setScaleY(1+.03*visualEffectStrength*progress);
+                image.setTranslateX(Math.sin(sceneTime*.18)*width*.003*visualEffectStrength*progress);
+                image.setTranslateY((Math.cos(sceneTime*.15)-1)*height*.0015*visualEffectStrength*progress);
             } else {
-                image.setScaleX(1.018);image.setScaleY(1.018);
-                image.setTranslateX(Math.sin(frame*.31)*width/240);
-                image.setTranslateY(Math.cos(frame*.27)*height/240);
+                image.setScaleX(1+.018*visualEffectStrength);image.setScaleY(1+.018*visualEffectStrength);
+                image.setTranslateX(Math.sin(frame*.31)*width/240*visualEffectStrength);
+                image.setTranslateY(Math.cos(frame*.27)*height/240*visualEffectStrength);
             }
         } else {
             image.setScaleX(1);image.setScaleY(1);image.setTranslateX(0);image.setTranslateY(0);
@@ -87,7 +95,7 @@ public final class ImagePreview extends Component implements AutoCloseable {
         var graphics=particles.getGraphicsContext2D();graphics.clearRect(0,0,width,height);
         if(!visualEffect.equals("particles") || width<=0 || height<=0 || image.getImage()==null) return;
         var random=new java.util.Random(0x5eedL+sceneIndex);
-        for(int i=0;i<26;i++) {
+        for(int i=0;i<Math.max(1,Math.round(26*visualEffectStrength));i++) {
             double x=sceneIndex==0 ? (i%2==0 ? random.nextInt(480) : 1440+random.nextInt(480)) : random.nextInt(1920);
             double y=random.nextInt(1080),speed=8+random.nextInt(20),size=14+random.nextInt(11);
             x=(x+speed*sceneTime)%1920*width/1920;
