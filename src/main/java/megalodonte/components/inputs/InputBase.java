@@ -1,6 +1,7 @@
 package megalodonte.components.inputs;
 
 import javafx.geometry.Insets;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.StackPane;
@@ -53,7 +54,13 @@ public abstract class InputBase extends Component {
         if (props != null) props.apply(node);
         field.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
             if (lockCursorToEnd && !internalChange && newPos.intValue() < field.getText().length()) {
-                field.positionCaret(field.getText().length());
+                // Moving the caret inside JavaFX's own Backspace handling can invalidate
+                // the deletion range. Keep the end lock after that edit completes.
+                Platform.runLater(() -> {
+                    if (lockCursorToEnd && !internalChange && field.getCaretPosition() < field.getText().length()) {
+                        field.positionCaret(field.getText().length());
+                    }
+                });
             }
         });
     }
@@ -92,8 +99,8 @@ public abstract class InputBase extends Component {
                 applyInitialFormat(v);
             } else {
                 internalChange = true;
-                field.setText(v == null? "":v);
-                internalChange = false;
+                try { field.setText(v == null ? "" : v); }
+                finally { internalChange = false; }
             }
 
             if (lockCursorToEnd) {
@@ -109,14 +116,23 @@ public abstract class InputBase extends Component {
                 OnChangeResult result = onChange.apply(v);
                 if (result != null) {
                     if (result.getStateValue() != null && !result.getStateValue().equals(state.get())) {
-                        state.set(result.getStateValue());
+                        internalChange = true;
+                        try { state.set(result.getStateValue()); }
+                        finally { internalChange = false; }
                     }
                     if (result.getDisplayValue() != null && !result.getDisplayValue().equals(v)) {
-                        setTextInternal(result.getDisplayValue());
+                        String display = result.getDisplayValue();
+                        // TextField is still processing this edit; replacing its text here
+                        // can make Backspace operate on an invalid range.
+                        Platform.runLater(() -> {
+                            if (field.getText().equals(v)) setTextInternal(display);
+                        });
                     }
                 }
             } else {
-                state.set(v);
+                internalChange = true;
+                try { state.set(v); }
+                finally { internalChange = false; }
             }
         });
     }
@@ -127,22 +143,22 @@ public abstract class InputBase extends Component {
         OnChangeResult result = onInitialize.apply(v);
         if (result != null) {
             internalChange = true;
-            field.setText(result.getDisplayValue());
-            if (result.getStateValue() != null && !result.getStateValue().equals(v)) {
-                state.set(result.getStateValue());
-            }
-            internalChange = false;
+            try {
+                field.setText(result.getDisplayValue());
+                if (result.getStateValue() != null && !result.getStateValue().equals(v)) {
+                    state.set(result.getStateValue());
+                }
+            } finally { internalChange = false; }
         }
     }
 
     protected void setTextInternal(String value) {
         if (value != null && value.equals(field.getText())) return;
         internalChange = true;
-        field.setText(value);
-        if (lockCursorToEnd) {
-            field.positionCaret(field.getText().length());
-        }
-        internalChange = false;
+        try {
+            field.setText(value);
+            if (lockCursorToEnd) field.positionCaret(field.getText().length());
+        } finally { internalChange = false; }
     }
 
     public InputBase lockCursorToEnd() {
