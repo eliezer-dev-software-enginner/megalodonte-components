@@ -42,6 +42,8 @@ import java.util.function.Function;
  * (clique-direito). Copiar/colar/recortar e seleção via teclado (Shift+setas,
  * Ctrl+A) funcionam.
  */
+
+@Deprecated(forRemoval = true, since = "28/outubro/2026")
 public class Input extends Component implements FocusableFieldInterface<Input> {
 
     private final StackPane outer;

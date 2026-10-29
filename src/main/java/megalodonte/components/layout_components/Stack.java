@@ -3,6 +3,7 @@ package megalodonte.components.layout_components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
@@ -30,6 +31,18 @@ public class Stack extends Component {
         for (Component c : components) {
             stackPane.getChildren().add(c.getJavaFxNode());
         }
+        return this;
+    }
+
+    /** Replaces the current content, useful for navigation within a persistent shell. */
+    public Stack show(Component component) {
+        stackPane.getChildren().setAll(component.getJavaFxNode());
+        return this;
+    }
+
+    public Stack fillWidth() {
+        stackPane.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(stackPane, Priority.ALWAYS);
         return this;
     }
 

@@ -47,6 +47,16 @@ public class Column extends Component implements LayoutComponent {
         return this;
     }
 
+    public Column remove(Component component) {
+        vBox.getChildren().remove(component.getJavaFxNode());
+        return this;
+    }
+
+    public Column clearChildren() {
+        vBox.getChildren().clear();
+        return this;
+    }
+
     @Override
     public Column items(List<? extends Component> components) {
         for (Component c : components) {

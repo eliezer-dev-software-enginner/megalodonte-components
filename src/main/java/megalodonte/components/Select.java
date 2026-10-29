@@ -24,9 +24,7 @@ public class Select<T> extends Component  {
     private BiPredicate<T, T> itemComparator = (a, b) -> a == b;
 
     public Select() {
-        super(new ComboBox<T>());
-        this.comboBox = (ComboBox<T>) this.node;
-        applyDefaultCellTheme();
+        this(new SelectProps());
     }
 
     public Select(SelectProps props) {
@@ -242,4 +240,3 @@ public class Select<T> extends Component  {
         return this;
     }
 }
-

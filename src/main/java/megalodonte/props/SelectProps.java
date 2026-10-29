@@ -153,6 +153,10 @@ public class SelectProps extends TextComponentProps<SelectProps> implements Padd
         // borda, aparentando uma segunda borda escura por dentro da nossa.
         applyStyleProperty(cBox, "0", "-fx-background-insets");
         applyStyleProperty(cBox, "0", "-fx-border-insets");
+        applyStyleProperty(cBox, theme.colors().focusRing(), "-fx-focus-color");
+        applyStyleProperty(cBox, "transparent", "-fx-faint-focus-color");
+        cBox.focusedProperty().addListener((obs, wasFocused, isFocused) ->
+                updateBorderColor(cBox, isFocused ? theme.colors().focusRing() : finalBorderColor));
 
         // Text color via theme tone or inline
         String finalTextColor = getFinalSelectTextColor(theme);

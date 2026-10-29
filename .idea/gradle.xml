@@ -4,11 +4,29 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/../megalodonte-base" name="megalodonte-base">
+                <projects>
+                  <project path="$PROJECT_DIR$/../megalodonte-base" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/../megalodonte-core" name="megalodonte-core">
+                <projects>
+                  <project path="$PROJECT_DIR$/../megalodonte-core" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="25" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../megalodonte-base" />
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/../megalodonte-core" />
           </set>
         </option>
       </GradleProjectSettings>
