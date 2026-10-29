@@ -3,11 +3,9 @@ package megalodonte.components;
 import java.util.function.Consumer;
 
 /**
- * Contrato comum entre componentes de campo de texto que não compartilham
- * implementação (ex: {@link megalodonte.components.inputs.TextAreaInput}, que
- * envolve um {@code TextArea} nativo, e {@link megalodonte.components.v2.Input},
- * que não usa nenhum {@code Control} nativo por baixo) — garante a mesma API
- * de foco em ambos, mesmo com internals completamente diferentes.
+ * Contrato comum de foco para campos de texto com implementações distintas,
+ * como {@link megalodonte.components.inputs.TextAreaInput} e
+ * {@link megalodonte.components.inputs.Input}.
  * <p>
  * Só cobre o subconjunto de métodos que faz sentido pros dois: focar
  * programaticamente e reagir a mudança de foco. Métodos de formatação de valor

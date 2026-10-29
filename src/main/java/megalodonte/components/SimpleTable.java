@@ -355,8 +355,8 @@ public class SimpleTable<T> extends Component  {
     public Component paginationControls() {
         var previousButton = new megalodonte.components.Button("< Anterior").onClick(this::previousPage);
         var nextButton = new megalodonte.components.Button("Próxima >").onClick(this::nextPage);
-        var pageField = new megalodonte.components.v2.Input(pageInput,
-                new megalodonte.props.v2.InputProps().width(52).height(32).placeHolder("Pág."))
+        var pageField = new megalodonte.components.inputs.Input(pageInput,
+                new megalodonte.props.InputProps().width(52).height(32).placeHolder("Pág."))
                 .onEnter(this::goToPage);
         hasPreviousPage.subscribe(hasPage -> previousButton.getJavaFxNode().setDisable(!hasPage));
         hasNextPage.subscribe(hasPage -> nextButton.getJavaFxNode().setDisable(!hasPage));

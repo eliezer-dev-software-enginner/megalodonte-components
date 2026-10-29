@@ -12,7 +12,6 @@ module megalodonte.components {
     exports megalodonte.components.layout_components;
     exports megalodonte.components.v2;
     exports megalodonte.props;
-    exports megalodonte.props.v2;
 
     // NOT exported: megalodonte.styles.util
     //   Only class: megalodonte.styles.util.StyleUtils

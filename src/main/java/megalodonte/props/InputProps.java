@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -21,6 +22,8 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
     private String placeholder;
     private int height;
     private int width;
+    private boolean fillWidth;
+    private int maxWidth;
     private int minHeight;
     private int maxHeight;
 
@@ -42,6 +45,17 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
 
     public InputProps width(int width){
         this.width = width;
+        return this;
+    }
+
+    /** Expande o campo para ocupar a largura disponível no contêiner. */
+    public InputProps fillWidth() {
+        this.fillWidth = true;
+        return this;
+    }
+
+    public InputProps maxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
         return this;
     }
 
@@ -203,7 +217,11 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
             stackPane.setMaxHeight(Region.USE_PREF_SIZE);
         }
 
-        if(width > 0){
+        if (fillWidth) {
+            HBox.setHgrow(stackPane, Priority.ALWAYS);
+            stackPane.setMaxWidth(maxWidth > 0 ? ScaleProvider.scale(maxWidth) : Double.MAX_VALUE);
+            if (width > 0) stackPane.setMinWidth(ScaleProvider.scale(width));
+        } else if(width > 0){
             double scaled = ScaleProvider.scale(width);
             stackPane.setPrefWidth(scaled);
             stackPane.setMinWidth(scaled);
@@ -215,6 +233,7 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
             // same "don't grow unless asked to" default Container already follows.
             stackPane.setMaxWidth(Region.USE_PREF_SIZE);
         }
+        if (!fillWidth && maxWidth > 0) stackPane.setMaxWidth(ScaleProvider.scale(maxWidth));
 
         // Apply background styling to both stackpane and input
         String finalBgColor = getFinalBackgroundColor(theme, bgColor);
@@ -306,7 +325,7 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
      * explícito, a altura preferida fica travada em ~2 linhas pra sempre, não importa
      * quanto texto tenha dentro (só rola por dentro). Pra imitar um textarea que
      * cresce até um teto, medimos o texto atual com um {@link Text} auxiliar (mesma
-     * técnica já usada em {@code v2.Input} pro caret/scroll horizontal) do mesmo jeito
+     * técnica de medição usada em campos de texto) do mesmo jeito
      * que ele vai quebrar linha dentro do TextArea (largura igual, wrapping ligado), e
      * recalculamos {@code prefHeight} a cada mudança de texto ou de largura,
      * limitado entre {@code minHeight} e {@code maxHeight}.
