@@ -2,8 +2,11 @@ package megalodonte.components;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
+import javafx.geometry.Bounds;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Tooltip;
 import javafx.util.Duration;
 import megalodonte.application.ErrorReporter;
 import megalodonte.base.async.RunnableThrowing;
@@ -21,6 +24,8 @@ public class Button extends Component  {
 
     private final javafx.scene.control.Button btn;
     private Timeline opacityAnimation;
+    private Tooltip tooltip;
+    private PauseTransition tooltipDelay;
 
     public Button(String textContent){
         this(textContent, new ButtonProps());
@@ -52,9 +57,18 @@ public class Button extends Component  {
     }
 
     private void setupMouseHandlers() {
-        btn.setOnMouseEntered(e -> animateOpacityTo(HOVER_OPACITY, Duration.millis(150)));
-        btn.setOnMouseExited(e -> animateOpacityTo(NORMAL_OPACITY, Duration.millis(150)));
-        btn.setOnMousePressed(e -> animateOpacityTo(PRESS_OPACITY, Duration.millis(100)));
+        btn.setOnMouseEntered(e -> {
+            animateOpacityTo(HOVER_OPACITY, Duration.millis(150));
+            if (tooltipDelay != null) tooltipDelay.playFromStart();
+        });
+        btn.setOnMouseExited(e -> {
+            animateOpacityTo(NORMAL_OPACITY, Duration.millis(150));
+            hideTooltip();
+        });
+        btn.setOnMousePressed(e -> {
+            animateOpacityTo(PRESS_OPACITY, Duration.millis(100));
+            hideTooltip();
+        });
         btn.setOnMouseReleased(e -> {
             boolean stillHovering = btn.contains(e.getX(), e.getY());
             animateOpacityTo(stillHovering ? HOVER_OPACITY : NORMAL_OPACITY, Duration.millis(150));
@@ -82,6 +96,29 @@ public class Button extends Component  {
             });
         }
         return this;
+    }
+
+    public Button tooltip(String description) {
+        hideTooltip();
+        tooltip = description == null || description.isBlank() ? null : new Tooltip(description);
+        if (tooltip != null) {
+            tooltip.setWrapText(true);
+            tooltip.setMaxWidth(360);
+            tooltipDelay = new PauseTransition(Duration.millis(500));
+            tooltipDelay.setOnFinished(event -> {
+                if (!btn.isHover() || btn.getScene() == null || btn.getScene().getWindow() == null) return;
+                Bounds bounds = btn.localToScreen(btn.getBoundsInLocal());
+                if (bounds != null) tooltip.show(btn, bounds.getMinX(), bounds.getMaxY() + 8);
+            });
+        } else {
+            tooltipDelay = null;
+        }
+        return this;
+    }
+
+    private void hideTooltip() {
+        if (tooltipDelay != null) tooltipDelay.stop();
+        if (tooltip != null) tooltip.hide();
     }
 
     public Button icon(IconInterface icon) {
