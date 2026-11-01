@@ -109,7 +109,7 @@ class SimpleTableTest extends ApplicationTest {
     }
 
     @Test
-    void escapeAndOutsideClickClearSelection() {
+    void escapeClearsSelectionButOutsideClickPreservesIt() {
         final TestModel[] selected = {null};
         interact(() -> {
             table.fromData(testData).onItemSelectChange(item -> selected[0] = item);
@@ -122,7 +122,7 @@ class SimpleTableTest extends ApplicationTest {
         interact(() -> javafx.event.Event.fireEvent(stage.getScene(),
                 new javafx.scene.input.KeyEvent(javafx.scene.input.KeyEvent.KEY_PRESSED,
                         "", "", javafx.scene.input.KeyCode.ESCAPE, false, false, false, false)));
-        interact(() -> assertNull(table.getTableView().getSelectionModel().getSelectedItem()));
+        interact(() -> assertNull(table.getSelectedItem()));
         assertNull(selected[0]);
 
         interact(() -> table.getTableView().getSelectionModel().select(1));
@@ -130,7 +130,11 @@ class SimpleTableTest extends ApplicationTest {
                 new javafx.scene.input.MouseEvent(javafx.scene.input.MouseEvent.MOUSE_PRESSED,
                         1, 1, 1, 1, javafx.scene.input.MouseButton.PRIMARY, 1,
                         false, false, false, false, true, false, false, true, false, false, null)));
-        interact(() -> assertNull(table.getTableView().getSelectionModel().getSelectedItem()));
+        interact(() -> assertSame(testData.get().get(1), table.getSelectedItem()));
+        assertSame(testData.get().get(1), selected[0]);
+
+        interact(table::clearSelection);
+        interact(() -> assertNull(table.getSelectedItem()));
         assertNull(selected[0]);
     }
     

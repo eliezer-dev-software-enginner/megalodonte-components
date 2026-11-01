@@ -8,7 +8,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -32,7 +31,6 @@ public class SimpleTable<T> extends Component  {
     private Consumer<Boolean> onChangeFocus;
     private Consumer<List<T>> onItemsSelectChange;
     private javafx.scene.control.CheckBox selectAllCheckBox;
-    private final EventHandler<MouseEvent> clearSelectionOutside;
     private final EventHandler<KeyEvent> clearSelectionOnEscape;
 
     // Cache por tabela — evita reler/redecodificar do disco a cada recycle de célula
@@ -67,13 +65,6 @@ public class SimpleTable<T> extends Component  {
     public SimpleTable(SimpleTableProps props) {
         super(new TableView<>(), props);
         this.tableView = (TableView<T>) this.node;
-        this.clearSelectionOutside = event -> {
-            if (!(event.getTarget() instanceof javafx.scene.Node target)) return;
-            for (javafx.scene.Node node = target; node != null; node = node.getParent()) {
-                if (node == tableView) return;
-            }
-            tableView.getSelectionModel().clearSelection();
-        };
         this.clearSelectionOnEscape = event -> {
             if (event.getCode() == KeyCode.ESCAPE) tableView.getSelectionModel().clearSelection();
         };
@@ -84,11 +75,9 @@ public class SimpleTable<T> extends Component  {
         this.tableView.setEditable(true);
         this.tableView.sceneProperty().addListener((obs, previous, current) -> {
             if (previous != null) {
-                previous.removeEventFilter(MouseEvent.MOUSE_PRESSED, clearSelectionOutside);
                 previous.removeEventFilter(KeyEvent.KEY_PRESSED, clearSelectionOnEscape);
             }
             if (current != null) {
-                current.addEventFilter(MouseEvent.MOUSE_PRESSED, clearSelectionOutside);
                 current.addEventFilter(KeyEvent.KEY_PRESSED, clearSelectionOnEscape);
             }
         });
@@ -160,6 +149,11 @@ public class SimpleTable<T> extends Component  {
 
     public TableView<T> getTableView() {
         return tableView;
+    }
+
+    /** Limpa a seleção da linha e notifica onItemSelectChange com null. */
+    public void clearSelection() {
+        tableView.getSelectionModel().clearSelection();
     }
     
     private void setupDefaultBehavior() {
