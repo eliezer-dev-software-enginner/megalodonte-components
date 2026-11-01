@@ -107,6 +107,32 @@ class SimpleTableTest extends ApplicationTest {
         });
         assertSame(testData.get().get(0), selected[0]);
     }
+
+    @Test
+    void escapeAndOutsideClickClearSelection() {
+        final TestModel[] selected = {null};
+        interact(() -> {
+            table.fromData(testData).onItemSelectChange(item -> selected[0] = item);
+            table.header().columns().column("Nome", item -> item.nome).build();
+            table.getTableView().getSelectionModel().select(0);
+            table.getTableView().requestFocus();
+        });
+        assertSame(testData.get().get(0), selected[0]);
+
+        interact(() -> javafx.event.Event.fireEvent(stage.getScene(),
+                new javafx.scene.input.KeyEvent(javafx.scene.input.KeyEvent.KEY_PRESSED,
+                        "", "", javafx.scene.input.KeyCode.ESCAPE, false, false, false, false)));
+        interact(() -> assertNull(table.getTableView().getSelectionModel().getSelectedItem()));
+        assertNull(selected[0]);
+
+        interact(() -> table.getTableView().getSelectionModel().select(1));
+        interact(() -> javafx.event.Event.fireEvent(stage.getScene().getRoot(),
+                new javafx.scene.input.MouseEvent(javafx.scene.input.MouseEvent.MOUSE_PRESSED,
+                        1, 1, 1, 1, javafx.scene.input.MouseButton.PRIMARY, 1,
+                        false, false, false, false, true, false, false, true, false, false, null)));
+        interact(() -> assertNull(table.getTableView().getSelectionModel().getSelectedItem()));
+        assertNull(selected[0]);
+    }
     
     @Test
     void testItemOperations() {

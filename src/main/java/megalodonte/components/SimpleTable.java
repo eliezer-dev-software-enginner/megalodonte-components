@@ -6,6 +6,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.event.EventHandler;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import megalodonte.base.state.State;
@@ -28,6 +32,8 @@ public class SimpleTable<T> extends Component  {
     private Consumer<Boolean> onChangeFocus;
     private Consumer<List<T>> onItemsSelectChange;
     private javafx.scene.control.CheckBox selectAllCheckBox;
+    private final EventHandler<MouseEvent> clearSelectionOutside;
+    private final EventHandler<KeyEvent> clearSelectionOnEscape;
 
     // Cache por tabela — evita reler/redecodificar do disco a cada recycle de célula
     // enquanto rola (TableView virtualiza: a mesma imagem passa por updateItem() várias
@@ -61,11 +67,31 @@ public class SimpleTable<T> extends Component  {
     public SimpleTable(SimpleTableProps props) {
         super(new TableView<>(), props);
         this.tableView = (TableView<T>) this.node;
+        this.clearSelectionOutside = event -> {
+            if (!(event.getTarget() instanceof javafx.scene.Node target)) return;
+            for (javafx.scene.Node node = target; node != null; node = node.getParent()) {
+                if (node == tableView) return;
+            }
+            tableView.getSelectionModel().clearSelection();
+        };
+        this.clearSelectionOnEscape = event -> {
+            if (event.getCode() == KeyCode.ESCAPE) tableView.getSelectionModel().clearSelection();
+        };
         this.items = FXCollections.observableArrayList();
         this.checkedItems = FXCollections.observableArrayList();
         this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // default
         this.tableView.setItems(items);
         this.tableView.setEditable(true);
+        this.tableView.sceneProperty().addListener((obs, previous, current) -> {
+            if (previous != null) {
+                previous.removeEventFilter(MouseEvent.MOUSE_PRESSED, clearSelectionOutside);
+                previous.removeEventFilter(KeyEvent.KEY_PRESSED, clearSelectionOnEscape);
+            }
+            if (current != null) {
+                current.addEventFilter(MouseEvent.MOUSE_PRESSED, clearSelectionOutside);
+                current.addEventFilter(KeyEvent.KEY_PRESSED, clearSelectionOnEscape);
+            }
+        });
         this.tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             if (horizontalScrollEnabled && !newWidth.equals(oldWidth)) {
                 adjustAutoSizedColumns();
