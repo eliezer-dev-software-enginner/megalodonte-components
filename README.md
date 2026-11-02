@@ -583,6 +583,10 @@ reports selected indices through `onSelect`. `SoundSequence` accepts timed
 separate lanes. Both are framework components; callers supply data and handle
 domain actions. Both expose `select` and `close`.
 
+## Diagram connections
+
+`DiagramCanvas` displays nodes and connections. Provide an explicit connection ID with `new DiagramCanvas.Edge(id, from, to, kind)` and subscribe to clicks with `canvas.onEdgeSelect(id -> ...)`. The three-argument constructor remains available for existing callers. The canvas reports the selected ID; applications own condition editing and execution.
+
 ## License
 
 No license file is present in this repository. The licensing terms need to be

@@ -20,7 +20,9 @@ import java.util.function.Consumer;
 /** Theme-aware diagram surface with independently positioned and connected nodes. */
 public final class DiagramCanvas extends Component {
     public record Node(String id, String title, String kind, double x, double y) { }
-    public record Edge(String from, String to, String kind) { }
+    public record Edge(String id, String from, String to, String kind) {
+        public Edge(String from, String to, String kind) { this(from + "->" + to, from, to, kind); }
+    }
     public record Move(String id, double x, double y) { }
     public record Drop(String type, double x, double y) { }
     static final DataFormat COMPONENT_TYPE = new DataFormat("application/x-megalodonte-diagram-component");
@@ -32,6 +34,7 @@ public final class DiagramCanvas extends Component {
     private List<Edge> edges = List.of();
     private String selectedId;
     private Consumer<String> onSelect = ignored -> { };
+    private Consumer<String> onEdgeSelect = ignored -> { };
     private Consumer<Move> onMove = ignored -> { };
     private Consumer<Drop> onDrop = ignored -> { };
     private double panX;
@@ -82,6 +85,7 @@ public final class DiagramCanvas extends Component {
     }
 
     public DiagramCanvas onSelect(Consumer<String> callback) { onSelect = callback; return this; }
+    public DiagramCanvas onEdgeSelect(Consumer<String> callback) { onEdgeSelect = callback; return this; }
     public DiagramCanvas onMove(Consumer<Move> callback) { onMove = callback; return this; }
     public DiagramCanvas onDrop(Consumer<Drop> callback) { onDrop = callback; return this; }
     public void show(List<Node> nodes, List<Edge> edges) {
@@ -108,7 +112,15 @@ public final class DiagramCanvas extends Component {
             if ("ELSE".equals(edge.kind())) line.getStrokeDashArray().setAll(10d, 5d);
             Polygon arrow = new Polygon(x2, y2, x2 - 9, y2 - 5, x2 - 9, y2 + 5);
             arrow.setFill(javafx.scene.paint.Color.web(theme.colors().primary()));
-            surface.getChildren().addAll(line, arrow);
+            Line hitArea = new Line(x1, y1, x2, y2);
+            hitArea.setId("diagram-edge-" + edge.id());
+            hitArea.setStroke(javafx.scene.paint.Color.TRANSPARENT);
+            hitArea.setStrokeWidth(16);
+            hitArea.setCursor(Cursor.HAND);
+            hitArea.setOnMouseClicked(event -> { onEdgeSelect.accept(edge.id()); event.consume(); });
+            arrow.setCursor(Cursor.HAND);
+            arrow.setOnMouseClicked(event -> { onEdgeSelect.accept(edge.id()); event.consume(); });
+            surface.getChildren().addAll(line, hitArea, arrow);
         }
         for (var node : nodes) {
             Pane card = new Pane();
