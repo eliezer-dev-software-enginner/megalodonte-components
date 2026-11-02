@@ -21,6 +21,7 @@ import static megalodonte.styles.util.StyleUtils.updateFontSize;
 public class Select<T> extends Component  {
 
     private final ComboBox<T> comboBox;
+    private final SelectProps selectProps;
     private BiPredicate<T, T> itemComparator = (a, b) -> a == b;
 
     public Select() {
@@ -29,6 +30,7 @@ public class Select<T> extends Component  {
 
     public Select(SelectProps props) {
         super(new ComboBox<T>(), props);
+        this.selectProps = props;
         this.comboBox = (ComboBox<T>) this.node;
         applyDefaultCellTheme();
     }
@@ -75,6 +77,14 @@ public class Select<T> extends Component  {
                 setText(empty || item == null ? "" : mapper.apply(item));
                 updateBackgroundColor(this, "transparent");
                 updateFontSize(this, ThemeManager.theme().typography().small());
+                var colors = ThemeManager.theme().colors();
+                String foreground = selectProps.getTextColor();
+                if (foreground == null || foreground.isBlank()) foreground = switch (selectProps.getTone()) {
+                    case PRIMARY -> colors.textPrimary();
+                    case SECONDARY, DISABLED -> colors.textSecondary();
+                    case INVERTED -> colors.background();
+                };
+                setTextFill(javafx.scene.paint.Color.web(foreground));
             }
         };
     }
