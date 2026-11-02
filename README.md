@@ -248,6 +248,21 @@ syntax colors, and inserts indentation with Tab and Enter. The component wraps
 RichTextFX 0.11.7, which supports JavaFX 25; applications use only the
 Megalodonte API.
 
+Pass a collection of application-specific identifiers to highlight them with
+the keyword color, without changing the Java keywords for other editors:
+
+```java
+new JavaCodeEditor(sourceState, 260, List.of("ProjectEnvironment"))
+```
+
+Custom identifiers are matched as whole tokens; comments and strings keep
+their own colors.
+
+To also highlight direct members of selected identifiers, pass them as a
+fourth argument, for example `new JavaCodeEditor(sourceState, 260,
+List.of("context"), List.of("context"))` highlights both `context` and
+`userId` in `context.userId()`.
+
 ### Project-oriented desktop helpers
 
 `FlowCanvas` displays draggable trigger/action pairs and exposes `onSelect` and

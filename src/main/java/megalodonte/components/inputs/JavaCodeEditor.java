@@ -20,16 +20,30 @@ import java.util.regex.Pattern;
 
 /** A theme-aware Java source editor with line numbers and syntax highlighting. */
 public final class JavaCodeEditor extends Component {
-    private static final Pattern TOKENS = Pattern.compile(
+    private static final String TOKEN_PREFIX =
             "(?<COMMENT>//[^\\n]*|(?s:/\\*.*?\\*/))"
                     + "|(?<STRING>\"(?:\\\\.|[^\"\\\\])*\"|'(?:\\\\.|[^'\\\\])*')"
-                    + "|(?<KEYWORD>\\b(?:abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|record|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|var|void|volatile|while|yield|null|true|false)\\b)"
-                    + "|(?<NUMBER>\\b\\d+(?:\\.\\d+)?\\b)");
+                    + "|(?<KEYWORD>\\b(?:abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|record|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|var|void|volatile|while|yield|null|true|false";
 
     private final CodeArea area;
 
     public JavaCodeEditor(State<String> state, double height) {
+        this(state, height, List.of());
+    }
+
+    /** Highlights application-specific identifiers using the keyword color. */
+    public JavaCodeEditor(State<String> state, double height, Collection<String> keywords) {
+        this(state, height, keywords, List.of());
+    }
+
+    /** Also highlights members directly accessed on the specified identifiers. */
+    public JavaCodeEditor(State<String> state, double height, Collection<String> keywords,
+                          Collection<String> memberRoots) {
         super(new StackPane(), null);
+        Pattern tokens = tokenPattern(keywords);
+        var roots = memberRoots == null ? java.util.Set.<String>of()
+                : memberRoots.stream().filter(rootName -> rootName != null && !rootName.isBlank())
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
         StackPane root = (StackPane) getJavaFxNode();
         area = new CodeArea();
         area.getStyleClass().add("megalodonte-java-editor");
@@ -67,7 +81,7 @@ public final class JavaCodeEditor extends Component {
             }
         });
         area.textProperty().addListener((ignored, oldText, value) -> {
-            if (!value.isEmpty()) area.setStyleSpans(0, highlight(value));
+            if (!value.isEmpty()) area.setStyleSpans(0, highlight(value, tokens, roots));
             if (state != null && !value.equals(state.get())) state.set(value);
         });
         if (state != null) {
@@ -78,19 +92,40 @@ public final class JavaCodeEditor extends Component {
         }
     }
 
-    private static StyleSpans<Collection<String>> highlight(String text) {
-        Matcher matcher = TOKENS.matcher(text);
+    static Pattern tokenPattern(Collection<String> keywords) {
+        String custom = keywords == null ? "" : keywords.stream()
+                .filter(word -> word != null && !word.isBlank())
+                .distinct().map(word -> "|" + Pattern.quote(word))
+                .collect(java.util.stream.Collectors.joining());
+        return Pattern.compile(TOKEN_PREFIX + custom + ")\\b)|(?<NUMBER>\\b\\d+(?:\\.\\d+)?\\b)"
+                + "|(?<MEMBER>(?<=\\.)\\s*\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)");
+    }
+
+    static StyleSpans<Collection<String>> highlight(String text, Pattern tokens, java.util.Set<String> roots) {
+        Matcher matcher = tokens.matcher(text);
         int end = 0;
         StyleSpansBuilder<Collection<String>> styles = new StyleSpansBuilder<>();
         while (matcher.find()) {
             styles.add(Collections.emptyList(), matcher.start() - end);
             String kind = matcher.group("COMMENT") != null ? "comment"
                     : matcher.group("STRING") != null ? "string"
-                    : matcher.group("KEYWORD") != null ? "keyword" : "number";
-            styles.add(List.of(kind), matcher.end() - matcher.start());
+                    : matcher.group("KEYWORD") != null ? "keyword"
+                    : matcher.group("NUMBER") != null ? "number"
+                    : isRootMember(text, matcher.start(), roots) ? "keyword" : null;
+            styles.add(kind == null ? Collections.emptyList() : List.of(kind), matcher.end() - matcher.start());
             end = matcher.end();
         }
         styles.add(Collections.emptyList(), text.length() - end);
         return styles.create();
+    }
+
+    private static boolean isRootMember(String text, int start, java.util.Set<String> roots) {
+        int dot = start - 1;
+        if (dot < 0 || text.charAt(dot) != '.') return false;
+        int end = dot;
+        while (end > 0 && Character.isWhitespace(text.charAt(end - 1))) end--;
+        int begin = end;
+        while (begin > 0 && Character.isJavaIdentifierPart(text.charAt(begin - 1))) begin--;
+        return roots.contains(text.substring(begin, end));
     }
 }
