@@ -2,10 +2,12 @@ package megalodonte.components;
 
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.input.DataFormat;
@@ -19,12 +21,18 @@ import java.util.function.Consumer;
 
 /** Theme-aware diagram surface with independently positioned and connected nodes. */
 public final class DiagramCanvas extends Component {
-    public record Node(String id, String title, String kind, double x, double y) { }
+    public record Node(String id, String title, String kind, double x, double y,
+                       boolean acceptsInput, boolean acceptsOutput) {
+        public Node(String id, String title, String kind, double x, double y) {
+            this(id, title, kind, x, y, true, true);
+        }
+    }
     public record Edge(String id, String from, String to, String kind) {
         public Edge(String from, String to, String kind) { this(from + "->" + to, from, to, kind); }
     }
     public record Move(String id, double x, double y) { }
     public record Drop(String type, double x, double y) { }
+    public record Connection(String from, String to) { }
     static final DataFormat COMPONENT_TYPE = new DataFormat("application/x-megalodonte-diagram-component");
 
     private static final double WIDTH = 150;
@@ -37,6 +45,7 @@ public final class DiagramCanvas extends Component {
     private Consumer<String> onEdgeSelect = ignored -> { };
     private Consumer<Move> onMove = ignored -> { };
     private Consumer<Drop> onDrop = ignored -> { };
+    private Consumer<Connection> onConnect = ignored -> { };
     private double panX;
     private double panY;
     private double lastSceneX;
@@ -88,6 +97,7 @@ public final class DiagramCanvas extends Component {
     public DiagramCanvas onEdgeSelect(Consumer<String> callback) { onEdgeSelect = callback; return this; }
     public DiagramCanvas onMove(Consumer<Move> callback) { onMove = callback; return this; }
     public DiagramCanvas onDrop(Consumer<Drop> callback) { onDrop = callback; return this; }
+    public DiagramCanvas onConnect(Consumer<Connection> callback) { onConnect = callback; return this; }
     public void show(List<Node> nodes, List<Edge> edges) {
         this.nodes = List.copyOf(nodes); this.edges = List.copyOf(edges); draw();
     }
@@ -157,6 +167,59 @@ public final class DiagramCanvas extends Component {
                 else { select(node.id()); onSelect.accept(node.id()); }
             });
             surface.getChildren().add(card);
+            if (node.acceptsInput()) addHandle(node, card, false, theme);
+            if (node.acceptsOutput()) addHandle(node, card, true, theme);
         }
+    }
+
+    private void addHandle(Node node, Pane card, boolean output, ThemeInterface theme) {
+        Circle handle = new Circle(7);
+        handle.setId("diagram-" + (output ? "output-" : "input-") + node.id());
+        handle.centerXProperty().bind(card.layoutXProperty().add(output ? WIDTH : 0));
+        handle.centerYProperty().bind(card.layoutYProperty().add(HEIGHT / 2));
+        handle.setFill(javafx.scene.paint.Color.web(theme.colors().surface()));
+        handle.setStroke(javafx.scene.paint.Color.web(theme.colors().primary()));
+        handle.setStrokeWidth(2);
+        handle.setCursor(output ? Cursor.CROSSHAIR : Cursor.HAND);
+        Tooltip.install(handle, new Tooltip(output ? "Arraste até a entrada de outro componente" : "Entrada do componente"));
+        if (output) {
+            Line preview = new Line();
+            preview.setStroke(javafx.scene.paint.Color.web(theme.colors().primary()));
+            preview.setStrokeWidth(2);
+            preview.setMouseTransparent(true);
+            Polygon arrow = new Polygon();
+            arrow.setFill(javafx.scene.paint.Color.web(theme.colors().primary()));
+            arrow.setMouseTransparent(true);
+            handle.setOnMousePressed(event -> {
+                if (!event.isPrimaryButtonDown()) return;
+                preview.setStartX(handle.getCenterX()); preview.setStartY(handle.getCenterY());
+                preview.setEndX(handle.getCenterX()); preview.setEndY(handle.getCenterY());
+                surface.getChildren().addAll(preview, arrow);
+                event.consume();
+            });
+            handle.setOnMouseDragged(event -> {
+                if (!surface.getChildren().contains(preview)) return;
+                var point = surface.sceneToLocal(event.getSceneX(), event.getSceneY());
+                preview.setEndX(point.getX()); preview.setEndY(point.getY());
+                double angle = Math.atan2(point.getY() - preview.getStartY(), point.getX() - preview.getStartX());
+                double backX = point.getX() - 10 * Math.cos(angle), backY = point.getY() - 10 * Math.sin(angle);
+                arrow.getPoints().setAll(point.getX(), point.getY(), backX + 5 * Math.sin(angle),
+                        backY - 5 * Math.cos(angle), backX - 5 * Math.sin(angle), backY + 5 * Math.cos(angle));
+                event.consume();
+            });
+            handle.setOnMouseReleased(event -> {
+                boolean dragging = surface.getChildren().remove(preview);
+                surface.getChildren().remove(arrow);
+                if (dragging) {
+                    var point = surface.sceneToLocal(event.getSceneX(), event.getSceneY());
+                    nodes.stream().filter(target -> target.acceptsInput() && !target.id().equals(node.id()))
+                            .filter(target -> Math.hypot(point.getX() - (target.x() + panX),
+                                    point.getY() - (target.y() + HEIGHT / 2 + panY)) <= 12)
+                            .findFirst().ifPresent(target -> onConnect.accept(new Connection(node.id(), target.id())));
+                }
+                event.consume();
+            });
+        }
+        surface.getChildren().add(handle);
     }
 }

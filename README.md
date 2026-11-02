@@ -587,6 +587,8 @@ domain actions. Both expose `select` and `close`.
 
 `DiagramCanvas` displays nodes and connections. Provide an explicit connection ID with `new DiagramCanvas.Edge(id, from, to, kind)` and subscribe to clicks with `canvas.onEdgeSelect(id -> ...)`. The three-argument constructor remains available for existing callers. The canvas reports the selected ID; applications own condition editing and execution.
 
+Pass `acceptsInput` and `acceptsOutput` as the last two arguments of `DiagramCanvas.Node` to control its connection handles. Dragging an output handle onto an input handle reports `from` and `to` through `canvas.onConnect(connection -> ...)`; the application validates and persists the connection. The five-argument node constructor keeps both handles for compatibility.
+
 ## License
 
 No license file is present in this repository. The licensing terms need to be
