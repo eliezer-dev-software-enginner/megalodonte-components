@@ -8,6 +8,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.TransferMode;
 import megalodonte.base.components.Component;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.base.theme.ThemeManager;
@@ -20,6 +22,8 @@ public final class DiagramCanvas extends Component {
     public record Node(String id, String title, String kind, double x, double y) { }
     public record Edge(String from, String to, String kind) { }
     public record Move(String id, double x, double y) { }
+    public record Drop(String type, double x, double y) { }
+    static final DataFormat COMPONENT_TYPE = new DataFormat("application/x-megalodonte-diagram-component");
 
     private static final double WIDTH = 150;
     private static final double HEIGHT = 80;
@@ -29,6 +33,7 @@ public final class DiagramCanvas extends Component {
     private String selectedId;
     private Consumer<String> onSelect = ignored -> { };
     private Consumer<Move> onMove = ignored -> { };
+    private Consumer<Drop> onDrop = ignored -> { };
     private double panX;
     private double panY;
     private double lastSceneX;
@@ -59,11 +64,26 @@ public final class DiagramCanvas extends Component {
             draw();
         });
         surface.setOnMouseReleased(event -> surface.setCursor(Cursor.OPEN_HAND));
+        surface.setOnDragOver(event -> {
+            if (event.getDragboard().hasContent(COMPONENT_TYPE)) event.acceptTransferModes(TransferMode.COPY);
+            event.consume();
+        });
+        surface.setOnDragDropped(event -> {
+            Object type = event.getDragboard().getContent(COMPONENT_TYPE);
+            boolean accepted = type instanceof String && !((String) type).isBlank();
+            if (accepted) {
+                var point = surface.sceneToLocal(event.getSceneX(), event.getSceneY());
+                onDrop.accept(new Drop((String) type, point.getX() - panX, point.getY() - panY));
+            }
+            event.setDropCompleted(accepted);
+            event.consume();
+        });
         ThemeManager.state().subscribe(theme -> { if (theme != null) draw(); });
     }
 
     public DiagramCanvas onSelect(Consumer<String> callback) { onSelect = callback; return this; }
     public DiagramCanvas onMove(Consumer<Move> callback) { onMove = callback; return this; }
+    public DiagramCanvas onDrop(Consumer<Drop> callback) { onDrop = callback; return this; }
     public void show(List<Node> nodes, List<Edge> edges) {
         this.nodes = List.copyOf(nodes); this.edges = List.copyOf(edges); draw();
     }
