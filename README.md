@@ -263,6 +263,10 @@ fourth argument, for example `new JavaCodeEditor(sourceState, 260,
 List.of("context"), List.of("context"))` highlights both `context` and
 `userId` in `context.userId()`.
 
+For identifiers that change while the editor is open, pass a
+`ReadableState<List<String>>` in place of the fixed collection; updating the
+state refreshes the highlighting without changing the source text.
+
 ### Project-oriented desktop helpers
 
 `FlowCanvas` displays draggable trigger/action pairs and exposes `onSelect` and

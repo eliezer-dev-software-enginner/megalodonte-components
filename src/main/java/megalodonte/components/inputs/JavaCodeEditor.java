@@ -5,6 +5,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import megalodonte.base.components.Component;
 import megalodonte.base.state.State;
+import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeManager;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
@@ -26,6 +27,7 @@ public final class JavaCodeEditor extends Component {
                     + "|(?<KEYWORD>\\b(?:abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|record|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|var|void|volatile|while|yield|null|true|false";
 
     private final CodeArea area;
+    private Pattern tokens;
 
     public JavaCodeEditor(State<String> state, double height) {
         this(state, height, List.of());
@@ -39,8 +41,14 @@ public final class JavaCodeEditor extends Component {
     /** Also highlights members directly accessed on the specified identifiers. */
     public JavaCodeEditor(State<String> state, double height, Collection<String> keywords,
                           Collection<String> memberRoots) {
+        this(state, height, State.of(keywords == null ? List.of() : new java.util.ArrayList<>(keywords)), memberRoots);
+    }
+
+    /** Updates the highlighting when the project's identifiers change. */
+    public JavaCodeEditor(State<String> state, double height, ReadableState<List<String>> keywords,
+                          Collection<String> memberRoots) {
         super(new StackPane(), null);
-        Pattern tokens = tokenPattern(keywords);
+        tokens = tokenPattern(keywords.get());
         var roots = memberRoots == null ? java.util.Set.<String>of()
                 : memberRoots.stream().filter(rootName -> rootName != null && !rootName.isBlank())
                 .collect(java.util.stream.Collectors.toUnmodifiableSet());
@@ -90,6 +98,11 @@ public final class JavaCodeEditor extends Component {
                 if (!area.getText().equals(text)) area.replaceText(text);
             });
         }
+        keywords.subscribe(value -> {
+            tokens = tokenPattern(value);
+            String text = area.getText();
+            if (!text.isEmpty()) area.setStyleSpans(0, highlight(text, tokens, roots));
+        });
     }
 
     static Pattern tokenPattern(Collection<String> keywords) {
