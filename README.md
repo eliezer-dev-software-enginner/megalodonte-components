@@ -540,7 +540,9 @@ including its title, must be omitted when a permission or feature flag is false.
 - **`Icon`** — loads an image from a classpath resource at a fixed size, exposed as
   an `IconInterface` for `Button.icon(...)`/`DatePicker.icon(...)`.
 - **`ProgressBar`** — wraps `javafx.scene.control.ProgressBar`, bound one-way to a
-  `State<Integer>` in the 0–100 range (normalized to 0.0–1.0 internally).
+  `State<Integer>` in the 0–100 range (normalized to 0.0–1.0 internally). The
+  fill uses the active Megalodonte theme's primary color; the track uses its
+  border color and corner radius. It fills the available column width.
 
 ## Scroll behavior
 
