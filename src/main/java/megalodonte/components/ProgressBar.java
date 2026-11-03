@@ -23,7 +23,6 @@ public class ProgressBar extends Component {
         var theme = Objects.requireNonNull(ThemeManager.theme(), "Megalodonte theme must be set before creating ProgressBar");
         StyleUtils.applyStyleProperty(pb, theme.colors().primary(), "-megalodonte-progress-fill");
         StyleUtils.applyStyleProperty(pb, theme.colors().border(), "-megalodonte-progress-track");
-        StyleUtils.applyStyleProperty(pb, theme.border().radiusMd() + "px", "-megalodonte-progress-radius");
 
         // State → ProgressBar
         progressState.subscribe(value -> {

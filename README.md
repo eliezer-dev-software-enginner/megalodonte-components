@@ -542,7 +542,8 @@ including its title, must be omitted when a permission or feature flag is false.
 - **`ProgressBar`** — wraps `javafx.scene.control.ProgressBar`, bound one-way to a
   `State<Integer>` in the 0–100 range (normalized to 0.0–1.0 internally). The
   fill uses the active Megalodonte theme's primary color; the track uses its
-  border color and corner radius. It fills the available column width.
+  border color. Its track and fill have rounded corners and it fills the
+  available column width.
 
 ## Scroll behavior
 
