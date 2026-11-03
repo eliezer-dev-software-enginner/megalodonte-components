@@ -383,7 +383,7 @@ public class InputProps extends TextComponentProps<InputProps> implements Paddab
         var input = (TextInputControl) stackPane.getChildren().get(0);
 
         String finalBorderColor = getFinalBorderColor(theme, borderColor);
-        int finalBorderWidth = theme.border().width();
+        int finalBorderWidth = borderWidth > 0 ? ScaleProvider.scale(borderWidth) : theme.border().width();
         int finalRadius = borderRadius > 0 ? ScaleProvider.scale(borderRadius) : theme.border().radiusMd();
 
         updateBorderRadius(input, finalRadius);

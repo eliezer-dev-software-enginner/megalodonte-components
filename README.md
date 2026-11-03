@@ -233,6 +233,9 @@ by every CRUD screen's form area), `disable()`, `tone(TextTone)`, `bgColor/borde
 `borderWidth/borderRadius(int)`, plus everything from `TextComponentProps`
 (`fontSize`, `bold`, `color`/`textColor`). Also applies to `TextAreaInput` (same
 props class, `applyTextAreaTheme` mirrors the same size-capping logic).
+The outer `StackPane` draws the single-line input border using the theme's
+border color and width by default; `InputProps.borderWidth(int)` overrides that
+width for an individual input.
 
 ### `TextAreaInput`
 
