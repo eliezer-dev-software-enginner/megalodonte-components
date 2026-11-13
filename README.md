@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/megalodonte-logo.png" width="180" alt="Megalodonte logo">
+</p>
+
 # megalodonte-components
 
 Reactive JavaFX component library for the Megalodonte framework: layout containers,
