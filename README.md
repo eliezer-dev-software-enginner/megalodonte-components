@@ -9,6 +9,10 @@ form controls, a data table, menus, and the `Props`/theme system that styles all
 them. Builds on `megalodonte-base` (`Component`, `State`/`ReadableState`,
 `ThemeManager`, `ForEachState`).
 
+`AsyncImage` loads image assets in the background and accepts the same
+`ImageProps` sizing contract as `Image`, preventing network I/O from blocking the
+JavaFX application thread.
+
 Several examples below are adapted from a separate application, `plics-sw`.
 Its `Components`, screens, view models, and routes are not part of this repository;
 replace those references with your own application code.
