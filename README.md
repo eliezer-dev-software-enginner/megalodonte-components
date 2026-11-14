@@ -11,7 +11,10 @@ them. Builds on `megalodonte-base` (`Component`, `State`/`ReadableState`,
 
 `AsyncImage` loads image assets in the background and accepts the same
 `ImageProps` sizing contract as `Image`, preventing network I/O from blocking the
-JavaFX application thread.
+JavaFX application thread. Images are cached by source for the lifetime of the
+process, so rebuilding a declarative screen reuses the loaded image without
+restarting its download or decode animation; each use still receives its own
+`ImageView` and can safely belong to a different layout.
 
 Several examples below are adapted from a separate application, `plics-sw`.
 Its `Components`, screens, view models, and routes are not part of this repository;
