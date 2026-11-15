@@ -16,7 +16,7 @@ import megalodonte.props.ButtonProps;
 import megalodonte.base.components.Component;
 
 import java.util.Objects;
-
+//javafx
 public class Button extends Component  {
     private static final double NORMAL_OPACITY = 1.0;
     private static final double HOVER_OPACITY = 0.85;

@@ -7,9 +7,12 @@ import javafx.scene.control.ContentDisplay;
 import megalodonte.base.scale.ScaleProvider;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
+import megalodonte.common_platform.ButtonSize;
+import megalodonte.common_platform.ButtonStyle;
+import megalodonte.common_platform.ButtonVariant;
 
-import static megalodonte.props.ButtonVariant.DISABLED;
-import static megalodonte.props.ButtonVariant.GHOST;
+import static megalodonte.common_platform.ButtonVariant.DISABLED;
+import static megalodonte.common_platform.ButtonVariant.GHOST;
 import static megalodonte.styles.util.StyleUtils.*;
 
 public class ButtonProps extends TextComponentProps<ButtonProps> implements Paddable<ButtonProps> {
