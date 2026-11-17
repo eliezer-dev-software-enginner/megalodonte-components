@@ -114,7 +114,8 @@ parent `VBox`), `onClick(Runnable)`.
 `.c_child(...)`/`.r_child(...)` (single child, chainable), and several `.items(...)`
 overloads: a plain `List<Component>`, a `List<T>` + mapper function, or a reactive
 `ForEachState<T, C>` (optionally wrapped in its own internal `ScrollPane` via the
-`boolean isScrollable` overload).
+`boolean isScrollable` overload). Reactive `Column` and `Row` items also accept an
+`int spacing` overload to set the gap inside their internal dynamic list.
 
 ```java
 return new Column().children(

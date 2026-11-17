@@ -103,11 +103,15 @@ public class Row extends Component  implements LayoutComponent {
 
     @Override
     public <T, C extends Component > Row items(ForEachState<T, C> forEachState) {
+        return items(forEachState, 0);
+    }
+
+    public <T, C extends Component> Row items(ForEachState<T, C> forEachState, int spacing) {
         if (this.itemsHBox != null) {
             throw new IllegalStateException("items() só pode ser chamado uma vez por Row");
         }
 
-        this.itemsHBox = new HBox();
+        this.itemsHBox = new HBox(spacing);
         this.nodeInternal.getChildren().add(this.itemsHBox);
 
         List<C> componentes = forEachState.getComponents();
