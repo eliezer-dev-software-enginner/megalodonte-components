@@ -1,5 +1,5 @@
-module megalodonte.components {
-    requires transitive megalodonte.base;
+module megalodonte.components.desktop {
+    requires transitive megalodonte.base.desktop;
 
     requires transitive javafx.base;
     requires transitive javafx.graphics;
@@ -15,5 +15,5 @@ module megalodonte.components {
 
     // NOT exported: megalodonte.styles.util
     //   Only class: megalodonte.styles.util.StyleUtils
-    //   Used exclusively by classes inside megalodonte.components / megalodonte.props.
+    //   Used exclusively by classes inside megalodonte.components.desktop / megalodonte.props.
 }

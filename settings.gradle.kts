@@ -1,4 +1,4 @@
-rootProject.name = "megalodonte-components"
+rootProject.name = "megalodonte-components-desktop"
 
 // Build against the current ecosystem sources; published consumers can opt out.
 if (providers.gradleProperty("useLocalSources").orNull != "false") {

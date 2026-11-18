@@ -67,7 +67,7 @@ task<JavaExec>("runDemo") {
 }
 
 tasks.jar {
-    archiveBaseName.set("megalodonte-components")
+    archiveBaseName.set("megalodonte-components-desktop")
 
     manifest {
         attributes(
@@ -82,7 +82,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
-            artifactId = "megalodonte-components"
+            artifactId = "megalodonte-components-desktop"
         }
     }
 }

@@ -2,7 +2,7 @@
   <img src="docs/images/megalodonte-logo.png" width="180" alt="Megalodonte logo">
 </p>
 
-# megalodonte-components
+# megalodonte-components-desktop
 
 Reactive JavaFX component library for the Megalodonte framework: layout containers,
 form controls, a data table, menus, and the `Props`/theme system that styles all of
@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation("megalodonte:megalodonte-components:1.0.0-beta")
+    implementation("megalodonte:megalodonte-components-desktop:1.0.0-beta")
 }
 ```
 
