@@ -48,7 +48,7 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:4.0.16-alpha")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 
-    implementation("megalodonte:megalodonte-base:1.0.0-beta")
+    implementation("megalodonte:megalodonte-base-desktop:1.0.0-beta")
 }
 
 tasks.test {

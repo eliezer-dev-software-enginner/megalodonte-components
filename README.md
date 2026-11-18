@@ -6,7 +6,7 @@
 
 Reactive JavaFX component library for the Megalodonte framework: layout containers,
 form controls, a data table, menus, and the `Props`/theme system that styles all of
-them. Builds on `megalodonte-base` (`Component`, `State`/`ReadableState`,
+them. Builds on `megalodonte-base-desktop` (`Component`, `State`/`ReadableState`,
 `ThemeManager`, `ForEachState`).
 
 `AsyncImage` loads image assets in the background and accepts the same
@@ -23,8 +23,8 @@ replace those references with your own application code.
 ## Requirements and installation (Maven Local)
 
 Use JDK 25 and the included Gradle wrapper. The build declares JavaFX 25.0.1 and
-depends on `megalodonte-base:1.0.0-beta`. By default, `settings.gradle.kts`
-includes sibling directories `../megalodonte-base` and `../megalodonte-core` as
+depends on `megalodonte-base-desktop:1.0.0-beta`. By default, `settings.gradle.kts`
+includes sibling directories `../megalodonte-base-desktop` and `../megalodonte-core` as
 composite builds when they exist. Without those sources, the required artifacts
 must be resolvable from the configured Maven repositories. Set
 `-PuseLocalSources=false` to disable the sibling source builds.
@@ -46,8 +46,8 @@ dependencies {
 }
 ```
 
-The published module declares `megalodonte-base` and RichTextFX as dependencies.
-The `ForEachState` used by this library comes from `megalodonte-base`. Applications
+The published module declares `megalodonte-base-desktop` and RichTextFX as dependencies.
+The `ForEachState` used by this library comes from `megalodonte-base-desktop`. Applications
 using `megalodonte-theme` must resolve it separately; it is only a test dependency
 here. `DefaultTheme` in the example below comes from that separate module.
 
