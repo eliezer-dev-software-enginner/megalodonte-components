@@ -51,6 +51,18 @@ public class MenuTest {
         if (menuBar.getMenus().size() != 4) {
             throw new AssertionError("menuIf deve adicionar somente o menu cuja condição é verdadeira");
         }
+
+        int[] directCalls = {0};
+        Menu directAction = new Menu("Atualizar", () -> directCalls[0]++);
+        if (!directAction.hasAction() || !directAction.getItems().isEmpty()) {
+            throw new AssertionError("Menu com callback deve representar uma ação direta");
+        }
+        directAction.run();
+        if (directCalls[0] != 1) throw new AssertionError("Callback direto do Menu não foi executado");
+        try {
+            directAction.item("Inválido", () -> {});
+            throw new AssertionError("Menu com callback não deve aceitar itens internos");
+        } catch (IllegalStateException expected) { }
         
         // Ou usando o método direto
         MenuBar menuBar2 = MenuBar.of()

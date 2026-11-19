@@ -541,6 +541,9 @@ menu's title as its trigger in an `HBox`. `MenuItem(String, Runnable)` — title
 action; `MenuBar`'s `.menu(String title, MenuItem... items)` overload builds the
 `Menu` for you inline. Use `.menuIf(condition, menu)` when the complete menu,
 including its title, must be omitted when a permission or feature flag is false.
+`Menu(String, Runnable)` creates a direct command instead of a dropdown; clicking
+its title runs the callback. A direct command is a leaf and therefore rejects
+`.item(...)` calls.
 
 ## Media & feedback
 

@@ -40,9 +40,15 @@ public class Menu {
     private final javafx.scene.text.Text triggerLabel;
     private final Clickable trigger;
     private final Popup popup = new Popup();
+    private final Runnable action;
 
     public Menu(String title) {
+        this(title, null);
+    }
+
+    public Menu(String title, Runnable onClick) {
         var theme = ThemeManager.theme();
+        this.action = onClick;
 
         Text label = new Text(title, new TextProps().textColor(theme.colors().textPrimary()).bold());
         this.triggerLabel = (javafx.scene.text.Text) label.getJavaFxNode();
@@ -50,7 +56,7 @@ public class Menu {
         var triggerContainer = new Container(new ContainerProps().paddingAll(8)).children(label);
         addHoverHighlight(triggerContainer.getJavaFxNode(), theme);
 
-        this.trigger = new Clickable(triggerContainer).onClick(this::toggle);
+        this.trigger = new Clickable(triggerContainer).onClick(action == null ? this::toggle : action);
         this.trigger.getJavaFxNode().setAccessibleText(title);
 
         popup.setAutoHide(true);
@@ -60,8 +66,18 @@ public class Menu {
     }
 
     public Menu addItem(MenuItem item) {
+        if (action != null) throw new IllegalStateException("An action Menu cannot contain items");
         items.add(item);
         return this;
+    }
+
+    public boolean hasAction() {
+        return action != null;
+    }
+
+    public void run() {
+        if (action == null) throw new IllegalStateException("This Menu is a group and has no direct action");
+        action.run();
     }
 
     public Menu item(IconInterface icon, String title, Runnable action) {
@@ -195,5 +211,9 @@ public class Menu {
 
     public static Menu of(String title) {
         return new Menu(title);
+    }
+
+    public static Menu of(String title, Runnable action) {
+        return new Menu(title, action);
     }
 }
