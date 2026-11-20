@@ -23,13 +23,21 @@ class MaterialPrimitivesTest extends ApplicationTest {
 
     @Test void switchSynchronizesStateInBothDirections() {
         var selected = State.of(false);
-        var control = new Switch("Notifications", selected);
+        int[] changes = {0};
+        boolean[] current = {false};
+        var control = new Switch("Notifications", selected).onCheckedChange(value -> {
+            changes[0]++;
+            current[0] = value;
+        });
         var toggle = (ToggleButton) control.getJavaFxNode();
         assertFalse(toggle.isSelected());
         interact(() -> toggle.setSelected(true));
         assertTrue(selected.get());
+        assertEquals(1, changes[0]);
+        assertTrue(current[0]);
         interact(() -> selected.set(false));
         assertFalse(toggle.isSelected());
+        assertEquals(1, changes[0], "Programmatic state changes must not invoke the user callback");
     }
 
     @Test void sliderBoundsInitialValueAndTracksChanges() {

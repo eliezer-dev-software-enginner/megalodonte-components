@@ -347,7 +347,10 @@ declared but currently no-ops (reserved for a future mobile target).
 
 ### Native state-bound controls
 
-`Switch` binds a boolean state to an accessible on/off toggle; `Slider` binds a
+`Switch` binds a boolean state to an accessible on/off toggle. Its fluent
+`onCheckedChange(Consumer<Boolean>)` callback runs after a user interaction has
+updated the state; programmatic state changes update the control without invoking
+that user callback. `Slider` binds a
 finite numeric range to `State<Double>`. `RadioGroup` binds mutually exclusive
 choices to `State<String>` with stable values separate from visible labels.
 `Accordion` exposes a collapsible
@@ -360,7 +363,8 @@ JavaFX nodes behind the framework API.
 var enabled = State.of(false);
 var volume = State.of(25.0);
 var selected = State.of(0);
-new Switch("Notifications", enabled);
+new Switch("Notifications", enabled)
+        .onCheckedChange(currentState -> savePreference(currentState));
 new Slider(0, 100, volume);
 new RadioGroup("Billing frequency", List.of(
         new RadioGroup.Option("monthly", "Monthly"),
