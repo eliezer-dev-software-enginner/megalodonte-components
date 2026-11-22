@@ -590,6 +590,18 @@ without it, scrolling fast to the bottom of a nested table/list also scrolls the
 outer page. `SimpleTable`, `Column`/`Row`/`FlowRow`'s scrollable `.items(...)`
 overloads call it internally; call it yourself if you build a custom `ScrollPane`.
 
+## Embedded modal sizing
+
+`Modal` is content-sized by default, which keeps confirmations and short forms
+compact. For a long form whose content is already wrapped in `Scroll`, call
+`.fillAvailableSpace()`. The card then stays within a 24 px window margin and
+the scrollable child receives a bounded viewport, so its footer remains
+reachable instead of being clipped below the window.
+
+```java
+new Modal(formVisible, new Scroll(longForm())).fillAvailableSpace();
+```
+
 ## Technologies
 
 - Java 25

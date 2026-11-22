@@ -4,6 +4,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import megalodonte.base.Animations;
 import megalodonte.base.components.Component;
 import megalodonte.base.state.State;
@@ -34,6 +37,9 @@ import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
 public class Modal extends Component {
 
     private final StackPane backdrop;
+    private final StackPane cardStack;
+    private final Region cardNode;
+    private final Region contentNode;
 
     public Modal(State<Boolean> visible, Component content) {
         super(new StackPane());
@@ -56,13 +62,34 @@ public class Modal extends Component {
         StackPane.setMargin(closeButton.getJavaFxNode(), new Insets(6, 6, 0, 0));
 
         var card = new Card(content);
-        var cardStack = new StackPane(card.getJavaFxNode(), closeButton.getJavaFxNode());
+        this.cardNode = (Region) card.getJavaFxNode();
+        this.contentNode = content.getJavaFxNode() instanceof Region region ? region : null;
+        this.cardStack = new StackPane(card.getJavaFxNode(), closeButton.getJavaFxNode());
         cardStack.setPickOnBounds(false);
 
         backdrop.getChildren().add(cardStack);
 
         applyVisibility(visible.get(), false);
         visible.subscribe(v -> applyVisibility(v, true));
+    }
+
+    /**
+     * Keeps a large modal inside the window and lets scrollable content consume
+     * the bounded viewport. Small modals keep their default content-sized card
+     * unless this mode is requested explicitly.
+     */
+    public Modal fillAvailableSpace() {
+        backdrop.setPadding(new Insets(24));
+        cardStack.setMinSize(0, 0);
+        cardStack.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        cardNode.setMinSize(0, 0);
+        cardNode.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        if (contentNode != null) {
+            contentNode.setMinSize(0, 0);
+            contentNode.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            VBox.setVgrow(contentNode, Priority.ALWAYS);
+        }
+        return this;
     }
 
     private void applyVisibility(boolean visible, boolean animate) {
