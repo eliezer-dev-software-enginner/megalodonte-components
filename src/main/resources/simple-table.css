@@ -5,8 +5,19 @@
     -fx-padding: 0;
 }
 
+.table-view .virtual-flow,
+.table-view .virtual-flow .clipped-container,
+.table-view .virtual-flow .clipped-container .sheet,
+.table-view .table-row-cell:empty {
+    -fx-background-color: -megalodonte-table-background;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: -megalodonte-table-text;
+}
+
 .table-view .filler {
-    -fx-background-color: transparent;
+    -fx-background-color: -megalodonte-table-background;
 }
 
 .table-view .column-header-background {

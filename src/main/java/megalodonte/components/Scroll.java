@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import megalodonte.base.components.Component;
+import megalodonte.base.theme.ThemeManager;
 
 import static megalodonte.styles.util.StyleUtils.applyStyleProperty;
 import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
@@ -24,7 +25,9 @@ public class Scroll extends Component  {
         super(new ScrollPane(), null);
         this.scrollPane = (ScrollPane) node;
 
-        updateBackgroundColor(scrollPane, "transparent");
+        String background = ThemeManager.theme() != null
+                ? ThemeManager.theme().colors().background() : "transparent";
+        updateBackgroundColor(scrollPane, background);
         updateBorderColor(scrollPane, "transparent");
         // Modena's ".scroll-pane .viewport" rule paints its own opaque
         // background (-fx-control-inner-background, white by default),
@@ -33,11 +36,11 @@ public class Scroll extends Component  {
         // regardless of theme no matter what color the ScrollPane control itself
         // is given. "-fx-background" is the looked-up color several of Modena's
         // built-in skins (including the viewport) fall back to; making the skin
-        // apply it here is override, not a lucky reference. transparentizeViewport
-        // additionally targets ".viewport" directly once the skin exists, in case
+        // apply it here is an explicit override. themeViewport additionally
+        // targets ".viewport" directly once the skin exists, in case
         // a given JavaFX version's viewport rule doesn't chain through it.
-        applyStyleProperty(scrollPane, "transparent", "-fx-background");
-        transparentizeViewport(scrollPane);
+        applyStyleProperty(scrollPane, background, "-fx-background");
+        themeViewport(scrollPane, background);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         this.scrollPane.setFitToWidth(true);
         //this.scrollPane.setFitToHeight(true);
@@ -92,23 +95,26 @@ public class Scroll extends Component  {
         return this;
     }
 
-    private static void transparentizeViewport(ScrollPane scrollPane) {
-        scrollPane.skinProperty().addListener((obs, oldSkin, newSkin) -> applyViewportBackground(scrollPane));
-        applyViewportBackground(scrollPane);
+    private static void themeViewport(ScrollPane scrollPane, String background) {
+        scrollPane.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            applyViewportBackground(scrollPane, background);
+            javafx.application.Platform.runLater(() -> applyViewportBackground(scrollPane, background));
+        });
+        scrollPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) javafx.application.Platform.runLater(() -> applyViewportBackground(scrollPane, background));
+        });
+        applyViewportBackground(scrollPane, background);
 
-        //Quando aparecem as duas barras de rolagem (horizontal + vertical) ao mesmo tempo, o JavaFX
-        // desenha um pequeno quadrado .corner no canto onde elas se encontram, que também tem background próprio do Modena.
-        // É bem mais raro de notar (só aparece com scroll nos dois eixos simultaneamente)
-        Node corner = scrollPane.lookup(".corner");
-        if (corner != null) {
-            applyStyleProperty(corner, "transparent", "-fx-background-color");
-        }
     }
 
-    private static void applyViewportBackground(ScrollPane scrollPane) {
+    private static void applyViewportBackground(ScrollPane scrollPane, String background) {
         Node viewport = scrollPane.lookup(".viewport");
         if (viewport != null) {
-            applyStyleProperty(viewport, "transparent", "-fx-background-color");
+            applyStyleProperty(viewport, background, "-fx-background-color");
+        }
+        Node corner = scrollPane.lookup(".corner");
+        if (corner != null) {
+            applyStyleProperty(corner, background, "-fx-background-color");
         }
     }
 

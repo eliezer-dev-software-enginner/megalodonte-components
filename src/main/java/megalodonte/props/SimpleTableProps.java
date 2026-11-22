@@ -76,6 +76,10 @@ public class SimpleTableProps extends Props {
         int fontSize = theme.typography().body();
 
         updateBackgroundColor(tableView, finalBgColor);
+        applyStyleProperty(tableView, finalBgColor, "-megalodonte-table-background");
+        applyStyleProperty(tableView,
+                rowTextColor != null ? rowTextColor : theme.colors().textPrimary(),
+                "-megalodonte-table-text");
         updateBorderRadius(tableView, finalBorderRadius);
         updateFontSize(tableView, fontSize);
 

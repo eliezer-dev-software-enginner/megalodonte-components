@@ -520,6 +520,11 @@ new SimpleTable<ItemVenda>()
 `rowEvenColor`/`rowOddColor`/`rowHoverColor`/`selectionColor`/`rowTextColor`/`separatorColor`,
 `headerHeight(int)`, `maxWidth(double)`.
 
+When no explicit colors are supplied, cell text, regular/empty rows and the
+unused part of the virtualized table surface inherit the active theme. This is
+important in dark themes: the table does not fall back to Modena's white
+virtual-flow background, and text does not depend on hover to become legible.
+
 With `.horizontalScroll()`, each column's minimum width is the greater of its
 header width and visible content width. Extra table width is distributed across
 the columns; when the table is narrower than their combined minimum widths,
@@ -575,7 +580,10 @@ its title runs the callback. A direct command is a leaf and therefore rejects
 ## Scroll behavior
 
 `Scroll` wraps a `Component` in a themed, `fitToWidth` `ScrollPane` with
-`VBox.setVgrow(ALWAYS)`. Its static helper,
+`VBox.setVgrow(ALWAYS)`. The viewport and the corner between simultaneous
+scrollbars use the active theme background even when the child is shorter than
+the available area, instead of exposing JavaFX's default white surface. Its
+static helper,
 `Scroll.confineScrollEvents(Node)`, stops a scroll event from bubbling up to an
 ancestor `ScrollPane`/`TableView` once the inner one has nothing left to scroll —
 without it, scrolling fast to the bottom of a nested table/list also scrolls the
