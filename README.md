@@ -347,7 +347,12 @@ declared but currently no-ops (reserved for a future mobile target).
 
 ### Native state-bound controls
 
-`Switch` binds a boolean state to an accessible on/off toggle. Its fluent
+`Switch` binds a boolean state to an accessible on/off toggle. It renders a
+real rounded track and a movable thumb; the label remains visible next to the
+control and is also used for accessibility. Do not represent its state with
+text glyphs such as `●` or `○`.
+
+Its fluent
 `onCheckedChange(Consumer<Boolean>)` callback runs after a user interaction has
 updated the state; programmatic state changes update the control without invoking
 that user callback. `Slider` binds a
@@ -372,6 +377,9 @@ new RadioGroup("Billing frequency", List.of(
 new Accordion("Advanced settings", new Text("Details"), State.of(false));
 new Tabs(List.of(new Tabs.Page("General", new Text("Overview"))), selected);
 ```
+
+The former glyph-based rendering that this control replaces is recorded in
+[`docs/images/switch-glyph-regression.png`](docs/images/switch-glyph-regression.png).
 
 Set a theme through `ThemeManager` before constructing these controls. The
 state subscriptions belong to the view lifecycle, so discard the controls when

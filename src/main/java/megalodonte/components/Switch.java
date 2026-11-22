@@ -1,6 +1,10 @@
 package megalodonte.components;
 
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import megalodonte.base.components.Component;
 import megalodonte.base.state.State;
 import megalodonte.base.theme.ThemeManager;
@@ -11,6 +15,8 @@ import java.util.function.Consumer;
 /** A theme-aware on/off control bound bidirectionally to a boolean state. */
 public final class Switch extends Component {
     private final ToggleButton control;
+    private final StackPane track = new StackPane();
+    private final Circle thumb = new Circle(8);
     private Consumer<Boolean> onCheckedChange = ignored -> { };
     private boolean applyingState;
 
@@ -22,10 +28,16 @@ public final class Switch extends Component {
         }
         control = (ToggleButton) node;
         control.setAccessibleText(accessibleLabel);
+        control.setText(accessibleLabel);
         control.setFocusTraversable(true);
-        control.setMinWidth(48);
-        control.setPrefWidth(48);
-        control.setPrefHeight(26);
+        control.setContentDisplay(ContentDisplay.RIGHT);
+        control.setGraphicTextGap(10);
+        control.setMinHeight(30);
+        track.setMinSize(44, 24);
+        track.setPrefSize(44, 24);
+        track.setMaxSize(44, 24);
+        track.getChildren().add(thumb);
+        control.setGraphic(track);
         control.selectedProperty().addListener((ignored, oldValue, value) -> {
             if (applyingState) return;
             state.set(value);
@@ -39,10 +51,12 @@ public final class Switch extends Component {
                 finally { applyingState = false; }
             }
             var colors = ThemeManager.theme().colors();
-            control.setText(selected ? "●" : "○");
-            control.setStyle("-fx-background-color: " + (selected ? colors.primary() : colors.secondary())
-                    + "; -fx-text-fill: " + colors.surface()
-                    + "; -fx-background-radius: 20; -fx-font-size: 18;");
+            track.setStyle("-fx-background-color: " + (selected ? colors.primary() : colors.border())
+                    + "; -fx-background-radius: 999;");
+            thumb.setFill(Color.web(selected ? colors.surface() : colors.textSecondary()));
+            thumb.setTranslateX(selected ? 10 : -10);
+            control.setStyle("-fx-background-color: transparent; -fx-padding: 2 0; -fx-text-fill: "
+                    + colors.textPrimary() + "; -fx-cursor: hand;");
         });
     }
 
