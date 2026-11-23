@@ -19,6 +19,16 @@ public class SelectProps extends TextComponentProps<SelectProps> implements Padd
     private int height;
 
     private TextTone tone = TextTone.PRIMARY;
+    private boolean searchable;
+
+    public SelectProps searchable() {
+        this.searchable = true;
+        return this;
+    }
+
+    public boolean isSearchable() {
+        return searchable;
+    }
 
     public SelectProps tone(TextTone tone) {
         this.tone = tone;

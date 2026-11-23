@@ -2,13 +2,16 @@ package megalodonte.components;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.util.StringConverter;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
 import megalodonte.base.theme.ThemeManager;
 import megalodonte.props.SelectProps;
 import megalodonte.base.state.State;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.BiPredicate;
 import java.lang.reflect.Field;
@@ -22,7 +25,11 @@ public class Select<T> extends Component  {
 
     private final ComboBox<T> comboBox;
     private final SelectProps selectProps;
+    private final List<T> sourceItems = new ArrayList<>();
     private BiPredicate<T, T> itemComparator = (a, b) -> a == b;
+    private Function<T, String> displayMapper = item -> item == null ? "" : item.toString();
+    private boolean searchable;
+    private boolean updatingEditor;
 
     public Select() {
         this(new SelectProps());
@@ -33,6 +40,7 @@ public class Select<T> extends Component  {
         this.selectProps = props;
         this.comboBox = (ComboBox<T>) this.node;
         applyDefaultCellTheme();
+        if (props.isSearchable()) searchable();
     }
 
     /**
@@ -41,9 +49,8 @@ public class Select<T> extends Component  {
      * o popup do dropdown não volta a ficar com a cor padrão (azul) do JavaFX.
      */
     private void applyDefaultCellTheme() {
-        Function<T, String> toString = item -> item == null ? "" : item.toString();
-        comboBox.setCellFactory(lv -> themedListCell(toString));
-        comboBox.setButtonCell(buttonCell(toString));
+        comboBox.setCellFactory(lv -> themedListCell(displayMapper));
+        comboBox.setButtonCell(buttonCell(displayMapper));
     }
 
     /**
@@ -109,8 +116,9 @@ public class Select<T> extends Component  {
     }
 
     public Select<T> items(Iterable<T> items) {
-        comboBox.getItems().clear();
-        items.forEach(comboBox.getItems()::add);
+        var replacement = new ArrayList<T>();
+        if (items != null) items.forEach(replacement::add);
+        replaceItems(replacement);
         return this;
     }
 
@@ -123,10 +131,7 @@ public class Select<T> extends Component  {
      */
     public Select<T> items(State<List<T>> state) {
         state.subscribe(items -> {
-            comboBox.getItems().clear();
-            if (items != null) {
-                comboBox.getItems().addAll(items);
-            }
+            replaceItems(items);
         });
         return this;
     }
@@ -146,10 +151,7 @@ public class Select<T> extends Component  {
 
     public Select<T> items(ReadableState<List<T>> state) {
         state.subscribe(items -> {
-            comboBox.getItems().clear();
-            if (items != null) {
-                comboBox.getItems().addAll(items);
-            }
+            replaceItems(items);
         });
         return this;
     }
@@ -202,7 +204,7 @@ public class Select<T> extends Component  {
      * @return the matching item from the list, or null if not found
      */
     private T findMatchingItem(T target) {
-        for (T item : comboBox.getItems()) {
+        for (T item : sourceItems) {
             if (itemComparator.test(item, target)) {
                 return item;
             }
@@ -245,8 +247,97 @@ public class Select<T> extends Component  {
      * @return this Select instance for method chaining
      */
     public Select<T> displayText(Function<T, String> mapper) {
-        comboBox.setCellFactory(param -> themedListCell(mapper));
-        comboBox.setButtonCell(buttonCell(mapper));
+        this.displayMapper = mapper == null ? item -> item == null ? "" : item.toString() : mapper;
+        comboBox.setCellFactory(param -> themedListCell(displayMapper));
+        comboBox.setButtonCell(buttonCell(displayMapper));
+        if (searchable) configureConverter();
         return this;
+    }
+
+    /**
+     * Enables an editable, searchable dropdown. Typing filters the available
+     * options by their display text while selecting an option still returns the
+     * original typed object through {@link #value(State)}.
+     */
+    public Select<T> searchable() {
+        if (searchable) return this;
+        searchable = true;
+        comboBox.setEditable(true);
+        configureConverter();
+        comboBox.getEditor().textProperty().addListener((observable, oldText, newText) -> {
+            if (updatingEditor) return;
+            T selected = comboBox.getValue();
+            String selectedText = selected == null ? "" : display(selected);
+            if (selected != null && selectedText.equals(newText)) return;
+            if (selected != null) {
+                updatingEditor = true;
+                try {
+                    comboBox.setValue(null);
+                    comboBox.getEditor().setText(newText);
+                } finally {
+                    updatingEditor = false;
+                }
+            }
+            applyFilter(newText);
+            if ((comboBox.isFocused() || comboBox.getEditor().isFocused()) && !comboBox.isShowing()) comboBox.show();
+        });
+        comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) setEditorText(display(newValue));
+        });
+        comboBox.setOnShowing(event -> {
+            String query = comboBox.getEditor().getText();
+            T selected = comboBox.getValue();
+            applyFilter(selected != null && display(selected).equals(query) ? "" : query);
+        });
+        return this;
+    }
+
+    private void configureConverter() {
+        comboBox.setConverter(new StringConverter<>() {
+            @Override public String toString(T item) { return display(item); }
+
+            @Override public T fromString(String text) {
+                String expected = text == null ? "" : text.trim();
+                return sourceItems.stream()
+                        .filter(item -> display(item).equalsIgnoreCase(expected))
+                        .findFirst().orElse(null);
+            }
+        });
+    }
+
+    private void replaceItems(Iterable<T> items) {
+        T selected = comboBox.getValue();
+        sourceItems.clear();
+        if (items != null) items.forEach(sourceItems::add);
+        applyFilter(searchable ? comboBox.getEditor().getText() : "");
+        if (selected != null) comboBox.setValue(findMatchingItem(selected));
+    }
+
+    private void applyFilter(String query) {
+        comboBox.getItems().setAll(filteredItems(sourceItems, query, displayMapper));
+    }
+
+    static <T> List<T> filteredItems(List<T> source, String query, Function<T, String> display) {
+        String normalized = query == null ? "" : query.strip().toLowerCase(Locale.ROOT);
+        if (normalized.isEmpty()) return List.copyOf(source);
+        return source.stream().filter(item -> {
+            String text = item == null ? "" : display.apply(item);
+            return text != null && text.toLowerCase(Locale.ROOT).contains(normalized);
+        }).toList();
+    }
+
+    private String display(T item) {
+        if (item == null) return "";
+        String value = displayMapper.apply(item);
+        return value == null ? "" : value;
+    }
+
+    private void setEditorText(String value) {
+        updatingEditor = true;
+        try {
+            comboBox.getEditor().setText(value);
+        } finally {
+            updatingEditor = false;
+        }
     }
 }

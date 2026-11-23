@@ -416,7 +416,9 @@ public static <T> Component SelectColumn(String label, State<List<T>> listState,
 `toString()`), `.itemComparator(BiPredicate<T, T>)` / `.compareById()` (match items
 by a reflectively-read `id` field instead of `equals()` — handy for entities that
 don't implement it), `.expandWhen(ReadableState<Boolean>)` (open/close the popup
-programmatically).
+programmatically), and `.searchable()` (editable input that filters options by
+their display text while preserving the selected typed object). The same mode
+can be enabled declaratively with `new SelectProps().searchable()`.
 
 `SelectProps` (extends `TextComponentProps<T>`): `bgColor/borderColor/borderWidth/borderRadius`,
 `height(int)`, `minWidth/maxWidth(double)`, `paddingAll/Top/Right/Down/Left(int)`,
