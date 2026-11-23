@@ -2,6 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.Pane;
 import javafx.application.Platform;
 import javafx.util.StringConverter;
 import megalodonte.base.state.ReadableState;
@@ -32,6 +33,7 @@ public class Select<T> extends Component  {
     private Function<T, String> displayMapper = item -> item == null ? "" : item.toString();
     private boolean searchable;
     private boolean updatingEditor;
+    private Component dropdownIcon;
 
     public Select() {
         this(new SelectProps());
@@ -268,6 +270,9 @@ public class Select<T> extends Component  {
         configureConverter();
         applySearchableSkin();
         comboBox.skinProperty().addListener((observable, oldSkin, newSkin) -> applySearchableSkin());
+        comboBox.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) applySearchableSkin();
+        });
         comboBox.getEditor().textProperty().addListener((observable, oldText, newText) -> {
             if (updatingEditor) return;
             T selected = comboBox.getValue();
@@ -307,8 +312,16 @@ public class Select<T> extends Component  {
         return this;
     }
 
+    /** Replaces the native dropdown arrow with a framework component icon. */
+    public Select<T> dropdownIcon(Component icon) {
+        this.dropdownIcon = icon;
+        applySearchableSkin();
+        return this;
+    }
+
     private void applySearchableSkin() {
         Platform.runLater(() -> {
+            comboBox.applyCss();
             var colors = ThemeManager.theme().colors();
             var editor = comboBox.getEditor();
             updateBackgroundColor(editor, colors.background());
@@ -320,8 +333,23 @@ public class Select<T> extends Component  {
             applyStyleProperty(editor, "6", "-fx-border-radius");
             var arrowButton = comboBox.lookup(".arrow-button");
             if (arrowButton != null) {
-                arrowButton.setManaged(false);
-                arrowButton.setVisible(false);
+                if (dropdownIcon == null) {
+                    arrowButton.setManaged(false);
+                    arrowButton.setVisible(false);
+                } else {
+                    arrowButton.setManaged(true);
+                    arrowButton.setVisible(true);
+                    applyStyleProperty(arrowButton, "transparent", "-fx-background-color");
+                    applyStyleProperty(arrowButton, "0", "-fx-background-insets");
+                    applyStyleProperty(arrowButton, "0", "-fx-border-width");
+                    applyStyleProperty(arrowButton, "7", "-fx-padding");
+                    var nativeArrow = arrowButton.lookup(".arrow");
+                    if (nativeArrow != null) nativeArrow.setVisible(false);
+                    if (arrowButton instanceof Pane pane
+                            && !pane.getChildren().contains(dropdownIcon.getJavaFxNode())) {
+                        pane.getChildren().setAll(dropdownIcon.getJavaFxNode());
+                    }
+                }
             }
         });
     }

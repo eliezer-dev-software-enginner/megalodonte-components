@@ -422,7 +422,9 @@ programmatically), and `.searchable()` (editable input that filters options by
 their display text while preserving the selected typed object). A searchable
 select hides the legacy arrow segment, follows the input colors of the current
 theme and closes the popup when the filter has no matches. The same mode
-can be enabled declaratively with `new SelectProps().searchable()`.
+can be enabled declaratively with `new SelectProps().searchable()`. Use
+`.dropdownIcon(Component)` to replace the native JavaFX arrow with an icon from
+the application's icon family without coupling this library to that family.
 
 `SelectProps` (extends `TextComponentProps<T>`): `bgColor/borderColor/borderWidth/borderRadius`,
 `height(int)`, `minWidth/maxWidth(double)`, `paddingAll/Top/Right/Down/Left(int)`,
