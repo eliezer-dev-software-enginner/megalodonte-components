@@ -393,8 +393,10 @@ JavaFX CSS can't reach (it renders in its own `Scene`).
 ### Charts
 
 `BarChartView` and `PieChartView` keep JavaFX chart nodes inside the framework.
-Applications supply `State<List<BarChartView.Bar>>` or
-`State<List<PieChartView.Slice>>`; changing the state updates the visible chart.
+Applications supply a `ReadableState<List<BarChartView.Bar>>` or
+`ReadableState<List<PieChartView.Slice>>`, including `ListState`; changing the
+state updates the visible chart. Chart surfaces and labels follow the active
+theme.
 Bar labels and colors are data, so application view models do not need JavaFX
 `XYChart.Data` or `PieChart.Data` types.
 
@@ -417,7 +419,9 @@ public static <T> Component SelectColumn(String label, State<List<T>> listState,
 by a reflectively-read `id` field instead of `equals()` — handy for entities that
 don't implement it), `.expandWhen(ReadableState<Boolean>)` (open/close the popup
 programmatically), and `.searchable()` (editable input that filters options by
-their display text while preserving the selected typed object). The same mode
+their display text while preserving the selected typed object). A searchable
+select hides the legacy arrow segment, follows the input colors of the current
+theme and closes the popup when the filter has no matches. The same mode
 can be enabled declaratively with `new SelectProps().searchable()`.
 
 `SelectProps` (extends `TextComponentProps<T>`): `bgColor/borderColor/borderWidth/borderRadius`,
@@ -603,6 +607,10 @@ reachable instead of being clipped below the window.
 ```java
 new Modal(formVisible, new Scroll(longForm())).fillAvailableSpace();
 ```
+
+Visible modals close when the user presses `Esc`, clicks the backdrop or uses
+the built-in close button. The same visibility `State<Boolean>` remains the
+single source of truth for all close paths.
 
 ## Technologies
 

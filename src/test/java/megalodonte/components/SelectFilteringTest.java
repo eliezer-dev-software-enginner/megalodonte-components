@@ -17,5 +17,6 @@ final class SelectFilteringTest {
 
         assertEquals(List.of(phone), filtered);
         assertEquals(options, Select.filteredItems(options, "", Option::name));
+        assertEquals(List.of(), Select.filteredItems(options, "not-found", Option::name));
     }
 }

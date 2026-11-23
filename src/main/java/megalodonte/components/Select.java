@@ -2,6 +2,7 @@ package megalodonte.components;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.application.Platform;
 import javafx.util.StringConverter;
 import megalodonte.base.state.ReadableState;
 import megalodonte.base.theme.ThemeInterface;
@@ -20,6 +21,7 @@ import megalodonte.base.components.Component;
 import static megalodonte.styles.util.StyleUtils.updateBackgroundColor;
 import static megalodonte.styles.util.StyleUtils.updateTextColor_Input;
 import static megalodonte.styles.util.StyleUtils.updateFontSize;
+import static megalodonte.styles.util.StyleUtils.applyStyleProperty;
 
 public class Select<T> extends Component  {
 
@@ -264,6 +266,8 @@ public class Select<T> extends Component  {
         searchable = true;
         comboBox.setEditable(true);
         configureConverter();
+        applySearchableSkin();
+        comboBox.skinProperty().addListener((observable, oldSkin, newSkin) -> applySearchableSkin());
         comboBox.getEditor().textProperty().addListener((observable, oldText, newText) -> {
             if (updatingEditor) return;
             T selected = comboBox.getValue();
@@ -279,7 +283,11 @@ public class Select<T> extends Component  {
                 }
             }
             applyFilter(newText);
-            if ((comboBox.isFocused() || comboBox.getEditor().isFocused()) && !comboBox.isShowing()) comboBox.show();
+            if (comboBox.getItems().isEmpty()) {
+                comboBox.hide();
+            } else if ((comboBox.isFocused() || comboBox.getEditor().isFocused()) && !comboBox.isShowing()) {
+                comboBox.show();
+            }
         });
         comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) setEditorText(display(newValue));
@@ -288,8 +296,34 @@ public class Select<T> extends Component  {
             String query = comboBox.getEditor().getText();
             T selected = comboBox.getValue();
             applyFilter(selected != null && display(selected).equals(query) ? "" : query);
+            if (comboBox.getItems().isEmpty()) Platform.runLater(comboBox::hide);
+        });
+        comboBox.getEditor().setOnMousePressed(event -> {
+            if (!comboBox.isShowing()) {
+                applyFilter(comboBox.getEditor().getText());
+                if (!comboBox.getItems().isEmpty()) comboBox.show();
+            }
         });
         return this;
+    }
+
+    private void applySearchableSkin() {
+        Platform.runLater(() -> {
+            var colors = ThemeManager.theme().colors();
+            var editor = comboBox.getEditor();
+            updateBackgroundColor(editor, colors.background());
+            updateTextColor_Input(editor, colors.textPrimary());
+            applyStyleProperty(editor, "0", "-fx-background-insets");
+            applyStyleProperty(editor, "transparent", "-fx-border-color");
+            applyStyleProperty(editor, "0", "-fx-border-width");
+            applyStyleProperty(editor, "6", "-fx-background-radius");
+            applyStyleProperty(editor, "6", "-fx-border-radius");
+            var arrowButton = comboBox.lookup(".arrow-button");
+            if (arrowButton != null) {
+                arrowButton.setManaged(false);
+                arrowButton.setVisible(false);
+            }
+        });
     }
 
     private void configureConverter() {

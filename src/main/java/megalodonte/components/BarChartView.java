@@ -4,8 +4,12 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import megalodonte.base.theme.ThemeManager;
 import megalodonte.base.components.Component;
-import megalodonte.base.state.State;
+import megalodonte.base.state.ReadableState;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,9 +32,12 @@ public final class BarChartView extends Component {
         chart.setTitle(Objects.requireNonNull(title, "title"));
         chart.setLegendVisible(false);
         chart.setPrefSize(320, 260);
+        chart.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) Platform.runLater(this::applyTheme);
+        });
     }
 
-    public BarChartView(String title, State<List<Bar>> bars) {
+    public BarChartView(String title, ReadableState<List<Bar>> bars) {
         this(title);
         Objects.requireNonNull(bars, "bars").subscribe(this::setBars);
     }
@@ -48,5 +55,20 @@ public final class BarChartView extends Component {
             series.getData().add(data);
         }
         chart.getData().setAll(series);
+        if (chart.getScene() != null) Platform.runLater(this::applyTheme);
+    }
+
+    private void applyTheme() {
+        var colors = ThemeManager.theme().colors();
+        chart.setStyle("-fx-background-color:" + colors.surface() + ";");
+        var plot = chart.lookup(".chart-plot-background");
+        if (plot != null) plot.setStyle("-fx-background-color:" + colors.background() + ";");
+        Color text = Color.web(colors.textPrimary());
+        ((CategoryAxis) chart.getXAxis()).setTickLabelFill(text);
+        ((NumberAxis) chart.getYAxis()).setTickLabelFill(text);
+        var title = chart.lookup(".chart-title");
+        if (title instanceof Label label) label.setTextFill(text);
+        chart.lookupAll(".chart-horizontal-grid-lines, .chart-vertical-grid-lines")
+                .forEach(node -> node.setOpacity(0.18));
     }
 }

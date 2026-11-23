@@ -3,6 +3,9 @@ package megalodonte.components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.Priority;
@@ -48,8 +51,15 @@ public class Modal extends Component {
         backdrop.setAlignment(Pos.CENTER);
         updateBackgroundColor(backdrop, "rgba(0,0,0,0.55)");
         backdrop.setPickOnBounds(true);
+        backdrop.setFocusTraversable(true);
         backdrop.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getTarget() == backdrop) visible.set(false);
+        });
+        backdrop.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE && Boolean.TRUE.equals(visible.get())) {
+                visible.set(false);
+                event.consume();
+            }
         });
 
         var closeButton = new Button("✕", new ButtonProps()
@@ -96,6 +106,7 @@ public class Modal extends Component {
         if (visible) {
             backdrop.setVisible(true);
             backdrop.setMouseTransparent(false);
+            Platform.runLater(backdrop::requestFocus);
             if (animate) Animations.pop(this, true).play();
         } else {
             backdrop.setMouseTransparent(true);
