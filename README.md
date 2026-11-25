@@ -88,6 +88,19 @@ fall back to values from the current theme (`theme.colors()`, `theme.typography(
 
 ## Layout
 
+### Arrastar e soltar
+
+`Draggable` transforma qualquer `Component` em uma origem de arraste com payload
+textual. `DropZone` recebe esse payload sem exigir eventos JavaFX no aplicativo:
+
+```java
+new Draggable("new:IMAGE", new Button("Imagem"));
+new DropZone(page).onDrop(payload -> editor.drop(payload));
+```
+
+Use payloads que expressem a intenção, como `new:TYPE` e `move:id`; a biblioteca
+transporta o valor e o modelo da aplicação decide como inserir ou reordenar.
+
 ### `Container`
 
 Single/multi-child `VBox` wrapper. Hugs its content's height by default — it does
